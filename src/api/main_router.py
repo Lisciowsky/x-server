@@ -1,5 +1,5 @@
-from src.routes.users import users_router
-from src.routes.auth import auth_router
+from src.api.routes.users import users_router
+from src.api.routes.auth import auth_router
 
 from fastapi import APIRouter
 

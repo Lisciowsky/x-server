@@ -1,10 +1,10 @@
-# src/routes/users.py
 from fastapi import APIRouter, HTTPException, status
+from sqlalchemy.exc import IntegrityError
+from pydantic import BaseModel
+
 from src.db.dal import DAL
 from src.db.models import User
-from sqlalchemy.exc import IntegrityError
 from src.utils.password import hash_password
-from pydantic import BaseModel
 
 users_router = APIRouter(prefix="/users")
 

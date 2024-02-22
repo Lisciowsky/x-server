@@ -3,7 +3,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 
 def rollback_decorator(fn: Callable):
-
     def inner(*args, **kwargs):
         try:
             result = fn(*args, **kwargs)

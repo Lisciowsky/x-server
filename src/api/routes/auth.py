@@ -1,21 +1,20 @@
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 auth_router = APIRouter(prefix="/auth")
 
 
-class UserLoginRequest(BaseModel):
-    username: str
-    password: str
-
-
-class LoginReponse(BaseModel):
-    access_token: str
+class RenewAccessRequest(BaseModel):
     refresh_token: str
 
 
-@auth_router.post("/")
-async def login_for_access_token(user_login: UserLoginRequest):
+class RenewAccessResponse(BaseModel):
+    access_token: str
+    access_token_expires_at: str
+
+
+@auth_router.post("/renew_access")
+async def renew_access_token(renew_request: RenewAccessRequest):
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
         raise HTTPException(
