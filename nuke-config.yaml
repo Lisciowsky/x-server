@@ -1,0 +1,12 @@
+regions:
+- global # This targets IAM resources, which are global.
+- eu-central-1 # Specify additional regions here.
+
+account-blacklist:
+- "999999999999" # Protect accounts by listing them here.
+
+accounts:
+  123456789012: # Your AWS account ID.
+    filters: # Specify resources to exclude from deletion here.
+      IAMRole:
+      - "my-protected-role"
