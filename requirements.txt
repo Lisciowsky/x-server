@@ -1,0 +1,20 @@
+# for llm prompt generation and chaining
+langchain==0.1.8
+# for server
+fastapi==0.109.2
+# for authentication
+paseto==1.0.1
+# enriched sqlalchemy ORM with pydantic 
+sqlmodel==0.0.16
+# or asnyc operations
+asyncpg==0.29.0
+# for alembic migrations
+psycopg2-binary==2.9.9
+# for env variables
+python-dotenv==1.0.1
+# dev dependencies - migrations
+alembic==1.13.1
+# :TODO
+uvicorn==0.27.1
+# password generation / verification = util
+passlib==1.7.4
