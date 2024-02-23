@@ -3,7 +3,8 @@ langchain==0.1.8
 # for server
 fastapi==0.109.2
 # for authentication
-paseto==1.0.1
+# paseto==1.0.1
+PyJWT==2.8.0
 # enriched sqlalchemy ORM with pydantic 
 sqlmodel==0.0.16
 # or asnyc operations
