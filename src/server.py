@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.db.dal import DAL
-from src.routes.main_router import main_router
+from src.api.main_router import main_router
 
 server = FastAPI(title="my web server", version="1.0.0")
 dal = DAL()

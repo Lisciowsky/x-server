@@ -19,8 +19,14 @@ alembic==1.13.1
 uvicorn==0.27.1
 # password generation / verification = util
 passlib==1.7.4
+# logging
+loguru==0.7.2
 
 # TESTING
 pytest==8.0.1
 # for async tests
 pytest-asyncio==0.23.5
+# mock
+pytest-mock==3.12.0
+# async /sync requests
+httpx==0.27.0

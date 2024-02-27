@@ -3,7 +3,7 @@ from src.api.routes.auth import auth_router
 
 from fastapi import APIRouter
 
-main_router = APIRouter()
+main_router = APIRouter(prefix="/v1")
 
 # AUTH
 main_router.include_router(auth_router)

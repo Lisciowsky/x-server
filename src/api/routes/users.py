@@ -1,8 +1,9 @@
-from uuid import UUID
-from fastapi import APIRouter, HTTPException, status, Response
+from datetime import datetime, timedelta
+
+from fastapi import APIRouter, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel, constr
-from datetime import datetime, timedelta
+from loguru import logger
 
 from src.db.dal import DAL
 from src.db.models import User, Session
@@ -23,13 +24,15 @@ class CreateUserRequest(BaseModel):
     email: str
 
 
-class UserResponse(BaseModel):
+class CreateUserResponse(BaseModel):
     username: str
     fullname: str
     email: str
 
 
-@users_router.post("/")
+@users_router.post(
+    "/", response_model=CreateUserResponse, status_code=status.HTTP_201_CREATED
+)
 async def create_user(user_request: CreateUserRequest):
     hashed_password = hash_password(password=user_request.password)
 
@@ -44,55 +47,67 @@ async def create_user(user_request: CreateUserRequest):
         user = await DAL().create_user(user=user)
     except Exception as ex:
         if isinstance(ex, IntegrityError):
+            logger.exception("create user exception", exception=ex)
             raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail=str(ex.orig)
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail="unable to create user due to conflict",
             )
+
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    return user.model_dump()
+    user_response = CreateUserResponse(
+        username=user.username, fullname=user.full_name, email=user.email
+    )
+
+    return user_response
 
 
 class LoginUserRequest(BaseModel):
-    username: constr(regex="^[a-zA-Z0-9]+$")
+    username: constr(pattern="^[a-zA-Z0-9]+$")
     password: constr(min_length=6)
 
 
 class LoginUserResponse(BaseModel):
-    session_id: UUID
-    username: str  # Alphanumeric characters only
+    session_id: str
     access_token: str
-    acess_token_expires_at: datetime
+    access_token_expires_at: datetime
     refresh_token: str
     refresh_token_expires_at: datetime
-    user: UserResponse
+    user: CreateUserResponse
 
 
-@users_router.post("/login")
+@users_router.post("/login", response_model=LoginUserResponse)
 async def login_user(login_request: LoginUserRequest):
     try:
         user = await DAL().get_user(username=login_request.username)
     except Exception as ex:
+        msg = "unable to get user"
+        logger.exception(msg, exception=ex)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex.orig)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg
         )
 
     if not user:
-        return Response(content=[], status_code=status.HTTP_404_NOT_FOUND)
+        logger.exception("user not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     if not verify_password(
         plain_password=login_request.password, hashed_password=user.hashed_password
     ):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="invalid password"
-        )
+        ex_msg = "invalid password"
+        logger.exception(ex_msg)
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=ex_msg)
 
     try:
         access_token, access_payload = JWTTokenManager.create_token(
             username=user.username, role=user.role
         )
     except Exception as ex:
+        ex_msg = "unable to create access_token for user"
+        logger.exception(ex_msg, exception=ex)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex.orig)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ex_msg,
         )
 
     try:
@@ -102,21 +117,66 @@ async def login_user(login_request: LoginUserRequest):
             expires_delta=timedelta(minutes=int(REFRESH_TOKEN_DURATION_MINUTES)),
         )
     except Exception as ex:
+        ex_msg = "unable to create refresh_token for user"
+        logger.exception(ex_msg, exception=ex)
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(ex.orig)
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ex_msg
         )
 
     session = Session(
-        id=refresh_payload
+        id=refresh_payload.id,
         username=user.username,
         refresh_token=refresh_token,
         user_agent="",
         client_ip="",
+        expires_at=refresh_payload.exp,
+    )
+    try:
+        created_session = await DAL().create_session(new_session=session)
+    except Exception as ex:
+        if isinstance(ex, IntegrityError):
+            ex_msg = "unable to create user due to conflict"
+            logger.exception(ex_msg, exception=ex)
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail=ex_msg,
+            )
+        ex_msg = "unable to create session"
+        logger.exception(ex_msg, exception=ex)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ex_msg
+        )
 
+    login_response = LoginUserResponse(
+        session_id=str(created_session.id),
+        user=CreateUserResponse(
+            username=user.username, fullname=user.full_name, email=user.email
+        ),
+        access_token=access_token,
+        access_token_expires_at=access_payload.exp,
+        refresh_token=refresh_token,
+        refresh_token_expires_at=refresh_payload.exp,
     )
 
-    DAL().create_session()
+    return login_response
 
-@users_router.get("/{user_id}")
-async def get_user(user_id: int):
-    return {"message": f"Fetching user {user_id}"}
+
+@users_router.get("/{username}", response_model=CreateUserResponse)
+async def get_user(username: str):
+    try:
+        # Assuming DAL.get_user_by_id is a method to fetch a user by ID
+        user = await DAL().get_user(username=username)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found",
+            )
+        return CreateUserResponse(
+            username=user.username, fullname=user.full_name, email=user.email
+        )
+    except Exception as ex:
+        logger.exception("Failed to fetch user", exception=ex)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to fetch user",
+        )
