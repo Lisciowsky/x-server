@@ -9,7 +9,6 @@ mockpostgres:
 mockdb:
 	docker exec -it mockpostgres createdb --username=testuser --owner=testuser testdb
 
-
 alembic:
 	alembic revision --autogenerate -m "Initial migration"
 
