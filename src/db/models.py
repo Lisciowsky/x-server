@@ -12,7 +12,7 @@ class User(SQLModel, table=True):
     email: str = Field(nullable=False, unique=True)
     is_email_verified: bool = Field(default=False)
     password_changed_at: datetime = Field(default=datetime(1, 1, 1))
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     # Relationships
     verify_emails: list["VerifyEmail"] = Relationship(back_populates="user")
     # accounts: list["Account"] = Relationship(back_populates="owner")
@@ -25,9 +25,9 @@ class VerifyEmail(SQLModel, table=True):
     email: str
     secret_code: str
     is_used: bool = Field(default=False)
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     expired_at: datetime = Field(
-        default_factory=lambda: datetime.now() + timedelta(minutes=15)
+        default_factory=lambda: datetime.utcnow() + timedelta(minutes=15)
     )
     # Relationships
     user: User = Relationship(back_populates="verify_emails")
@@ -36,7 +36,7 @@ class VerifyEmail(SQLModel, table=True):
 # class Account(SQLModel, table=True):
 # id: int = Field(primary_key=True, sa_column_kwargs={"autoincrement": True})
 # owner_username: str = Field(foreign_key="user.username", alias="owner")
-# created_at: datetime = Field(default_factory=datetime.now)
+# created_at: datetime = Field(default_factory=datetime.utcnow)
 # # Relationships
 # owner: User = Relationship(back_populates="accounts")
 
@@ -52,6 +52,6 @@ class Session(SQLModel, table=True):
     client_ip: str
     is_blocked: bool = Field(default=False)
     expires_at: datetime
-    created_at: datetime = Field(default_factory=datetime.now)
+    created_at: datetime = Field(default_factory=datetime.utcnow)
     # Relationships
     user: User = Relationship(back_populates="sessions")

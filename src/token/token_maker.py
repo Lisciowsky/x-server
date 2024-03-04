@@ -18,7 +18,6 @@ class JWTTokenManager:
     @staticmethod
     def create_token(username: str, role: str, expires_delta: timedelta = None):
         if expires_delta is None:
-            # Default to 1 hour if no expiration delta is provided
             expires_delta = timedelta(minutes=int(ACCESS_TOKEN_DURATION_MINUTES))
 
         # Set the expiration time

@@ -166,17 +166,17 @@ async def get_user(username: str):
     try:
         # Assuming DAL.get_user_by_id is a method to fetch a user by ID
         user = await DAL().get_user(username=username)
-        if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found",
-            )
-        return CreateUserResponse(
-            username=user.username, fullname=user.full_name, email=user.email
-        )
     except Exception as ex:
         logger.exception("Failed to fetch user", exception=ex)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to fetch user",
         )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found",
+        )
+    return CreateUserResponse(
+        username=user.username, fullname=user.full_name, email=user.email
+    )

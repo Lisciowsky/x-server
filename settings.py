@@ -32,3 +32,5 @@ API_VERSION = "v1"
 DB_URL = DATABASE_URL
 if ENVIRONMENT == Environment.TESTING:
     DB_URL = f"postgresql://{''.join(MOCK_DB_URL.split('://')[1:])}"
+else:
+    DB_URL = f"postgresql://{''.join(DATABASE_URL.split('://')[1:])}"
