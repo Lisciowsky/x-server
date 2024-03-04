@@ -46,10 +46,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt  # Corrected to specify the file name
 
-    - name: Create Test Database
-      run: |
-        PGPASSWORD=testpass psql -h localhost -U testuser -p 5433 -d postgres -c "CREATE DATABASE testdb OWNER testuser;"
-
     - name: Run migrations
       run: alembic upgrade head
 
