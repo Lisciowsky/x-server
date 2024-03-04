@@ -12,6 +12,8 @@ load_dotenv("app.env")
 
 
 ENVIRONMENT = os.getenv("ENVIRONMENT")
+# for running tests locally
+# ENVIRONMENT = "TESTING"
 if not Environment:
     raise ValueError("Could not determine the environemnt")
 

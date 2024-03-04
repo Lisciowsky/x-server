@@ -54,7 +54,7 @@ async def renew_access_token(renew_request: RenewAccessRequest):
 
     return RenewAccessResponse(
         access_token=access_token,
-        access_token_expires_at=access_payload.exp,
+        access_token_expires_at=access_payload["exp"],
     )
 
 
