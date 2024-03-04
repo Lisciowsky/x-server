@@ -1,0 +1,504 @@
+{
+	"info": {
+		"_postman_id": "da3173d5-f953-4db4-854b-212c4823f058",
+		"name": "twitterproject",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15079234"
+	},
+	"item": [
+		{
+			"name": "v1",
+			"item": [
+				{
+					"name": "users",
+					"item": [
+						{
+							"name": "get_user",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/v1/users/lisciowsky",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"users",
+												"lisciowsky"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Tue, 27 Feb 2024 05:22:26 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "85"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"username\": \"lisciowsky\",\n    \"fullname\": \"Jakub Szumlas\",\n    \"email\": \"szumlas.kuba@gmail.com\"\n}"
+								}
+							]
+						},
+						{
+							"name": "create_user",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"lisciowsky\",\n    \"password\": \"mialababakota\",\n    \"fullname\": \"Jakub Szumlas\",\n    \"email\": \"szumlas.kuba@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										""
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"username\": \"lisciowsky\",\n    \"password\": \"mialababakota\",\n    \"fullname\": \"Jakub Szumlas\",\n    \"email\": \"szumlas.kuba@gmail.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/v1/users/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"users",
+												""
+											]
+										}
+									},
+									"status": "Created",
+									"code": 201,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 23 Feb 2024 13:43:49 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "85"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"username\": \"lisciowsky\",\n    \"fullname\": \"Jakub Szumlas\",\n    \"email\": \"szumlas.kuba@gmail.com\"\n}"
+								},
+								{
+									"name": "constraint violation user_pkey",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"username\": \"lisciowsky\",\n    \"password\": \"mialababakota\",\n    \"fullname\": \"Jakub Szumlas\",\n    \"email\": \"szumlas.kuba@gmail.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/v1/users/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"users",
+												""
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 23 Feb 2024 13:44:34 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "178"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": \"<class 'asyncpg.exceptions.UniqueViolationError'>: duplicate key value violates unique constraint \\\"user_pkey\\\"\\nDETAIL:  Key (username)=(lisciowsky) already exists.\"\n}"
+								},
+								{
+									"name": "internal server error - eg db connection lost",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"username\": \"lisciowsky\",\n    \"password\": \"mialababakota\",\n    \"fullname\": \"Jakub Szumlas\",\n    \"email\": \"szumlas.kuba@gmail.com\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/v1/users/",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"users",
+												""
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Fri, 23 Feb 2024 13:45:13 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "34"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"detail\": \"Internal Server Error\"\n}"
+								}
+							]
+						},
+						{
+							"name": "login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"lisciowsky\",\n    \"password\": \"mialababakota\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/login",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"login"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "    {\n        \"username\": \"lisciowsky\",\n        \"password\": \"mialababakota\"\n    }",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/v1/users/login",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"users",
+												"login"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Tue, 27 Feb 2024 05:19:30 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "724"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"session_id\": \"fa4707f4-3ef8-4aea-b56e-5d7b55e90361\",\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjMDVhN2E4LWMxYjgtNGQ4OS1hZGRkLWZiZjE3Njk1MjJiMiIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5MDEyMDcxfQ.jk52zVkIzRTjku2aGXS7_fxR1YZDxE3lr5pYkbwgU-0\",\n    \"access_token_expires_at\": \"2024-02-27T05:34:31.292891\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZhNDcwN2Y0LTNlZjgtNGFlYS1iNTZlLTVkN2I1NWU5MDM2MSIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5MDE0NzcxfQ.HBep1AHRFNpiHHAJmwwTTdP44jL33kb3w8Eu5y4kom0\",\n    \"refresh_token_expires_at\": \"2024-02-27T06:19:31.293119\",\n    \"user\": {\n        \"username\": \"lisciowsky\",\n        \"fullname\": \"Jakub Szumlas\",\n        \"email\": \"szumlas.kuba@gmail.com\"\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "renew_access",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"session_id\": \"39f47dce-4ac6-498f-9a19-6e063f4d9d78\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/auth/renew_access",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"renew_access"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"session_id\": \"39f47dce-4ac6-498f-9a19-6e063f4d9d78\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/v1/auth/renew_access",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"auth",
+												"renew_access"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Mon, 04 Mar 2024 13:19:53 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "289"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmZWI4ZjU5LWZiYmUtNDg2Zi1iZTJiLTVjODIxMTQ0ODQ2YSIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5NTU5Mjk0fQ.0JrnevWtrwZHXcwZGV6xw_OksSPNgn3sa1H4PI5FOzA\",\n    \"access_token_expires_at\": \"2024-03-04T13:34:54.223757\"\n}"
+								}
+							]
+						},
+						{
+							"name": "verify_token",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmZWI4ZjU5LWZiYmUtNDg2Zi1iZTJiLTVjODIxMTQ0ODQ2YSIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5NTU5Mjk0fQ.0JrnevWtrwZHXcwZGV6xw_OksSPNgn3sa1H4PI5FOzA",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/auth/verify_token",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"auth",
+										"verify_token"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "success",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{host}}/v1/auth/verify_token",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"auth",
+												"verify_token"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Mon, 04 Mar 2024 13:22:12 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "55"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"username\": \"lisciowsky\",\n    \"role\": \"user\",\n    \"is_valid\": true\n}"
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
