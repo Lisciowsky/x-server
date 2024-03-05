@@ -3,7 +3,7 @@ FROM public.ecr.aws/lambda/python:3.11
 ENV PYTHONUNBUFFERED=1
 
 # Set the working directory in the container
-# WORKDIR /var/task
+WORKDIR /var/task
 
 # Install system dependencies
 # RUN yum install -y vim
