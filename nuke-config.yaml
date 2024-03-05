@@ -1,12 +1,17 @@
 regions:
-- global # This targets IAM resources, which are global.
-- eu-central-1 # Specify additional regions here.
+  - global # This targets IAM resources, which are global.
+  - eu-central-1 # Specify additional regions here.
 
-account-blacklist:
-- "999999999999" # Protect accounts by listing them here.
+account-blocklist:
+  - "999999999999" # Protect accounts by listing them here.
 
 accounts:
-  123456789012: # Your AWS account ID.
+  654654262492: # Your AWS account ID.
     filters: # Specify resources to exclude from deletion here.
-      IAMRole:
-      - "my-protected-role"
+      IAMUser:
+        - "terraform" # Ensures the IAM user 'terraform' is not deleted.
+      # Attempt to exclude IAMUserPolicyAttachment and IAMUserAccessKey by specifying a more general rule
+      IAMUserPolicyAttachment:
+      - "terraform -> AdministratorAccess"
+      IAMUserAccessKey:
+      - "terraform -> AKIAZQ3DPJTOG3VZNFXA"

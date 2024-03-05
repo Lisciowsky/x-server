@@ -19,7 +19,7 @@ test:
 	python run_tests.py
 
 nuke:
-	./aws-nuke-v2.25.0-linux-amd64 -c nuke-config.yml --no-dry-run
+	aws-nuke-v2.25.0-linux-amd64 -c nuke-config.yaml --no-dry-run
 
 infracost:
 	infracost breakdown --show-skipped --path .

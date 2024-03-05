@@ -222,58 +222,68 @@ resource "aws_iam_role_policy_attachment" "lambda_logging_attach" {
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
-
-# Define an API Gateway REST API resource
-resource "aws_api_gateway_rest_api" "MyAPI" {
-  name        = "MyAPI" # Name of the API
-  description = "API Gateway for Lambda" # Description of the API
+# Create a Function URL for the Lambda function
+resource "aws_lambda_function_url" "my_lambda_url" {
+  function_name = aws_lambda_function.my_lambda.function_name
+  authorization_type = "NONE" # Use "AWS_IAM" for IAM-based authentication or "NONE" for public access
 }
 
-# Create a proxy resource that acts as a catch-all for any path
-resource "aws_api_gateway_resource" "ProxyResource" {
-  rest_api_id = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
-  parent_id   = aws_api_gateway_rest_api.MyAPI.root_resource_id # Set the root as parent
-  path_part   = "{proxy+}" # Special path variable that captures all paths
+# Output the Function URL
+output "lambda_function_url" {
+  value = aws_lambda_function_url.my_lambda_url.function_url
 }
 
-# Define a method for the proxy resource that accepts any HTTP method
-resource "aws_api_gateway_method" "ProxyMethod" {
-  rest_api_id   = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
-  resource_id   = aws_api_gateway_resource.ProxyResource.id # Associate with the proxy resource
-  http_method   = "ANY" # Accept any HTTP method
-  authorization = "NONE" # No authorization required
-}
+# # Define an API Gateway REST API resource
+# resource "aws_api_gateway_rest_api" "MyAPI" {
+#   name        = "MyAPI" # Name of the API
+#   description = "API Gateway for Lambda" # Description of the API
+# }
 
-# Integrate the proxy method with the Lambda function
-resource "aws_api_gateway_integration" "LambdaIntegration" {
-  rest_api_id             = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
-  resource_id             = aws_api_gateway_resource.ProxyResource.id # Associate with the proxy resource
-  http_method             = aws_api_gateway_method.ProxyMethod.http_method # Use the method defined above
-  integration_http_method = "POST" # Lambda uses POST method for invocation
-  type                    = "AWS_PROXY" # Proxy integration type
-  uri                     = aws_lambda_function.my_lambda.invoke_arn # ARN of the Lambda function to invoke
-}
+# # Create a proxy resource that acts as a catch-all for any path
+# resource "aws_api_gateway_resource" "ProxyResource" {
+#   rest_api_id = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
+#   parent_id   = aws_api_gateway_rest_api.MyAPI.root_resource_id # Set the root as parent
+#   path_part   = "{proxy+}" # Special path variable that captures all paths
+# }
 
-# Deploy the API to make it accessible
-resource "aws_api_gateway_deployment" "MyAPIDeployment" {
-  depends_on = [
-    aws_api_gateway_integration.LambdaIntegration # Ensure integration is set up before deployment
-  ]
+# # Define a method for the proxy resource that accepts any HTTP method
+# resource "aws_api_gateway_method" "ProxyMethod" {
+#   rest_api_id   = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
+#   resource_id   = aws_api_gateway_resource.ProxyResource.id # Associate with the proxy resource
+#   http_method   = "ANY" # Accept any HTTP method
+#   authorization = "NONE" # No authorization required
+# }
 
-  rest_api_id = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
-  stage_name  = "v1" # Name of the deployment stage
-}
+# # Integrate the proxy method with the Lambda function
+# resource "aws_api_gateway_integration" "LambdaIntegration" {
+#   rest_api_id             = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
+#   resource_id             = aws_api_gateway_resource.ProxyResource.id # Associate with the proxy resource
+#   http_method             = aws_api_gateway_method.ProxyMethod.http_method # Use the method defined above
+#   integration_http_method = "POST" # Lambda uses POST method for invocation
+#   type                    = "AWS_PROXY" # Proxy integration type
+#   uri                     = aws_lambda_function.my_lambda.invoke_arn # ARN of the Lambda function to invoke
+# }
 
-# Grant API Gateway permission to invoke the Lambda function
-resource "aws_lambda_permission" "AllowAPIGatewayInvoke" {
-  statement_id  = "AllowAPIGatewayInvoke" # Unique identifier for the statement
-  action        = "lambda:InvokeFunction" # Action that allows API Gateway to invoke the Lambda
-  function_name = aws_lambda_function.my_lambda.function_name # Name of the Lambda function
-  principal     = "apigateway.amazonaws.com" # The principal that is allowed to invoke the function
-  source_arn    = "${aws_api_gateway_rest_api.MyAPI.execution_arn}/*/*/*" # ARN of the API Gateway to limit the source of the invocation
-}
+# # Deploy the API to make it accessible
+# resource "aws_api_gateway_deployment" "MyAPIDeployment" {
+#   depends_on = [
+#     aws_api_gateway_integration.LambdaIntegration # Ensure integration is set up before deployment
+#   ]
 
-# Output the invocation URL of the API
-output "api_invoke_url" {
-  value = "${aws_api_gateway_deployment.MyAPIDeployment.invoke_url}v1/" # Construct the URL for invoking the API
-}
+#   rest_api_id = aws_api_gateway_rest_api.MyAPI.id # Associate with the defined API
+#   stage_name  = "v1" # Name of the deployment stage
+# }
+
+# # Grant API Gateway permission to invoke the Lambda function
+# resource "aws_lambda_permission" "AllowAPIGatewayInvoke" {
+#   statement_id  = "AllowAPIGatewayInvoke" # Unique identifier for the statement
+#   action        = "lambda:InvokeFunction" # Action that allows API Gateway to invoke the Lambda
+#   function_name = aws_lambda_function.my_lambda.function_name # Name of the Lambda function
+#   principal     = "apigateway.amazonaws.com" # The principal that is allowed to invoke the function
+#   source_arn    = "${aws_api_gateway_rest_api.MyAPI.execution_arn}/*/*/*" # ARN of the API Gateway to limit the source of the invocation
+# }
+
+# # Output the invocation URL of the API
+# output "api_invoke_url" {
+#   value = "${aws_api_gateway_deployment.MyAPIDeployment.invoke_url}v1/" # Construct the URL for invoking the API
+# }
