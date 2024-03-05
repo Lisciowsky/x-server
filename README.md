@@ -25,3 +25,31 @@ pip install coverage
 ...then:
  - make coverage
  - make html
+
+<br></br>
+## Terraform
+
+```
+terraform-project/
+├── main.tf            # Main Terraform configuration file
+├── variables.tf       # Variable declarations
+├── outputs.tf         # Output declarations
+├── networking/        # Networking resources
+│   ├── vpc.tf         # AWS VPC configuration
+│   ├── subnets.tf     # Subnet configurations
+│   └── db_subnet_group.tf # DB Subnet Group configuration
+├── security/          # Security group configurations
+│   ├── lambda_sg.tf   # Lambda security group
+│   └── rds_sg.tf      # RDS security group
+├── database/          # Database resources
+│   └── rds_instance.tf # RDS instance configuration
+├── ecr/               # ECR repository and policies
+│   ├── repository.tf  # ECR repository configuration
+│   └── lifecycle_policy.tf # ECR lifecycle policy
+├── iam/               # IAM roles and policies
+│   ├── roles.tf       # IAM roles
+│   └── policies.tf    # IAM policies and attachments
+└── lambda/            # Lambda function and related resources
+    ├── function.tf    # Lambda function configuration
+    └── function_url.tf # Lambda function URL
+```
