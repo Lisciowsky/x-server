@@ -50,10 +50,6 @@ ECR_REPOSITORY_URI := 654654262492.dkr.ecr.eu-central-1.amazonaws.com/my-fastapi
 IMAGE_NAME := x-server
 TAG := latest
 
-build_test:
-	docker build -t my-fastapi-app -f DockerfileTesting .
-
-
 build:
 	docker build -t x-server .
 

@@ -1,57 +1,38 @@
-name: Deploy to production
+name: Deploy to Amazon ECR
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - main  # Set to the branch you want to deploy from
 
 jobs:
-
   deploy:
-    name: Build image
+    name: Build, Tag, and Push Docker image to Amazon ECR
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check out code
+    - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install kubectl
-      uses: azure/setup-kubectl@v1
-      with:
-        version: 'v1.21.3'
-      id: install
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
 
-    - name: Configure AWS credentials
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Docker image
+      run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }} .
+
+    - name: Tag Docker image
+      run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }} ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG }}
+
+    - name: Push Docker image to Amazon ECR
+      run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG }}
+
+    # Set up AWS credentials
+    - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: eu-west-1
-
-    - name: Login to Amazon ECR
-      id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
-
-    - name: Load secrets and save to app.env
-      run: aws secretsmanager get-secret-value --secret-id simple_bank --query SecretString --output text | jq -r 'to_entries|map("\(.key)=\(.value)")|.[]' > app.env
-
-    - name: Build, tag, and push image to Amazon ECR
-      env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: simplebank
-        IMAGE_TAG: ${{ github.sha }}
-      run: |
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
-        docker push -a $ECR_REGISTRY/$ECR_REPOSITORY
-
-    - name: Update kube config
-      run: aws eks update-kubeconfig --name simple-bank-eks --region eu-west-1
-
-    - name: Deploy image to Amazon EKS
-      run: |
-        kubectl apply -f eks/aws-auth.yaml
-        kubectl apply -f eks/deployment.yaml
-        kubectl apply -f eks/service.yaml
-        kubectl apply -f eks/issuer.yaml
-        kubectl apply -f eks/ingress-nginx.yaml
-        kubectl apply -f eks/ingress-http.yaml
-        kubectl apply -f eks/ingress-grpc.yaml
+        aws-region: ${{ secrets.AWS_REGION }}
