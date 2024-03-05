@@ -3,7 +3,7 @@ from uuid import UUID
 from src.db.models import User, Session
 from src.db.user import create_user, delete_user, get_user, update_user
 from src.db.session import get_session, create_session
-from settings import DATABASE_URL
+from settings import DATABASE_URL, DB_URL
 
 
 class DAL:
@@ -17,7 +17,7 @@ class DAL:
     def __init__(self, db_url=None) -> None:
         # Allow specifying a different database URL, e.g., for testing
         self.db_url = db_url or DATABASE_URL
-        self.async_engine = create_async_engine(url=self.db_url, echo=True)
+        self.async_engine = create_async_engine(url=self.db_url, echo=False)
         self.async_session = async_sessionmaker(
             self.async_engine, expire_on_commit=False, class_=AsyncSession
         )
@@ -49,3 +49,19 @@ class DAL:
         return await get_session(
             async_session=self.async_session, session_id=session_id
         )
+
+    async def run_migrations(self):
+        from alembic.config import Config
+        from alembic import command
+        import os
+
+        # Specify the location of your Alembic configuration file
+        alembic_cfg = Config(
+            os.path.join(os.path.dirname(__file__), "../../alembic.ini")
+        )
+
+        # Optionally, override the sqlalchemy.url setting in alembic.ini dynamically
+        alembic_cfg.set_main_option("sqlalchemy.url", DB_URL)
+
+        # Apply the 'head' migration to the database
+        command.upgrade(alembic_cfg, "head")

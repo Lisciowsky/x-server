@@ -47,7 +47,7 @@ async def create_user(user_request: CreateUserRequest):
         user = await DAL().create_user(user=user)
     except Exception as ex:
         if isinstance(ex, IntegrityError):
-            logger.exception("create user exception", exception=ex)
+            logger.warning(f"create user exception ex: {ex}")
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="unable to create user due to conflict",
@@ -81,21 +81,21 @@ async def login_user(login_request: LoginUserRequest):
     try:
         user = await DAL().get_user(username=login_request.username)
     except Exception as ex:
-        msg = "unable to get user"
-        logger.exception(msg, exception=ex)
+        ex_msg = "unable to get user"
+        logger.warning(ex_msg + f": {ex}")
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ex_msg
         )
 
     if not user:
-        logger.exception("user not found")
+        logger.warning("user not found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
 
     if not verify_password(
         plain_password=login_request.password, hashed_password=user.hashed_password
     ):
         ex_msg = "invalid password"
-        logger.exception(ex_msg)
+        logger.warning(ex_msg + f": {ex}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=ex_msg)
 
     try:
@@ -104,7 +104,7 @@ async def login_user(login_request: LoginUserRequest):
         )
     except Exception as ex:
         ex_msg = "unable to create access_token for user"
-        logger.exception(ex_msg, exception=ex)
+        logger.warning(ex_msg + f": {ex}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=ex_msg,
@@ -118,7 +118,7 @@ async def login_user(login_request: LoginUserRequest):
         )
     except Exception as ex:
         ex_msg = "unable to create refresh_token for user"
-        logger.exception(ex_msg, exception=ex)
+        logger.warning(ex_msg + f": {ex}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ex_msg
         )
@@ -136,13 +136,15 @@ async def login_user(login_request: LoginUserRequest):
     except Exception as ex:
         if isinstance(ex, IntegrityError):
             ex_msg = "unable to create user due to conflict"
-            logger.exception(ex_msg, exception=ex)
+            logger.warning(ex_msg + f": {ex}")
+
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
                 detail=ex_msg,
             )
         ex_msg = "unable to create session"
-        logger.exception(ex_msg, exception=ex)
+        logger.warning(ex_msg + f": {ex}")
+
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=ex_msg
         )
@@ -167,10 +169,11 @@ async def get_user(username: str):
         # Assuming DAL.get_user_by_id is a method to fetch a user by ID
         user = await DAL().get_user(username=username)
     except Exception as ex:
-        logger.exception("Failed to fetch user", exception=ex)
+        ex_msg = "Failed to fetch user"
+        logger.warning(ex_msg + f": {ex}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to fetch user",
+            detail=ex_msg,
         )
     if not user:
         raise HTTPException(

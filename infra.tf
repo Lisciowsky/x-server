@@ -72,6 +72,21 @@ resource "aws_db_subnet_group" "main" {
   }
 }
 
+variable "database_username" {
+  description = "db username"
+  type        = string
+  default     = "username" # Replace this with your actual database name, or remove the default to require it to be passed explicitly
+}
+variable "database_password" {
+  description = "db password"
+  type        = string
+  default     = "password" # Replace this with your actual database name, or remove the default to require it to be passed explicitly
+}
+variable "database_name" {
+  description = "The name of the database"
+  type        = string
+  default     = "twitter_db" # Replace this with your actual database name, or remove the default to require it to be passed explicitly
+}
 
 resource "aws_db_instance" "postgres_instance" {
   engine               = "postgres"
@@ -82,8 +97,8 @@ resource "aws_db_instance" "postgres_instance" {
   max_allocated_storage = 100 # Enables autoscaling of storage up to 100 GiB
   db_subnet_group_name = aws_db_subnet_group.main.name
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
-  username             = "username"
-  password             = "password"
+  username             = "${var.database_username}"
+  password             = "${var.database_password}"
   skip_final_snapshot  = true
 }
 
@@ -140,11 +155,6 @@ resource "aws_iam_role" "lambda_execution_role" {
   })
 }
 
-variable "database_name" {
-  description = "The name of the database"
-  type        = string
-  default     = "twitter_db" # Replace this with your actual database name, or remove the default to require it to be passed explicitly
-}
 
 resource "aws_lambda_function" "my_lambda" {
   function_name = "MyLambdaFunction"
