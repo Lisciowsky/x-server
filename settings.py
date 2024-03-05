@@ -8,14 +8,14 @@ class Environment(str, Enum):
     PRODUCTION = "PRODUCTION"
 
 
-load_dotenv("app.env")
-
-
 ENVIRONMENT = os.getenv("ENVIRONMENT")
-# for running tests locally
 # ENVIRONMENT = "TESTING"
+
 if not Environment:
     raise ValueError("Could not determine the environemnt")
+
+if ENVIRONMENT == Environment.TESTING:
+    load_dotenv("app.env")
 
 
 DATABASE_URL = os.getenv("DATABASE_URL")
@@ -36,3 +36,21 @@ if ENVIRONMENT == Environment.TESTING:
     DB_URL = f"postgresql://{''.join(MOCK_DB_URL.split('://')[1:])}"
 else:
     DB_URL = f"postgresql://{''.join(DATABASE_URL.split('://')[1:])}"
+
+
+variables_to_print = [
+    "ENVIRONMENT",
+    "DATABASE_URL",
+    "MOCK_DB_URL",
+    "SERVER_HOST",
+    "SERVER_PORT",
+    "JWT_SECRET",
+    "ACCESS_TOKEN_DURATION_MINUTES",
+    "REFRESH_TOKEN_DURATION_MINUTES",
+    "API_VERSION",
+    "DB_URL",
+]
+
+for var in variables_to_print:
+    value = globals().get(var, None)  # Retrieve value from the global namespace
+    print(f"{var}: {value}")
