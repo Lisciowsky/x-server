@@ -1,0 +1,8 @@
+*
+!lambda_handler.py
+!settings.py
+!alembic.ini
+!app.env
+!requirements.txt
+!src/
+!alembic/

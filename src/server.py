@@ -28,6 +28,6 @@ server.include_router(main_router)
 #     await dal.create_all()  # Create tables if they don't exist
 
 
-@server.on_event("shutdown")
-async def shutdown_event():
-    await dal.engine.dispose()  # Properly close database connections
+# @server.on_event("shutdown")
+# async def shutdown_event():
+#     await dal.engine.dispose()  # Properly close database connections

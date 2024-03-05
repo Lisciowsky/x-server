@@ -18,3 +18,10 @@ wget -c https://github.com/rebuy-de/aws-nuke/releases/download/v2.25.0/aws-nuke-
 
 ## Infra cost
 curl -fsSL https://raw.githubusercontent.com/infracost/infracost/master/scripts/install.sh | sh
+
+<br></br>
+## Coverage
+pip install coverage
+...then:
+ - make coverage
+ - make html
