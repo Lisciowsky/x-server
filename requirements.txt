@@ -26,7 +26,7 @@ loguru==0.7.2
 # Mangum if deployed on aws as serverless lambda
 mangum==0.11.0
 # security - token generation
-bcrypt==4.1.2
+bcrypt==4.0.0
 
 # twitter connection
 # python-twitter-v2==0.9.0
