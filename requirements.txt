@@ -24,7 +24,9 @@ passlib==1.7.4
 # logging
 loguru==0.7.2
 # Mangum if deployed on aws as serverless lambda
-mangum==0.17.0# security - token generation
+mangum==0.17.0
+
+# security - token generation
 # NOTE new version of bcrypt doesn't have __about__ with its version which
 # NOTE which causes to break in lambda environment, that's why using 4.0.0
 bcrypt==4.0.0
