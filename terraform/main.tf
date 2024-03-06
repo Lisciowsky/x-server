@@ -43,6 +43,13 @@ module "security" {
   vpc_id = module.networking.vpc_id
 }
 
+module "apigateway" {
+  source                        = "./configuration/apigateway"
+  aws_lambda_function_invoke_arn = module.lambda.lambda_function_function_arn
+  region                        = "eu-central-1" # Ensure this matches your actual AWS region
+}
+
+
 module "lambda" {
   source = "./configuration/lambda"
   

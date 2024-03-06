@@ -20,8 +20,3 @@ resource "aws_lambda_function" "my_lambda" {
     security_group_ids = var.lambda_security_group_id
   }
 }
-
-resource "aws_lambda_function_url" "my_lambda_url" {
-  function_name     = aws_lambda_function.my_lambda.function_name
-  authorization_type= "NONE"
-}
