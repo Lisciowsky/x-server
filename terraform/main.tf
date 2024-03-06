@@ -66,3 +66,18 @@ module "lambda" {
   refresh_token_duration_minutes = "60"
   environment           = "PRODUCTION"
 }
+
+module "ecs" {
+  source = "./configuration/ecs"
+
+  vpc_id = module.networking.vpc_id
+  database_name = var.database_name
+  database_password = var.database_password
+  database_username = var.database_username
+  db_instance_address = module.database.db_instance_address
+  ecr_repository_url = module.ecr.ecr_repository_url
+  lambda_subnet_id = module.networking.lambda_subnet_id
+  rds_subnet_id = module.networking.rds_subnet_id
+  ecs_tasks_execution_role_arn = module.iam.ecs_tasks_execution_role
+  rds_sg_id = module.security.rds_sg_id
+}
