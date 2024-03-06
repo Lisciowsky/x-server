@@ -7,7 +7,7 @@ resource "aws_lambda_function" "my_lambda" {
 
   environment {
     variables = {
-      DATABASE_URL                  = "postgresql+asyncpg://${var.database_username}:${var.database_password}@${var.database_address}/${var.database_name}"
+      DATABASE_URL = "postgresql+asyncpg://${var.database_username}:${var.database_password}@${var.postgres_proxy_endpoint}/${var.database_name}"
       JWT_SECRET                    = var.jwt_secret
       ACCESS_TOKEN_DURATION_MINUTES = var.access_token_duration_minutes
       REFRESH_TOKEN_DURATION_MINUTES= var.refresh_token_duration_minutes

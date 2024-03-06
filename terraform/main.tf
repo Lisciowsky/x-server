@@ -12,6 +12,16 @@ provider "aws" {
   profile = "private"
 }
 
+module "secrets" {
+  source = "./configuration/secrets_manager"
+
+  database_username = var.database_username
+  database_password = var.database_password
+  
+}
+
+
+
 module "ecr" {
   source = "./configuration/ecr"
   # Add any required variables for the ECR module here
@@ -22,14 +32,21 @@ module "iam" {
   # Add any required variables for the IAM module here
 }
 
+module "proxy" {
+  source = "./configuration/rds_proxy"
+  db_security_group_ids = [module.security.lambda_sg_id, module.security.rds_sg_id]
+  db_subnet_ids = [module.networking.lambda_subnet_id, module.networking.rds_subnet_id]
+  postgres_credentials_arn = module.secrets.postgres_credentials_arn
+  rds_proxy_role_arn = module.iam.rds_proxy_role_arn
+}
 module "database" {
   source = "./configuration/database"
   
   vpc_id = module.networking.vpc_id
   db_subnet_group_name = module.networking.db_subnet_group_name # Assuming you have this output
   db_security_group_ids = [module.security.rds_sg_id]
-  database_username = "username" # Replace with actual username or variable
-  database_password = "password" # Replace with actual password or variable
+  database_username = var.database_username # Replace with actual username or variable
+  database_password = var.database_password # Replace with actual password or variable
 }
 
 module "networking" {
@@ -43,6 +60,7 @@ module "security" {
   vpc_id = module.networking.vpc_id
 }
 
+
 module "lambda" {
   source = "./configuration/lambda"
   
@@ -51,7 +69,8 @@ module "lambda" {
   database_username     = module.database.db_instance_username
   database_password     = module.database.db_instance_password
   database_address      = module.database.db_instance_address
-  database_name         = "twitter_db"  # Assuming you have this defined elsewhere
+  database_name         =   "twitter_db"
+  postgres_proxy_endpoint = module.proxy.postgres_proxy_endpoint
   lambda_subnet_id      = [module.networking.lambda_subnet_id]  # Ensure this is a list
   lambda_security_group_id = [module.security.lambda_sg_id]  # Ensure this is a list
   jwt_secret            = "846368bb86f674f8d5d706667ddbb003"  # Or source this from a secure location

@@ -10,3 +10,7 @@ output "lambda_function_url" {
 output "postgres_db_url" {
   value = module.database.db_instance_address
 }
+
+output "postgres_proxy_db_endpoint" {
+  value = module.proxy.postgres_proxy_endpoint
+}

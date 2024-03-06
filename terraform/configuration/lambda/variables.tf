@@ -28,6 +28,11 @@ variable "database_name" {
   type        = string
 }
 
+variable "postgres_proxy_endpoint" {
+  description = "Rds proxy endpoint"
+  type = string
+}
+
 variable "lambda_subnet_id" {
   description = "Subnet ID where the Lambda function will be deployed"
   type        = list(string)
