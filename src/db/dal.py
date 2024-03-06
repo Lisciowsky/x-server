@@ -17,7 +17,9 @@ class DAL:
     def __init__(self, db_url=None) -> None:
         # Allow specifying a different database URL, e.g., for testing
         self.db_url = db_url or DATABASE_URL
-        self.async_engine = create_async_engine(url=self.db_url, echo=False)
+        # NOTE During stress tests with 100 simultaneous requests, the application may exceed the set connection pool size of 10, leading to additional connections being created. This surge can cause 
+        # PostgreSQL to reach its connection limit and refuse new connections, highlighting the need for careful configuration under high-load scenarios.
+        self.async_engine = create_async_engine(url=self.db_url, pool_size=10, max_overflow=5, pool_recycle=1800)
         self.async_session = async_sessionmaker(
             self.async_engine, expire_on_commit=False, class_=AsyncSession
         )

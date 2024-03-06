@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
@@ -24,6 +24,14 @@ server.add_middleware(
     allow_methods=["*"],  # Or specify just the methods you need: ["GET", "POST"]
     allow_headers=["*"],  # Or specify headers you need
 )
+
+# Middleware to log responses
+@server.middleware("http")
+async def log_responses(request: Request, call_next):
+    response = await call_next(request)
+    # Log with Loguru
+    logger.info(f"REQUEST: {request.method} {request.url} - STATUS: {response.status_code}")
+    return response
 
 server.include_router(main_router)
 
