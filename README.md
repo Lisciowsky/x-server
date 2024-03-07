@@ -53,3 +53,8 @@ terraform-project/
     ├── function.tf    # Lambda function configuration
     └── function_url.tf # Lambda function URL
 ```
+
+## PgBouncer as PostgresDBProxy
+There is issue with using fastaspi asnyc engine or any other asnyc engine
+with aws rds proxy, that's why I will try to integrate pgbouncer running as a task on ecs.
+https://github.com/MagicStack/asyncpg/issues/952
