@@ -17,7 +17,6 @@ if not Environment:
 if ENVIRONMENT == Environment.TESTING:
     load_dotenv("app.env")
 
-
 DATABASE_URL = os.getenv("DATABASE_URL")
 MOCK_DB_URL = os.getenv("MOCK_DB_URL")
 

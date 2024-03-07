@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "my_lambda" {
   function_name = "MyLambdaFunction"
 
-  image_uri     = "${var.ecr_repository_url}:latest"
+  image_uri     = "${var.ecr_repository_url}:lambda-latest"
   role          = var.lambda_execution_role_arn
   package_type  = "Image"
 

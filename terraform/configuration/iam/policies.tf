@@ -47,3 +47,33 @@ resource "aws_iam_role_policy_attachment" "lambda_logging_attach" {
   role       = aws_iam_role.lambda_execution_role.name
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
+
+resource "aws_iam_policy" "ecs_task_policy" {
+  name        = "ecs_task_policy"
+  path        = "/"
+  description = "Policy for ECS tasks to access ECR and CloudWatch"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "ecr:GetAuthorizationToken",
+          "ecr:BatchCheckLayerAvailability",
+          "ecr:GetDownloadUrlForLayer",
+          "ecr:BatchGetImage",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:CreateLogGroup",
+        ],
+        Resource = "*"
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
+  role       = aws_iam_role.ecs_tasks_execution_role.name
+  policy_arn = aws_iam_policy.ecs_task_policy.arn
+}

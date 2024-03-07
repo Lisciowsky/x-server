@@ -3,7 +3,8 @@ import asyncio
 
 num_requests = 20
 
-success, failed = 0,0
+success, failed = 0, 0
+
 
 async def fetch(session, url):
     global success, failed
@@ -11,7 +12,7 @@ async def fetch(session, url):
         # Assuming you don't need the response content, we won't wait for it.
         # If you do need to process the response, you might want to wait for it here.
         resp = await response.json()
-        if resp != {'detail': 'User not found'}:
+        if resp != {"detail": "User not found"}:
             print("----")
             print(resp)
             print("----")
@@ -22,7 +23,6 @@ async def fetch(session, url):
             print("----")
             success += 1
 
-            
 
 async def main():
     # The URL to your localhost endpoint
@@ -36,7 +36,8 @@ async def main():
         # Schedule the tasks but do not explicitly wait for each to finish
         await asyncio.gather(*tasks)
 
+
 # Run the main coroutine
-if __name__ == '__main__':
+if __name__ == "__main__":
     asyncio.run(main())
     print(success, failed)

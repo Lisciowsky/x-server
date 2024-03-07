@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
@@ -25,15 +25,27 @@ server.add_middleware(
     allow_headers=["*"],  # Or specify headers you need
 )
 
+
 # Middleware to log responses
 @server.middleware("http")
 async def log_responses(request: Request, call_next):
     response = await call_next(request)
     # Log with Loguru
-    logger.info(f"REQUEST: {request.method} {request.url} - STATUS: {response.status_code}")
+    logger.info(
+        f"REQUEST: {request.method} {request.url} - STATUS: {response.status_code}"
+    )
     return response
 
+
 server.include_router(main_router)
+
+
+def healthcheck():
+    return Response(content="success")
+
+
+# ECS Health Check
+server.add_api_route(path="/healthcheck", endpoint=healthcheck)
 
 
 @server.on_event("startup")

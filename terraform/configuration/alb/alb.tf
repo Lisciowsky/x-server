@@ -12,6 +12,16 @@ resource "aws_lb_target_group" "fastapi_tg" {
   protocol = "HTTP"
   vpc_id   = var.vpc_id  # Assuming you have a VPC ID variable defined
   target_type = "ip" # Ensure this is set to 'ip'
+
+  health_check {
+    enabled             = true
+    path                = "/healthcheck"
+    protocol            = "HTTP"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+  }
 }
 
 resource "aws_lb_listener" "front_end" {

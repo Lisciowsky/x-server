@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "my_task" {
   container_definitions = jsonencode([
     {
       name      = "fastapi-container",
-      image     = "${var.ecr_repository_url}:latest",
+      image     = "${var.ecr_repository_url}:vps-latest",
       cpu       = 256,
       memory    = 512,
       essential = true,
