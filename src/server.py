@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
@@ -39,9 +39,11 @@ async def log_responses(request: Request, call_next):
 
 server.include_router(main_router)
 
+
 @server.get("/healthcheck")
 def healthcheck():
     return {"status": "healthy"}
+
 
 @server.on_event("startup")
 async def startup_event():

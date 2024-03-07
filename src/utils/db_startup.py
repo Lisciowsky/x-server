@@ -1,4 +1,3 @@
-import asyncio
 import asyncpg
 from sqlalchemy.engine.url import make_url
 
