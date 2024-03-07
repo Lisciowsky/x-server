@@ -21,7 +21,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the necessary project files and directories into the container
-COPY settings.py lambda_handler.py alembic.ini ./ 
+COPY settings.py main.py alembic.ini ./ 
 COPY src ./src
 COPY alembic ./alembic
 
