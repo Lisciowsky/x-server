@@ -44,29 +44,40 @@ html:
 # push_packaged_lambda:
 # 	aws s3 cp lambda_function.zip s3://x-server-packaged-lambda-code-bucket/lambda_function.zip
 
+
+# --------------------------------------------------------------------
 # Variables
 AWS_REGION := eu-central-1
 ECR_REPOSITORY_URI := 654654262492.dkr.ecr.eu-central-1.amazonaws.com/my-fastapi-app-repo
 IMAGE_NAME := x-server
-TAG := latest
+TAG_LAMBDA := lambda-latest
+TAG_VPS := vps-latest
 
-build:
-	docker build -t x-server .
+build-lambda:
+	docker build -t $(IMAGE_NAME):$(TAG_LAMBDA) -f Dockerfile.lambda .
 
-# Log in to Amazon ECR
+build-vps:
+	docker build -t $(IMAGE_NAME):$(TAG_VPS) -f Dockerfile.vps .
+
 login:
 	aws ecr get-login-password --region $(AWS_REGION) | docker login --username AWS --password-stdin $(ECR_REPOSITORY_URI)
 
-# Tag the local image for ECR
-tag:
-	docker tag $(IMAGE_NAME):$(TAG) $(ECR_REPOSITORY_URI):$(TAG)
+tag-lambda:
+	docker tag $(IMAGE_NAME):$(TAG_LAMBDA) $(ECR_REPOSITORY_URI):$(TAG_LAMBDA)
 
-# Push the image to ECR
-push:
-	docker push $(ECR_REPOSITORY_URI):$(TAG)
+tag-vps:
+	docker tag $(IMAGE_NAME):$(TAG_VPS) $(ECR_REPOSITORY_URI):$(TAG_VPS)
+
+push-lambda:
+	docker push $(ECR_REPOSITORY_URI):$(TAG_LAMBDA)
+
+push-vps:
+	docker push $(ECR_REPOSITORY_URI):$(TAG_VPS)
 
 # All-in-one command to log in, tag, and push
-deploy: build login tag push
+deploy-lambda: build-lambda login tag-lambda push-lambda
+deploy-vps: build-vps login tag-vps push-vps
+# --------------------------------------------------------------------
 
 run-local:
 	docker run --rm -p 9000:8080 x-server

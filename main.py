@@ -1,6 +1,6 @@
 import uvicorn
 from settings import SERVER_PORT, SERVER_HOST
-
+from src.server import server # for uvicorn Dockerfile.vps
 
 def main():
     uvicorn.run(
