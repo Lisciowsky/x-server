@@ -67,17 +67,32 @@ module "lambda" {
   environment           = "PRODUCTION"
 }
 
+module "alb" {
+  source = "./configuration/alb"
+  vpc_id = module.networking.vpc_id
+  aws_security_group_alb_sg_id = module.security.alb_sg_id
+  lambda_subnet_id = module.networking.lambda_subnet_id
+  rds_subnet_id = module.networking.rds_subnet_id
+}
+
 module "ecs" {
   source = "./configuration/ecs"
 
   vpc_id = module.networking.vpc_id
-  database_name = var.database_name
-  database_password = var.database_password
-  database_username = var.database_username
-  db_instance_address = module.database.db_instance_address
   ecr_repository_url = module.ecr.ecr_repository_url
   lambda_subnet_id = module.networking.lambda_subnet_id
   rds_subnet_id = module.networking.rds_subnet_id
   ecs_tasks_execution_role_arn = module.iam.ecs_tasks_execution_role
   rds_sg_id = module.security.rds_sg_id
+  aws_lb_target_group_fastapi_tg_arn = module.alb.aws_lb_target_group_fastapi_tg_arn
+
+  # fastapi webserver requirements
+  database_name = var.database_name
+  database_password = var.database_password
+  database_username = var.database_username
+  db_instance_address = module.database.db_instance_address
+  jwt_secret = "846368bb86f674f8d5d706667ddbb003"
+  access_token_duration_minutes = "15"
+  refresh_token_duration_minutes = "60"
+  environment           = "PRODUCTION"
 }

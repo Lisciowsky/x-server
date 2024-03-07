@@ -15,3 +15,10 @@ output "api_gateway_lambda_url" {
 output "lambda_subnet_id" {
   value = module.networking.lambda_subnet_id
 }
+
+output "ecs_cluster_name" {
+  value = module.ecs.ecs_cluster_name
+}
+output "ecs_service_name" {
+  value = module.ecs.ecs_service_name
+}
