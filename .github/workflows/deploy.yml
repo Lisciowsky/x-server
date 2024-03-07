@@ -70,7 +70,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
   
       - name: Build Docker image
-        run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} .
+        run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} -f Dockerfile.lambda .
   
       - name: Tag Docker image
         run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
@@ -102,7 +102,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Build Docker image
-        run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_VPS }} .
+        run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_VPS }} -f Dockerfile.vps .
   
       - name: Tag Docker image
         run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_VPS }} ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_VPS }}
