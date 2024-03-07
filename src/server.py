@@ -39,14 +39,9 @@ async def log_responses(request: Request, call_next):
 
 server.include_router(main_router)
 
-
+@server.get("/healthcheck")
 def healthcheck():
-    return Response(content="success")
-
-
-# ECS Health Check
-server.add_api_route(path="/healthcheck", endpoint=healthcheck)
-
+    return {"status": "healthy"}
 
 @server.on_event("startup")
 async def startup_event():

@@ -7,7 +7,7 @@ resource "aws_ecs_service" "fastapi_service" {
   load_balancer {
     target_group_arn = var.aws_lb_target_group_fastapi_tg_arn
     container_name   = "fastapi-container"
-    container_port   = 80
+    container_port   = 8080
   }
   
   network_configuration {
