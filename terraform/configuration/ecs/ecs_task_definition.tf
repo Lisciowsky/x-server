@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "my_task" {
       environment = [
         {
           name  = "DATABASE_URL",
-          value = "postgresql+asyncpg://${var.database_username}:${var.database_password}@${var.db_postgres_proxy_endpoint}/${var.database_name}"
+          value = "postgresql+asyncpg://${var.database_username}:${var.database_password}@${var.db_instance_address}/${var.database_name}"
         },
         {
           name = "JWT_SECRET",

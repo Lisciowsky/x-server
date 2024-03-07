@@ -8,7 +8,3 @@ output "ecs_tasks_execution_role" {
 output "ecs_task_policy_attachment" {
   value = aws_iam_role.ecs_tasks_execution_role.arn
 }
-
-output "rds_proxy_role_arn" {
-  value = aws_iam_role.rds_proxy_role.arn
-}

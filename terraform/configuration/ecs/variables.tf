@@ -8,9 +8,6 @@ variable "ecr_repository_url" {
 variable "db_instance_address" {
     type = string
 }
-variable "db_postgres_proxy_endpoint" {
-    type = string
-}
 
 variable "vpc_id" {
     type = string

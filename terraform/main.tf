@@ -37,8 +37,6 @@ module "database" {
   database_username = var.database_username # Replace with actual username or variable
   database_password = var.database_password # Replace with actual password or variable
 
-  aws_iam_role_rds_proxy_role_arn = module.iam.rds_proxy_role_arn
-  aws_secretsmanager_secret_postgres_credentials_arn = module.secret.aws_secretsmanager_secret_postgres_credentials_arn
   aws_security_group_rds_sg_id = module.security.rds_sg_id
   aws_subnet_lambda_subnet_id = module.networking.lambda_subnet_id
   aws_subnet_rds_subnet_id = module.networking.rds_subnet_id
@@ -106,7 +104,6 @@ module "ecs" {
   database_password = var.database_password
   database_username = var.database_username
   db_instance_address = module.database.db_instance_address
-  db_postgres_proxy_endpoint = module.database.postgres_proxy_endpoint
   jwt_secret = "846368bb86f674f8d5d706667ddbb003"
   access_token_duration_minutes = "15"
   refresh_token_duration_minutes = "60"

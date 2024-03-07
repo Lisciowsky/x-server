@@ -18,9 +18,3 @@ variable "aws_subnet_lambda_subnet_id" {
 variable "aws_subnet_rds_subnet_id" {
   type = string
 }
-variable "aws_iam_role_rds_proxy_role_arn" {
-  type = string
-}
-variable "aws_secretsmanager_secret_postgres_credentials_arn" {
-  type = string
-}

@@ -77,7 +77,3 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
   role       = aws_iam_role.ecs_tasks_execution_role.name
   policy_arn = aws_iam_policy.ecs_task_policy.arn
 }
-resource "aws_iam_role_policy_attachment" "rds_proxy_policy" {
-  role       = aws_iam_role.rds_proxy_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSFullAccess"  # Corrected ARN
-}
