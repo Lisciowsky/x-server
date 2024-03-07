@@ -110,12 +110,6 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_VPS }}
 
-
-      - name: Build, tag, and push Docker image to Amazon ECR
-        run: |
-          docker build -t ${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }} .
-          docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ github.sha }}
-
       - name: Update ECS service
         run: |
           aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ${{ secrets.ECS_SERVICE_NAME }} --force-new-deployment
