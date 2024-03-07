@@ -22,6 +22,12 @@ module "iam" {
   # Add any required variables for the IAM module here
 }
 
+module "secret" {
+  source = "./configuration/secrets"
+  database_password = var.database_password
+  database_username = var.database_username
+}
+
 module "database" {
   source = "./configuration/database"
   
@@ -30,10 +36,17 @@ module "database" {
   db_security_group_ids = [module.security.rds_sg_id]
   database_username = "username" # Replace with actual username or variable
   database_password = "password" # Replace with actual password or variable
+
+  aws_iam_role_rds_proxy_role_arn = module.iam.rds_proxy_role_arn
+  aws_secretsmanager_secret_postgres_credentials_arn = module.secret.aws_secretsmanager_secret_postgres_credentials_arn
+  aws_security_group_rds_sg_id = module.security.rds_sg_id
+  aws_subnet_lambda_subnet_id = module.networking.lambda_subnet_id
+  aws_subnet_rds_subnet_id = module.networking.rds_subnet_id
 }
 
 module "networking" {
   source = "./networking"
+  aws_region = var.aws_region
   # Add any required variables for the Networking module here
 }
 
@@ -77,6 +90,7 @@ module "alb" {
 
 module "ecs" {
   source = "./configuration/ecs"
+  aws_region = var.aws_region
 
   vpc_id = module.networking.vpc_id
   ecr_repository_url = module.ecr.ecr_repository_url

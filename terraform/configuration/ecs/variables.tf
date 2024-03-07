@@ -1,7 +1,9 @@
+variable "aws_region" {
+    type = string
+}
 variable "ecr_repository_url" {
     type = string
 }
-
 
 variable "db_instance_address" {
     type = string

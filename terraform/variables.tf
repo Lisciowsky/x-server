@@ -1,3 +1,11 @@
+# GLOBAL
+variable "aws_region" {
+  type = string
+  description = "aws region"
+  default = "eu-central-1"
+}
+
+# POSTGRES DB INSTANCE
 variable "database_username" {
   description = "db username"
   type        = string

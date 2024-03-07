@@ -21,7 +21,7 @@ resource "aws_ecs_task_definition" "my_task" {
         logDriver = "awslogs",
         options = {
           awslogs-group         = "/ecs/my-fastapi-app",
-          awslogs-region        = "eu-central-1",
+          awslogs-region        = var.aws_region,
           awslogs-stream-prefix = "ecs"
         }
       },
