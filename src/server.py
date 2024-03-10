@@ -4,9 +4,6 @@ from loguru import logger
 
 from src.db.dal import DAL
 from src.api.main_router import main_router
-from src.utils.db_startup import create_database_if_not_exists
-
-import settings
 
 server = FastAPI(title="my web server", version="1.0.0")
 dal = DAL()
@@ -48,7 +45,7 @@ def healthcheck():
 @server.on_event("startup")
 async def startup_event():
     try:
-        await create_database_if_not_exists(url=settings.DB_URL)
+        await DAL().create_database_if_not_exists()
     except Exception as ex:
         logger.critical(f"failed to connect to the db: {ex}")
         raise ex

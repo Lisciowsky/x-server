@@ -1,8 +1,13 @@
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 from uuid import UUID
+
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
+from sqlalchemy.engine.url import make_url
+from sqlalchemy import text
+
 from src.db.models import User, Session
 from src.db.user import create_user, delete_user, get_user, update_user
 from src.db.session import get_session, create_session
+
 from settings import DATABASE_URL, DB_URL
 
 
@@ -19,12 +24,8 @@ class DAL:
         self.db_url = db_url or DATABASE_URL
         # NOTE During stress tests with 100 simultaneous requests, the application may exceed the set connection pool size of 10, leading to additional connections being created. This surge can cause
         # PostgreSQL to reach its connection limit and refuse new connections, highlighting the need for careful configuration under high-load scenarios.
-        self.async_engine = create_async_engine(
-            url=self.db_url, pool_size=10, max_overflow=5, pool_recycle=1800
-        )
-        self.async_session = async_sessionmaker(
-            self.async_engine, expire_on_commit=False, class_=AsyncSession
-        )
+        self.async_engine = create_async_engine(url=self.db_url, pool_pre_ping=True)
+        self.async_session = async_sessionmaker(self.async_engine, class_=AsyncSession)
 
     # USER TABLE
     async def get_user(self, username: int):
@@ -69,3 +70,25 @@ class DAL:
 
         # Apply the 'head' migration to the database
         command.upgrade(alembic_cfg, "head")
+
+    async def create_database_if_not_exists(self):
+        db_url = make_url(self.db_url)
+        temp_engine = create_async_engine(
+            url=db_url.set(database="postgres"), echo=True
+        )
+
+        async with temp_engine.connect() as conn:
+            await conn.execute(
+                text("COMMIT")
+            )  # Needed to allow creating a database in a transaction block
+            db_exists = await conn.execute(
+                text("SELECT EXISTS(SELECT FROM pg_database WHERE datname = :dbname)"),
+                {"dbname": db_url.database},
+            )
+            db_exists = db_exists.scalar()
+
+            if not db_exists:
+                await conn.execute(text(f"CREATE DATABASE {db_url.database}"))
+                print(f"Database {db_url.database} created.")
+            else:
+                print(f"Database {db_url.database} already exists.")
