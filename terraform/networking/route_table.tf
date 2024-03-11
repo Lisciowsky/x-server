@@ -19,11 +19,11 @@ resource "aws_route" "internet_access" {
 
 # Associate the route table with your subnet(s)
 resource "aws_route_table_association" "public_subnet" {
-  subnet_id      = aws_subnet.lambda_subnet.id  # Example for a lambda subnet
+  subnet_id      = aws_subnet.subnet_a.id
   route_table_id = aws_route_table.public.id
 }
 
 resource "aws_route_table_association" "public_subnet_2" {
-  subnet_id      = aws_subnet.rds_subnet.id  # Example for an RDS subnet
+  subnet_id      = aws_subnet.subnet_b.id
   route_table_id = aws_route_table.public.id
 }

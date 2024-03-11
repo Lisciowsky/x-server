@@ -28,14 +28,14 @@ variable "database_name" {
   type        = string
 }
 
-variable "lambda_subnet_id" {
+variable "subnet_a_id" {
   description = "Subnet ID where the Lambda function will be deployed"
-  type        = list(string)
+  type        = string
 }
 
 variable "lambda_security_group_id" {
   description = "Security group ID for the Lambda function"
-  type        = list(string)
+  type        = string
 }
 
 variable "jwt_secret" {

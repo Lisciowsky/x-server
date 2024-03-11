@@ -20,7 +20,7 @@ resource "aws_ecs_task_definition" "my_task" {
       logConfiguration = {
         logDriver = "awslogs",
         options = {
-          awslogs-group         = "/ecs/my-fastapi-app",
+          awslogs-group         = "/ecs/${terraform.workspace}-my-fastapi-app",
           awslogs-region        = var.aws_region,
           awslogs-stream-prefix = "ecs"
         }
@@ -49,4 +49,9 @@ resource "aws_ecs_task_definition" "my_task" {
       ]
     }
   ])
+}
+
+resource "aws_cloudwatch_log_group" "ecs_log_group" {
+  name = "/ecs/${terraform.workspace}-my-fastapi-app"
+  retention_in_days = 1 # Optional: Adjust the retention period as needed
 }

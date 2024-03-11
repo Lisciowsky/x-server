@@ -12,9 +12,3 @@ variable "database_password" {}
 variable "aws_security_group_rds_sg_id" {
   type = string
 }
-variable "aws_subnet_lambda_subnet_id" {
-  type = string
-}
-variable "aws_subnet_rds_subnet_id" {
-  type = string
-}

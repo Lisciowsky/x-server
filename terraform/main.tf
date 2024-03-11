@@ -38,8 +38,6 @@ module "database" {
   database_password = var.database_password # Replace with actual password or variable
 
   aws_security_group_rds_sg_id = module.security.rds_sg_id
-  aws_subnet_lambda_subnet_id = module.networking.lambda_subnet_id
-  aws_subnet_rds_subnet_id = module.networking.rds_subnet_id
 }
 
 module "networking" {
@@ -70,8 +68,8 @@ module "lambda" {
   database_password     = module.database.db_instance_password
   database_address      = module.database.db_instance_address
   database_name         = "twitter_db"  # Assuming you have this defined elsewhere
-  lambda_subnet_id      = [module.networking.lambda_subnet_id]  # Ensure this is a list
-  lambda_security_group_id = [module.security.lambda_sg_id]  # Ensure this is a list
+  subnet_a_id =   module.networking.subnet_a_id
+  lambda_security_group_id = module.security.lambda_sg_id  # Ensure this is a list
   jwt_secret            = "846368bb86f674f8d5d706667ddbb003"  # Or source this from a secure location
   access_token_duration_minutes = "15"
   refresh_token_duration_minutes = "60"
@@ -82,8 +80,8 @@ module "alb" {
   source = "./configuration/alb"
   vpc_id = module.networking.vpc_id
   aws_security_group_alb_sg_id = module.security.alb_sg_id
-  lambda_subnet_id = module.networking.lambda_subnet_id
-  rds_subnet_id = module.networking.rds_subnet_id
+  subnet_a_id = module.networking.subnet_a_id
+  subnet_b_id =  module.networking.subnet_b_id
 }
 
 module "ecs" {
@@ -92,8 +90,8 @@ module "ecs" {
 
   vpc_id = module.networking.vpc_id
   ecr_repository_url = module.ecr.ecr_repository_url
-  lambda_subnet_id = module.networking.lambda_subnet_id
-  rds_subnet_id = module.networking.rds_subnet_id
+  subnet_a_id = module.networking.subnet_a_id
+  subnet_b_id = module.networking.subnet_b_id
   ecs_tasks_execution_role_arn = module.iam.ecs_tasks_execution_role
   rds_sg_id = module.security.rds_sg_id
   aws_lb_target_group_fastapi_tg_arn = module.alb.aws_lb_target_group_fastapi_tg_arn

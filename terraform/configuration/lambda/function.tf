@@ -16,7 +16,7 @@ resource "aws_lambda_function" "my_lambda" {
   }
 
   vpc_config {
-    subnet_ids         = var.lambda_subnet_id
-    security_group_ids = var.lambda_security_group_id
+    subnet_ids         = [var.subnet_a_id]
+    security_group_ids = [var.lambda_security_group_id]
   }
 }

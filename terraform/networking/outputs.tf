@@ -2,12 +2,12 @@ output "vpc_id" {
   value = aws_vpc.main.id
 }
 
-output "lambda_subnet_id" {
-  value = aws_subnet.lambda_subnet.id
+output "subnet_a_id" {
+  value = aws_subnet.subnet_a.id
 }
 
-output "rds_subnet_id" {
-  value = aws_subnet.rds_subnet.id
+output "subnet_b_id" {
+  value = aws_subnet.subnet_b.id
 }
 
 output "db_subnet_group_name" {

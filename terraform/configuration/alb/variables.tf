@@ -1,11 +1,11 @@
 variable "vpc_id" {
     type = string
 }
-variable "lambda_subnet_id" {
+variable "subnet_a_id" {
     type = string
 }
 
-variable "rds_subnet_id" {
+variable "subnet_b_id" {
     type = string
 }
 

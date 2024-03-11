@@ -12,7 +12,7 @@ resource "aws_ecs_service" "fastapi_service" {
   
   network_configuration {
     assign_public_ip = true
-    subnets          = [var.lambda_subnet_id, var.rds_subnet_id]
+    subnets          = [var.subnet_a_id, var.subnet_b_id]
     security_groups  = [aws_security_group.ecs_tasks_sg.id]
   }
 

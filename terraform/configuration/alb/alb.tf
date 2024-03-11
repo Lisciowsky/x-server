@@ -3,7 +3,7 @@ resource "aws_lb" "my_alb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [var.aws_security_group_alb_sg_id]
-  subnets            = [var.lambda_subnet_id, var.rds_subnet_id]
+  subnets            = [var.subnet_a_id, var.subnet_b_id]
 }
 
 resource "aws_lb_target_group" "fastapi_tg" {

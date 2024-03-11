@@ -12,10 +12,6 @@ output "api_gateway_lambda_url" {
   value = module.apigateway.api_gateway_invoke_url
 }
 
-output "lambda_subnet_id" {
-  value = module.networking.lambda_subnet_id
-}
-
 output "ecs_cluster_name" {
   value = module.ecs.ecs_cluster_name
 }
