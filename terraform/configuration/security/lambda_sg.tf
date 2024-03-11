@@ -1,5 +1,5 @@
 resource "aws_security_group" "lambda_sg" {
-  name   = "lambda_sg"
+  name   = "${terraform.workspace}_lambda_sg"
   vpc_id = var.vpc_id
 
   egress {

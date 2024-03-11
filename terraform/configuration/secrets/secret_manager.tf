@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "postgres_credentials" {
-  name = "postgres_credentials_v2"
+  name = "${terraform.workspace}_postgres_credentials_v2"
 }
 
 resource "aws_secretsmanager_secret_version" "postgres_credentials" {

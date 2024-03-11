@@ -1,5 +1,5 @@
 resource "aws_security_group" "rds_sg" {
-  name   = "rds_sg"
+  name   = "${terraform.workspace}_rds_sg"
   vpc_id = var.vpc_id
 
   ingress {

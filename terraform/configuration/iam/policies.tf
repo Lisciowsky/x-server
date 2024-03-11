@@ -1,5 +1,5 @@
 resource "aws_iam_policy" "lambda_vpc_access" {
-  name        = "lambda_vpc_access"
+  name        = "${terraform.workspace}_lambda_vpc_access"
   description = "Grant Lambda function access to VPC"
 
   policy = jsonencode({
@@ -24,7 +24,7 @@ resource "aws_iam_role_policy_attachment" "lambda_vpc_access_attach" {
 }
 
 resource "aws_iam_policy" "lambda_logging" {
-  name        = "lambda_logging"
+  name        = "${terraform.workspace}_lambda_logging"
   description = "Allow Lambda function to log to CloudWatch"
 
   policy = jsonencode({
@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "lambda_logging_attach" {
 }
 
 resource "aws_iam_policy" "ecs_task_policy" {
-  name        = "ecs_task_policy"
+  name        = "${terraform.workspace}_ecs_task_policy"
   path        = "/"
   description = "Policy for ECS tasks to access ECR and CloudWatch"
 

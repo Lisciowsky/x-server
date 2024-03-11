@@ -1,5 +1,5 @@
 resource "aws_security_group" "alb_sg" {
-  name        = "alb-sg"
+  name        = "${terraform.workspace}_alb-sg"
   description = "Security group for the ALB"
   vpc_id      = var.vpc_id
 
@@ -28,6 +28,6 @@ resource "aws_security_group" "alb_sg" {
   }
 
   tags = {
-    Name = "ALB Security Group"
+    Name = "${terraform.workspace} ALB Security Group"
   }
 }

@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "MyAPI" {
-  name        = "MyAPI"
+  name        = "${terraform.workspace}-MyAPI"
   description = "API Gateway for redirecting to FastAPI"
 }
 
@@ -32,5 +32,5 @@ resource "aws_api_gateway_deployment" "MyAPIDeployment" {
   ]
 
   rest_api_id = aws_api_gateway_rest_api.MyAPI.id
-  stage_name  = "prod"
+  stage_name  = "${terraform.workspace}"
 }

@@ -7,7 +7,7 @@ resource "aws_route_table" "public" {
   }
 
   tags = {
-    Name = "public-route-table"
+    Name = "${terraform.workspace}-public-route-table"
   }
 }
 

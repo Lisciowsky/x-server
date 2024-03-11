@@ -1,5 +1,5 @@
 resource "aws_lambda_function" "my_lambda" {
-  function_name = "MyLambdaFunction"
+  function_name = "${terraform.workspace}_MyLambdaFunction"
 
   image_uri     = "${var.ecr_repository_url}:lambda-latest"
   role          = var.lambda_execution_role_arn

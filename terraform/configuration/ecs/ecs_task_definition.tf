@@ -1,5 +1,5 @@
 resource "aws_ecs_task_definition" "my_task" {
-  family                   = "my-task-family"
+  family                   = "${terraform.workspace}-task-family"
   requires_compatibilities = ["FARGATE"]
   network_mode             = "awsvpc"
   cpu                      = "256"
@@ -8,7 +8,7 @@ resource "aws_ecs_task_definition" "my_task" {
 
   container_definitions = jsonencode([
     {
-      name      = "fastapi-container",
+      name      = "${terraform.workspace}-fastapi-container",
       image     = "${var.ecr_repository_url}:vps-latest",
       cpu       = 256,
       memory    = 512,
