@@ -73,15 +73,15 @@ jobs:
         run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} -f Dockerfile.lambda .
   
       - name: Tag Docker image
-        run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+        run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
   
       - name: Push Docker image to Amazon ECR
-        run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+        run: docker push ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
   
       # Update Lambda function to use the new Docker image
       - name: Update Lambda function
         run: |
-          aws lambda update-function-code --function-name ${{ secrets.LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+          aws lambda update-function-code --function-name ${{ secrets.DEV_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
 
   deploy-ecs:
     name: Deploy to Amazon ECR and Update ECS
@@ -105,13 +105,13 @@ jobs:
         run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_VPS }} -f Dockerfile.vps .
   
       - name: Tag Docker image
-        run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_VPS }} ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_VPS }}
+        run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_VPS }} ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_VPS }}
   
       - name: Push Docker image to Amazon ECR
-        run: docker push ${{ secrets.ECR_REPOSITORY_URI }}:${{ secrets.TAG_VPS }}
+        run: docker push ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_VPS }}
 
       - name: Update ECS service
         run: |
-          aws ecs update-service --cluster ${{ secrets.ECS_CLUSTER_NAME }} --service ${{ secrets.ECS_SERVICE_NAME }} --force-new-deployment
+          aws ecs update-service --cluster ${{ secrets.DEV_ECS_CLUSTER_NAME }} --service ${{ secrets.DEV_ECS_SERVICE_NAME }} --force-new-deployment
         env:
           AWS_REGION: ${{ secrets.AWS_REGION }}
