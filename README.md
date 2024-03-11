@@ -29,32 +29,13 @@ pip install coverage
 <br></br>
 ## Terraform
 
-```
-terraform-project/
-├── main.tf            # Main Terraform configuration file
-├── variables.tf       # Variable declarations
-├── outputs.tf         # Output declarations
-├── networking/        # Networking resources
-│   ├── vpc.tf         # AWS VPC configuration
-│   ├── subnets.tf     # Subnet configurations
-│   └── db_subnet_group.tf # DB Subnet Group configuration
-├── security/          # Security group configurations
-│   ├── lambda_sg.tf   # Lambda security group
-│   └── rds_sg.tf      # RDS security group
-├── database/          # Database resources
-│   └── rds_instance.tf # RDS instance configuration
-├── ecr/               # ECR repository and policies
-│   ├── repository.tf  # ECR repository configuration
-│   └── lifecycle_policy.tf # ECR lifecycle policy
-├── iam/               # IAM roles and policies
-│   ├── roles.tf       # IAM roles
-│   └── policies.tf    # IAM policies and attachments
-└── lambda/            # Lambda function and related resources
-    ├── function.tf    # Lambda function configuration
-    └── function_url.tf # Lambda function URL
-```
+![alt text](https://github.com/Lisciowsky/x-server/blob/main/terraform/diagram.png?raw=true)
 
 ## PgBouncer as PostgresDBProxy
 There is issue with using fastaspi asnyc engine or any other asnyc engine
 with aws rds proxy, that's why I will try to integrate pgbouncer running as a task on ecs.
 https://github.com/MagicStack/asyncpg/issues/952
+
+UPDATE: moved to subfolder, pgbouncer add more complexity + didn't see much of a improvement. Moved all the related pgbouncer files to /research/pgbouncer subfolder.
+
+

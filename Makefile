@@ -27,12 +27,11 @@ infracost:
 example_lambda:
 	zip lambda_function.zip example_handler.py
 
-coverage:
+cov:
 	coverage run -m pytest
-
 html:
 	coverage html
-
+coverage: cov html
 # package_lambda:
 # 	mkdir -p "deployment_package"
 # 	docker run --rm -v "$PWD":/var/task --entrypoint /bin/bash public.ecr.aws/lambda/python:3.11 -c "pip install -r requirements.txt -t /var/task/deployment_package/; exit"
