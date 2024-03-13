@@ -197,6 +197,3 @@ override.tf.json
 terraform.rc
 
 .infracost
-
-# default lambda needed in order to create lambda using terraform
-lambda_function.zip

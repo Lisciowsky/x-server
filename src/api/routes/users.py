@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.exc import IntegrityError
 from pydantic import BaseModel, constr
 from loguru import logger
@@ -10,7 +10,7 @@ from src.db.models import User, Session
 from src.utils.password import hash_password
 
 from src.utils.password import verify_password
-from src.token.token_maker import JWTTokenManager
+from src.token.token_maker import JWTTokenManager, get_current_user, UserPayload
 
 from settings import REFRESH_TOKEN_DURATION_MINUTES
 
@@ -52,7 +52,8 @@ async def create_user(user_request: CreateUserRequest):
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
                 detail="unable to create user due to conflict",
             )
-
+        if "Connect call failed" in ex.strerror:
+            logger.critical(f"db connection failed: {ex}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     user_response = CreateUserResponse(
@@ -95,7 +96,7 @@ async def login_user(login_request: LoginUserRequest):
         plain_password=login_request.password, hashed_password=user.hashed_password
     ):
         ex_msg = "invalid password"
-        logger.warning(ex_msg + f": {ex}")
+        logger.warning(ex_msg)
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=ex_msg)
 
     try:
@@ -164,7 +165,11 @@ async def login_user(login_request: LoginUserRequest):
 
 
 @users_router.get("/{username}", response_model=CreateUserResponse)
-async def get_user(username: str):
+async def get_user(
+    username: str, current_user: UserPayload = Depends(get_current_user)
+):
+    if username != current_user.username and current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Not allowed")
     try:
         # Assuming DAL.get_user_by_id is a method to fetch a user by ID
         user = await DAL().get_user(username=username)

@@ -2,7 +2,7 @@ postgres:
 	docker run --name postgres -p 5432:5432 -e POSTGRES_USER=username -e POSTGRES_PASSWORD=password -d postgres:14-alpine
 
 createdb:
-	docker exec -it postgres createdb --username=root --owner=root twitter_db
+	docker exec -it postgres createdb --username=username --owner=username twitter_db
 
 mockpostgres:
 	docker run --name mockpostgres -p 5433:5432 -e POSTGRES_USER=testuser -e POSTGRES_PASSWORD=testpass -d postgres:14-alpine

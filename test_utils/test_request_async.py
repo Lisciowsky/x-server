@@ -8,7 +8,6 @@ success, failed = 0, 0
 async def fetch(session, url):
     global success, failed
     async with session.get(url) as response:
-
         # Assuming you don't need the response content, we won't wait for it.
         # If you do need to process the response, you might want to wait for it here.
         resp = await response.json()

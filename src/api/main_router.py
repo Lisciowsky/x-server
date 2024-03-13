@@ -9,4 +9,4 @@ main_router = APIRouter(prefix="/v1")
 # AUTH
 main_router.include_router(auth_router)
 # USERS
-main_router.include_router(users_router)
+main_router.include_router(users_router)  # dependencies=[Depends(get_current_user)]
