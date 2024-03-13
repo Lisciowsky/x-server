@@ -88,7 +88,8 @@ async def test_user_can_access_own_info(mocker, client):
         return_value=UserPayload(
             username=test_username,
             role="user",
-            exp=datetime.utcnow() + timedelta(minutes=15),
+            exp=datetime.utcnow()
+            + timedelta(minutes=int(ACCESS_TOKEN_DURATION_MINUTES)),
         ),
     )
     token_for_test_user = generate_test_token(username=test_username)
@@ -110,7 +111,10 @@ async def test_user_cannot_access_other_user_info(mocker, client):
     mocker.patch(
         "src.token.token_maker.get_current_user",
         return_value=UserPayload(
-            username="Ben", role="user", exp=datetime.utcnow() + timedelta(minutes=15)
+            username="Ben",
+            role="user",
+            exp=datetime.utcnow()
+            + timedelta(minutes=int(ACCESS_TOKEN_DURATION_MINUTES)),
         ),
     )
     token_for_ben = generate_test_token(username="Ben")
@@ -369,12 +373,12 @@ async def test_unable_to_create_session(mocker, client):
     access_payload = UserPayload(
         username="testuser",
         role="user",
-        exp=datetime.utcnow() + timedelta(minutes=15),
+        exp=datetime.utcnow() + timedelta(minutes=int(ACCESS_TOKEN_DURATION_MINUTES)),
     )
     refresh_payload = UserPayload(
         username="testuser",
         role="user",
-        exp=datetime.utcnow() + timedelta(days=1),
+        exp=datetime.utcnow() + timedelta(days=int(REFRESH_TOKEN_DURATION_MINUTES)),
         id=uuid.uuid4(),
     )
 
@@ -401,3 +405,18 @@ async def test_unable_to_create_session(mocker, client):
     assert (
         "unable to create session" in response.json()["detail"]
     ), "The error message did not match expected output"
+
+
+@pytest.mark.asyncio
+async def test_access_user_info_with_expired_token(client):
+    expired_token = generate_expired_token(username="testuser", role="user")
+    response = await client.get(
+        f"{API_VERSION}/users/testuser",
+        headers={"Authorization": f"Bearer {expired_token}"},
+    )
+    assert (
+        response.status_code == 401
+    ), "Expected to be unauthorized due to expired token"
+    assert (
+        "expired" in response.json().get("detail", "").lower()
+    ), "Expected error message to indicate that the token is expired"
