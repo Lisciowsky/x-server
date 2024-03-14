@@ -37,7 +37,7 @@ const teamMembers = [
     name: "Alice Johnson",
     position: "Founder",
     description: "Passionate about creating innovative tech solutions.",
-    imageUrl: "/spider.jpg",
+    imageUrl: "/spider2.jpeg",
     imageWidth: 400,
     imageHeight: 400,
   },
@@ -50,28 +50,27 @@ export default function About() {
         <title>About Us</title>
         <meta name="description" content="Learn more about our team and mission." />
       </Head>
-
-      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-sunset-orange">
+      <h1 className="scroll-m-20 text-4xl font-extralight tracking-tight lg:text-5xl text-rich-black text-center">
         About Our Team
       </h1>
-      <div className="mt-10 grid md:grid-cols-3 gap-4 mb-10">
+      <div className="mt-10 mb-10 grid md:grid-cols-3 gap-4 ">
         {teamMembers.map((member) => (
           <Card key={member.id} className="w-full bg-cultured text-rich-black">
             <CardHeader>
               <img src={member.imageUrl} alt={member.name} width={member.imageWidth} height={member.imageHeight} />
             </CardHeader>
             <CardContent>
-              <CardTitle className="mb-3">{member.name}</CardTitle>
+              <CardTitle className="mb-3 underline">{member.name}</CardTitle>
               <CardDescription>{member.position}</CardDescription>
               <p className="mt-2 text-sm">{member.description}</p>
             </CardContent>
-            <CardFooter className="flex justify-end">
-              <Button>Learn More</Button>
+            <CardFooter className="flex justify-center">
+              <Button className="hover:bg-sunset-orange ">Learn More</Button>
             </CardFooter>
           </Card>
         ))}
       </div>
-      <div className="mt-15 text-center">
+      <div className="mt-15 text-center rounded-lg">
         <h2 className="text-3xl font-semibold">Our Vision</h2>
         <p className="mt-4 text-lg text-rich-black bg-cultured rounded-md py-3 px-3">
           In a world inundated with information, our mission is to cut through the noise, offering our users a way to stay informed without feeling overwhelmed. By leveraging advanced AI models to scrape social media and distill this information into streamlined, concise news, we aim to save valuable time for those seeking to stay informed. Our vision is to transform the way news is consumed, making it more accessible, efficient, and relevant for today s fast-paced lifestyle. We are dedicated to innovation in the field of information processing and committed to creating a future where everyone can stay informed effortlessly. Through our technology, we strive to empower individuals with the knowledge they need to make informed decisions, fostering a well-informed community connected by the power of understanding.

@@ -2,7 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import axiosInstance from '@/lib/axiosInstance';
-import { Table, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import { TableBody, TableCell, TableHead, TableRow, Table } from '@/components/ui/table';
 
 interface UserInfo {
   username: string;
@@ -25,7 +42,7 @@ const Profile = () => {
   const { isLoggedIn, username } = useAuth();
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [isError, setIsError] = useState(false)
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -39,7 +56,7 @@ const Profile = () => {
           const fetchedUserInfo = await fetchUserInfo(username);
           setUserInfo(fetchedUserInfo);
         } catch (error) {
-          setIsError(true)
+          setIsError(true);
         }
       };
 
@@ -51,41 +68,89 @@ const Profile = () => {
 
   if (isError) {
     return <div>
-      <h1>Backend Error </h1>
-    </div>
+      <h1>Backend Error</h1>
+    </div>;
   }
 
-  return (<>
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      {/* Prefixed title or introduction */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-center mb-4">Your Information</h1>
-        <p className="text-md text-sonic-silver text-center">Here s the information we have on file for you. If you need to make any changes, please contact support.</p>
+  return (
+    <>
+      <div className='container flex mt-20 justify-center space-x-40'>
+        <Tabs defaultValue="account" className="w-[400px] bg-cultured text-rich-black">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="account">Account</TabsTrigger>
+            <TabsTrigger value="password">Password</TabsTrigger>
+          </TabsList>
+          <TabsContent value="account">
+            <Card>
+              <CardHeader>
+                <CardTitle>Account</CardTitle>
+                <CardDescription>
+                  Make changes to your account here. Click save when you're done.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="fullname">Fullname</Label>
+                  <Input id="fullname" defaultValue={userInfo.fullname} />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="username">Username</Label>
+                  <Input id="username" defaultValue={userInfo.username} />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save changes</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+          <TabsContent value="password">
+            <Card>
+              <CardHeader>
+                <CardTitle>Password</CardTitle>
+                <CardDescription>
+                  Change your password here. After saving, you'll be logged out.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
+                  <Label htmlFor="current">Current password</Label>
+                  <Input id="current" type="password" />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="new">New password</Label>
+                  <Input id="new" type="password" />
+                </div>
+              </CardContent>
+              <CardFooter>
+                <Button>Save password</Button>
+              </CardFooter>
+            </Card>
+          </TabsContent>
+        </Tabs>
+        <div className='text-rich-black bg-cultured'>
+          <Table>
+            <TableBody>
+              <TableRow>
+                <TableHead >Username</TableHead>
+                <TableCell>{userInfo.username}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableHead >Full Name</TableHead>
+                <TableCell>{userInfo.fullname || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableHead>Email</TableHead>
+                <TableCell>{userInfo.email || 'N/A'}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableHead>Role</TableHead>
+                <TableCell>{userInfo.role || 'N/A'}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </div>
       </div>
-    </div>
-    <div className='bg-gunmetal max-w-4xl mx-auto mt-5 rounded-lg'>
-      <Table>
-        <TableBody>
-          <TableRow>
-            <TableHead >Username</TableHead>
-            <TableCell>{userInfo.username}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableHead >Full Name</TableHead>
-            <TableCell>{userInfo.fullname || 'N/A'}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableHead>Email</TableHead>
-            <TableCell>{userInfo.email || 'N/A'}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableHead>Role</TableHead>
-            <TableCell>{userInfo.role || 'N/A'}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-      </div>
-      </>
+    </>
   );
 };
 

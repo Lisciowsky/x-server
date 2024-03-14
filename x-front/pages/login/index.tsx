@@ -61,13 +61,14 @@ export default function Auth() {
   };
 
   return (
+
     <div className="flex items-center justify-center min-h-screen">
-      <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-xl shadow-lg z-10">
-        {/* Controlled Tabs */}
+      <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl shadow-lg z-10">
+
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
           <TabsList aria-label="Login or Signup">
-            <TabsTrigger value="login" className="w-full data-[state=active]:text-sunset-orange data-[state=inactive]:text-rich-black">Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className="w-full data-[state=active]:text-sunset-orange data-[state=inactive]:text-rich-black">Sign Up</TabsTrigger>
+            <TabsTrigger value="login" className="w-full text-2xl data-[state=active]:text-sunset-orange data-[state=inactive]:text-cerulean-blue">Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className="w-full text-2xl data-[state=active]:text-sunset-orange data-[state=inactive]:text-cerulean-blue">Sign Up</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <form onSubmit={handleSubmitLogin} className="space-y-6">
