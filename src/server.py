@@ -10,8 +10,9 @@ dal = DAL()
 
 # CORS middleware setup
 origins = [
-    "http://localhost:3000",  # Adjust this to the origins you want to allow
-    "https://d2oaxem1qljagm.cloudfront.net/",
+    "http://localhost:3000",
+    "https://d2oaxem1qljagm.cloudfront.net",
+    "http://d2oaxem1qljagm.cloudfront.net",
 ]
 
 server.add_middleware(
