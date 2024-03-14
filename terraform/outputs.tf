@@ -22,3 +22,7 @@ output "ecs_service_name" {
 output "alb_dns_name" {
   value       = module.alb.alb_dns_name
 }
+
+output "cloudfront_distribution_domain" {
+  value = module.s3_cloudfront.cloudfront_distribution_domain
+}

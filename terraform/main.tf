@@ -107,3 +107,8 @@ module "ecs" {
   refresh_token_duration_minutes = "60"
   environment           = "PRODUCTION"
 }
+
+module "s3_cloudfront" {
+  source = "./configuration/s3_cloudfront"
+  # Pass any necessary variables
+}
