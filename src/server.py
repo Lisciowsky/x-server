@@ -11,7 +11,7 @@ dal = DAL()
 # CORS middleware setup
 origins = [
     "http://localhost:3000",  # Adjust this to the origins you want to allow
-    "https://yourfrontenddomain.com",
+    "https://d2oaxem1qljagm.cloudfront.net/",
 ]
 
 server.add_middleware(
