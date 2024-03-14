@@ -55,11 +55,13 @@ async def test_create_user(mocker, client):
         "password": "testpass",
         "fullname": "Test User",
         "email": "test@example.com",
+        "role": "user",
     }
     mock_user = User(
         username=test_user_data["username"],
         full_name=test_user_data["fullname"],
         email=test_user_data["email"],
+        role=test_user_data["role"],
         hashed_password="hashed_testpass",  # Assuming the password gets hashed
     )
     mock_create_user.return_value = mock_user
@@ -69,6 +71,7 @@ async def test_create_user(mocker, client):
         "username": test_user_data["username"],
         "fullname": test_user_data["fullname"],
         "email": test_user_data["email"],
+        "role": test_user_data["role"],
     }
 
 
@@ -102,6 +105,7 @@ async def test_user_can_access_own_info(mocker, client):
         "username": test_user.username,
         "fullname": test_user.full_name,
         "email": test_user.email,
+        "role": test_user.role
     }
 
 
