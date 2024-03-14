@@ -28,6 +28,7 @@ class CreateUserResponse(BaseModel):
     username: str
     fullname: str
     email: str
+    role: str
 
 
 @users_router.post(
@@ -57,7 +58,10 @@ async def create_user(user_request: CreateUserRequest):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     user_response = CreateUserResponse(
-        username=user.username, fullname=user.full_name, email=user.email
+        username=user.username,
+        fullname=user.full_name,
+        email=user.email,
+        role=user.role,
     )
 
     return user_response
@@ -153,7 +157,10 @@ async def login_user(login_request: LoginUserRequest):
     login_response = LoginUserResponse(
         session_id=str(created_session.id),
         user=CreateUserResponse(
-            username=user.username, fullname=user.full_name, email=user.email
+            username=user.username,
+            fullname=user.full_name,
+            email=user.email,
+            role=user.role,
         ),
         access_token=access_token,
         access_token_expires_at=access_payload.exp,
@@ -186,5 +193,8 @@ async def get_user(
             detail="User not found",
         )
     return CreateUserResponse(
-        username=user.username, fullname=user.full_name, email=user.email
+        username=user.username,
+        fullname=user.full_name,
+        email=user.email,
+        role=user.role,
     )

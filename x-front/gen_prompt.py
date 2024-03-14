@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+
 def display_tree_structure():
     cwd = os.getcwd()
     result = subprocess.run(["tree", cwd], capture_output=True, text=True)
@@ -9,6 +10,7 @@ def display_tree_structure():
         print(result.stdout)
     else:
         print("Error executing 'tree' command:", result.stderr)
+
 
 def display_contents(start_path):
     ignore_files = [
@@ -22,7 +24,7 @@ def display_contents(start_path):
         ".env.development.local",
         ".env.test.local",
         ".env.production.local",
-        "gen_prompt.py"
+        "gen_prompt.py",
     ]
     ignore_dirs = [
         "node_modules",
@@ -47,11 +49,13 @@ def display_contents(start_path):
                     print(f"Error reading file {file_path}: {e}")
                 print("\n" + "-" * 20 + "\n")  # Separator between files
 
+
 def main():
     # display_tree_structure()
     print("Displaying contents of each file:\n")
     cwd = os.getcwd()
     display_contents(cwd)
+
 
 if __name__ == "__main__":
     main()

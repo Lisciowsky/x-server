@@ -32,22 +32,9 @@ cov:
 html:
 	coverage html
 coverage: cov html
-# package_lambda:
-# 	mkdir -p "deployment_package"
-# 	docker run --rm -v "$PWD":/var/task --entrypoint /bin/bash public.ecr.aws/lambda/python:3.11 -c "pip install -r requirements.txt -t /var/task/deployment_package/; exit"
-# 	cp lambda_handler.py settings.py ./deployment_package/
-# 	cp -r src/ "./deployment_package/"
-# 	cd deployment_package && zip -r ../lambda_function.zip . && cd ..
-# 	$(RM) -r "deployment_package/"
 
-# push_packaged_lambda:
-# 	aws s3 cp lambda_function.zip s3://x-server-packaged-lambda-code-bucket/lambda_function.zip
-
-
-# --------------------------------------------------------------------
-# Variables
 AWS_REGION := eu-central-1
-ECR_REPOSITORY_URI := 654654262492.dkr.ecr.eu-central-1.amazonaws.com/my-fastapi-app-repo
+ECR_REPOSITORY_URI := 654654262492.dkr.ecr.eu-central-1.amazonaws.com/dev-fastapi-app-repo
 IMAGE_NAME := x-server
 TAG_LAMBDA := lambda-latest
 TAG_VPS := vps-latest
