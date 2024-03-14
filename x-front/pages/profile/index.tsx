@@ -8,8 +8,8 @@ interface UserInfo {
   username: string;
   fullname: string | null;
   email: string | null;
+  role: string | null;
 }
-
 
 const fetchUserInfo = async (username: string): Promise<UserInfo> => {
   try {
@@ -49,25 +49,37 @@ const Profile = () => {
 
   if (!userInfo) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
-  return (
+  return (<>
     <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Prefixed title or introduction */}
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-center mb-4">Your Information</h1>
+        <p className="text-md text-sonic-silver text-center">Here's the information we have on file for you. If you need to make any changes, please contact support.</p>
+      </div>
+    </div>
+    <div className='bg-gunmetal max-w-4xl mx-auto mt-5 rounded-lg'>
       <Table>
         <TableBody>
           <TableRow>
-            <TableHead>Username</TableHead>
+            <TableHead >Username</TableHead>
             <TableCell>{userInfo.username}</TableCell>
           </TableRow>
           <TableRow>
-            <TableHead>Full Name</TableHead>
+            <TableHead >Full Name</TableHead>
             <TableCell>{userInfo.fullname || 'N/A'}</TableCell>
           </TableRow>
           <TableRow>
             <TableHead>Email</TableHead>
             <TableCell>{userInfo.email || 'N/A'}</TableCell>
           </TableRow>
+          <TableRow>
+            <TableHead>Role</TableHead>
+            <TableCell>{userInfo.role || 'N/A'}</TableCell>
+          </TableRow>
         </TableBody>
       </Table>
-    </div>
+      </div>
+      </>
   );
 };
 

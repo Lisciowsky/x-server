@@ -37,9 +37,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = useCallback(async (credentials: { username: string; password: string }) => {
     try {
       const response = await axiosInstance.post('/users/login', credentials);
-      const { access_token } = response.data;
+      const { access_token, refresh_token, user} = response.data;
       localStorage.setItem('access_token', access_token);
-      localStorage.setItem('username', credentials.username);
+      localStorage.setItem('refresh_token', refresh_token);
+      localStorage.setItem('role', user.role);
+      localStorage.setItem('username', user.username);
       setIsLoggedIn(true);
       setUsername(credentials.username);
       return true;

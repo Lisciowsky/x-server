@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 
 const Header = () => {
   const router = useRouter();
-  const { isLoggedIn, username, logout } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
 
   const handleLogout = async (e) => {
     e.preventDefault();
@@ -15,7 +15,7 @@ const Header = () => {
   };
 
   return (
-    <header className="bg-gray-800 text-white">
+    <header className="bg-gunmetal text-cultured"> {/* Updated background and text color */}
       <nav className="container mx-auto flex justify-between items-center p-4">
         <Link href="/" passHref>
           <div className="flex items-center cursor-pointer">
@@ -24,18 +24,20 @@ const Header = () => {
           </div>
         </Link>
         <div className="flex items-center space-x-4">
-          <Link href="/about">About</Link>
-          <Link href="/services">Services</Link>
-          <Link href="/contact">Contact</Link>
+          <Link href="/about" className="hover:text-sunset-orange">About {/* Updated hover color */}
+          </Link>
+          {/* <Link href="/services">Services</Link> */}
+          <Link href="/contact" className="hover:text-sunset-orange">Contact {/* Updated hover color */}
+          </Link>
           {isLoggedIn ? (
             <>
-              <Link href="/profile"
-                 className="hover:text-gray-300 bg-green-600 hover:bg-green-700 rounded cursor-pointer px-3 py-2  "> {'MyProfile' || 'Profile'}
+              <Link href="/profile" className="hover:text-gray-300 bg-deep-sky-blue hover:bg-cerulean-blue rounded cursor-pointer px-3 py-2">Profile {/* Updated background and hover colors */}
               </Link>
-              <button onClick={handleLogout} className="bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded cursor-pointer">Log Out</button>
+              <button onClick={handleLogout} className="bg-sunset-orange hover:bg-red-700 text-white px-3 py-2 rounded cursor-pointer">Log Out</button> {/* Updated background color */}
             </>
           ) : (
-            <Link href="/login">Log In</Link>
+            <Link href="/login" className="hover:text-sunset-orange">Log In {/* Updated hover color */}
+            </Link>
           )}
         </div>
       </nav>
