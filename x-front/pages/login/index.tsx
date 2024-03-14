@@ -22,7 +22,7 @@ export default function Auth() {
     if (isLogged) {
       router.push("/");
     }
-  }, []);
+  }, [router]);
 
   const handleSubmitLogin = async (event) => {
     event.preventDefault();

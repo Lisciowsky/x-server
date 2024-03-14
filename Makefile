@@ -72,3 +72,25 @@ test-local:
 enter-local:
 	docker run -it --entrypoint /bin/bash x-server
 
+
+# --------------------------------------------------------------------
+front-images:
+	aws s3 cp ./x-front/public/ s3://dev-website-bucket-random-text-string-12/ --recursive
+
+update-front:
+	aws s3 sync ./x-front/.next s3://dev-website-bucket-random-text-string-12/_next --delete
+
+# Makefile
+
+# AWS CloudFront Distribution ID
+DISTRIBUTION_ID := E1Q7ZM7N8Z32VK
+
+# Path to invalidate, use '/*' to invalidate everything
+INVALIDATION_PATHS := "/*"
+
+# Target for creating a CloudFront invalidation
+invalidate:
+	@echo "Invalidating CloudFront distribution $(DISTRIBUTION_ID) for paths $(INVALIDATION_PATHS)"
+	@aws cloudfront create-invalidation --distribution-id $(DISTRIBUTION_ID) --paths $(INVALIDATION_PATHS)
+
+# --------------------------------------------------------------------
