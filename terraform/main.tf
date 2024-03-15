@@ -112,3 +112,8 @@ module "s3_cloudfront" {
   source = "./configuration/s3_cloudfront"
   # Pass any necessary variables
 }
+
+module "waf" {
+  source = "./configuration/waf"
+  alb_arn = module.alb.alb_arn
+}
