@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faInstagram, faXTwitter } from '@fortawesome/free-brands-svg-icons';
 
+
 const Footer = () => {
   return (
     <footer className="bg-gunmetal text-cultured p-4"> {/* Updated background and text color */}
       <div className="container mx-auto flex flex-wrap justify-between border-b border-cultured pb-4"> {/* Updated border color */}
-        <div className="grid grid-cols-2 justify-between w-full sm:grid-cols-3">
+        <div className="grid grid-cols-2 justify-between w-full sm:grid-cols-3 space-x-10">
           
           {/* Contact Information */}
           <div className="container mx-auto mb-4 px-2 col-span-1 sm:col-span-2">

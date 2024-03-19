@@ -74,7 +74,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className='container flex mt-20 justify-center space-x-40'>
+      <div className='container flex mt-10 mb-10 justify-center'>
         <Tabs defaultValue="account" className="w-[400px] bg-cultured text-rich-black">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="account">Account</TabsTrigger>
@@ -127,7 +127,7 @@ const Profile = () => {
             </Card>
           </TabsContent>
         </Tabs>
-        <div className='text-rich-black bg-cultured'>
+        {/* <div className='text-rich-black bg-cultured'>
           <Table>
             <TableBody>
               <TableRow>
@@ -148,7 +148,7 @@ const Profile = () => {
               </TableRow>
             </TableBody>
           </Table>
-        </div>
+        </div> */}
       </div>
     </>
   );
