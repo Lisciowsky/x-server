@@ -1,5 +1,14 @@
+import { Button } from "@/components/ui/button"
+import { useAlert } from "@/context/AlertContext"
 export default function Home() {
-  return <><h1 className="text-rich-black flex container mx-auto justify-center m-5 bg-cultured rounded-2xl p-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus in excepturi voluptate harum eos? Nam, dolor reiciendis, totam aliquam, debitis modi iusto accusamus sapiente sequi cupiditate voluptate omnis amet molestiae?
+  const {showAlert} = useAlert()
+  
+  return <>
+  <div className="max-sm:grid max-sm:grid-rows-2 max-sm:space-y-1 md:grid-cols-2 md:space-x-5 flex container mx-auto justify-center mt-4">
+  <Button className="text-rich-black text-lg bg-green-400"onClick={() => showAlert("this is success message", "this is success title", "success")}>Click me - success variant</Button>
+  <Button className="text-rich-black text-lg bg-red-400"onClick={() => showAlert("this is warning message", "this is warning title", "warning")}>Click me - warning variant</Button>
+  </div>
+  <h1 className="text-rich-black flex container mx-auto justify-center m-5 bg-cultured rounded-2xl p-5">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus in excepturi voluptate harum eos? Nam, dolor reiciendis, totam aliquam, debitis modi iusto accusamus sapiente sequi cupiditate voluptate omnis amet molestiae?
   Sapiente tempora odit vel quia iste veniam excepturi eum, hic quis alias ipsam pariatur nesciunt eveniet, est optio repudiandae minima possimus consectetur unde, ea accusantium quas adipisci? Reprehenderit, quos nisi?
   Provident rerum quas optio labore a repellat laborum voluptate vel illo et accusantium fugiat consectetur impedit eaque deserunt dolores at officiis nisi sed doloribus, facere esse ad vero. Laborum, placeat.
   Quaerat hic ea facere distinctio eligendi nisi deleniti voluptatem nam facilis eaque animi, enim possimus eos inventore corrupti sint porro deserunt cupiditate sunt non numquam, eveniet consectetur. Corporis, non illo.

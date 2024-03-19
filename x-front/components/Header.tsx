@@ -3,12 +3,10 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import { Button } from './ui/button';
 import { useState } from 'react';
-import { useAlert } from '../context/AlertContext'; // Adjust the import path as needed
 
 const Header = () => {
   const router = useRouter();
   const { isLoggedIn, logout } = useAuth();
-  const { showAlert } = useAlert();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const handleLogout = async (e) => {
@@ -22,7 +20,7 @@ const Header = () => {
     <header className="bg-gunmetal text-cultured">
       <nav className="container mx-auto flex justify-between items-center p-4">
         <Link href="/" passHref>
-          <div onClick={() => showAlert("message", "Title", "warning")} className="flex items-center cursor-pointer font-extrabold text-4xl">
+          <div className="flex items-center cursor-pointer font-extrabold text-4xl">
             <span className="ml-3 text-2xl font-bold font-serif">X-news</span>
           </div>
         </Link>
