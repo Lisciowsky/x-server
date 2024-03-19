@@ -105,7 +105,7 @@ async def test_user_can_access_own_info(mocker, client):
         "username": test_user.username,
         "fullname": test_user.full_name,
         "email": test_user.email,
-        "role": test_user.role
+        "role": test_user.role,
     }
 
 

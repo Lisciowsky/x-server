@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncEngine
 from sqlalchemy.sql import text
 
 
-# DATABASE_URL = "postgresql+asyncpg://username:password@localhost:5432/twitter_db"
-DATABASE_URL = "postgresql+asyncpg://username:password@my-postgres-instance.cbsoi6gs4a1o.eu-central-1.rds.amazonaws.com:5432/twitter_db"
+DATABASE_URL = "postgresql+asyncpg://username:password@localhost:5432/twitter_db"
+# DATABASE_URL = "postgresql+asyncpg://username:password@dev-postgres-instance.cbsoi6gs4a1o.eu-central-1.rds.amazonaws.com:5432/twitter_db"
 
 
 async def get_current_connections(engine: AsyncEngine):

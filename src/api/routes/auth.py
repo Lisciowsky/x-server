@@ -23,7 +23,6 @@ class RenewAccessResponse(BaseModel):
 
 @auth_router.post("/renew_access", response_model=RenewAccessResponse)
 async def renew_access_token(renew_request: RenewAccessRequest):
-    # Verify the refresh token and get the session
     session = await DAL().get_session(session_id=renew_request.session_id)
     if not session:
         raise HTTPException(
@@ -32,7 +31,6 @@ async def renew_access_token(renew_request: RenewAccessRequest):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # Assuming DAL() has a method to check session validity
     if datetime.utcnow() >= session.expires_at:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -40,7 +38,6 @@ async def renew_access_token(renew_request: RenewAccessRequest):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    # Create a new access token
     try:
         access_token, access_payload = JWTTokenManager.create_token(
             username=session.username,

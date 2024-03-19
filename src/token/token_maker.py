@@ -3,7 +3,6 @@ import uuid
 from datetime import datetime, timedelta
 from pydantic import BaseModel, Field
 
-# Assuming the JWT_SECRET is defined in a settings.py file
 from settings import JWT_SECRET, ACCESS_TOKEN_DURATION_MINUTES
 
 from fastapi import Header, HTTPException
@@ -47,13 +46,10 @@ class JWTTokenManager:
         if expires_delta is None:
             expires_delta = timedelta(minutes=int(ACCESS_TOKEN_DURATION_MINUTES))
 
-        # Set the expiration time
         expire = datetime.utcnow() + expires_delta
 
-        # Prepare the payload
         payload = UserPayload(username=username, role=role, exp=expire)
 
-        # JWT does requre payload to be of string type
         dict_payload = payload.model_dump()
         dict_payload["id"] = str(dict_payload["id"])
 
@@ -63,7 +59,6 @@ class JWTTokenManager:
     @staticmethod
     def verify_token(token):
         try:
-            # Decode the token
             decoded_payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             decoded_payload_model = UserPayload(**decoded_payload)
             return decoded_payload_model

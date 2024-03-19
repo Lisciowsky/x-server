@@ -24,7 +24,16 @@ class DAL:
         self.db_url = db_url or DATABASE_URL
         # NOTE During stress tests with 100 simultaneous requests, the application may exceed the set connection pool size of 10, leading to additional connections being created. This surge can cause
         # PostgreSQL to reach its connection limit and refuse new connections, highlighting the need for careful configuration under high-load scenarios.
-        self.async_engine = create_async_engine(url=self.db_url, pool_pre_ping=True)
+        self.async_engine = create_async_engine(
+            url=self.db_url,
+            pool_pre_ping=True,
+            # Add pool size configuration below
+            # echo_pool=True,  # Optional: for debugging, shows pool checkouts/checkins
+            # pool_size=1,  # The number of connections to keep open inside the connection pool
+            # max_overflow=0,  # The number of connections to allow in overflow, beyond the pool_size
+            # pool_timeout=30,  # The number of seconds to wait before giving up on returning a connection from the pool
+            # pool_recycle=1800,  # The number of seconds after which a connection is automatically recycled
+        )
         self.async_session = async_sessionmaker(self.async_engine, class_=AsyncSession)
 
     # USER TABLE
@@ -78,9 +87,7 @@ class DAL:
         )
 
         async with temp_engine.connect() as conn:
-            await conn.execute(
-                text("COMMIT")
-            )  # Needed to allow creating a database in a transaction block
+            await conn.execute(text("COMMIT"))
             db_exists = await conn.execute(
                 text("SELECT EXISTS(SELECT FROM pg_database WHERE datname = :dbname)"),
                 {"dbname": db_url.database},

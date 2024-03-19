@@ -178,7 +178,6 @@ async def get_user(
     if username != current_user.username and current_user.role != "admin":
         raise HTTPException(status_code=403, detail="Not allowed")
     try:
-        # Assuming DAL.get_user_by_id is a method to fetch a user by ID
         user = await DAL().get_user(username=username)
     except Exception as ex:
         ex_msg = "Failed to fetch user"
