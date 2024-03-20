@@ -11,19 +11,13 @@ import {
 } from "@/components/ui/collapsible"
 
 
-interface UserInfo {
-  username: string;
-  fullname: string | null;
-  email: string | null;
-  role: string | null;
-}
-
+import { UserInfo } from '@/models/user';
 
 interface ProfileInfoProps {
   userInfo: UserInfo;
 }
 
-function ProfileInfoComponent({userInfo}: ProfileInfoProps) {
+function ProfileInfoComponent({ userInfo }: ProfileInfoProps) {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (

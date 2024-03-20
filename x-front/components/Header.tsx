@@ -36,7 +36,7 @@ const Header = () => {
             {isLoggedIn ? (
               <>
                 <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href="/profile" className="hover:text-sunset-orange">Profile</Link>
-                <Button onClick={handleLogout} className="bg-sunset-orange hover:bg-red-700 rounded-2xl text-white">Log Out</Button>
+                <Button onClick={handleLogout} className="bg-sunset-orange hover:bg-red-700 rounded-xl text-white">Log Out</Button>
               </>
             ) : (
               <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href="/login" className="hover:text-sunset-orange">Log In</Link>
