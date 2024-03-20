@@ -1,5 +1,7 @@
 from src.api.routes.users import users_router
 from src.api.routes.auth import auth_router
+from src.api.routes.ai import ai_router
+from src.api.routes.admin import admin_router
 
 from fastapi import APIRouter
 
@@ -10,3 +12,7 @@ main_router = APIRouter(prefix="/v1")
 main_router.include_router(auth_router)
 # USERS
 main_router.include_router(users_router)  # dependencies=[Depends(get_current_user)]
+# AI
+main_router.include_router(ai_router)
+# ADMIN
+main_router.include_router(admin_router)

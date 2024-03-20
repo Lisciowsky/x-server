@@ -5,7 +5,7 @@ from sqlalchemy.engine.url import make_url
 from sqlalchemy import text
 
 from src.db.models import User, Session
-from src.db.user import create_user, delete_user, get_user, update_user
+from src.db.user import create_user, delete_user, get_user, update_user, get_all_users
 from src.db.session import get_session, create_session
 
 from settings import DATABASE_URL, DB_URL
@@ -37,6 +37,11 @@ class DAL:
         self.async_session = async_sessionmaker(self.async_engine, class_=AsyncSession)
 
     # USER TABLE
+    async def get_all_users(self, page: int = 1, page_size: int = 10):
+        return await get_all_users(
+            async_session=self.async_session, page=page, page_size=page_size
+        )
+
     async def get_user(self, username: int):
         return await get_user(async_session=self.async_session, username=username)
 
