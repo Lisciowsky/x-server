@@ -3,8 +3,11 @@ import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext'; // Adjust the import path as necessary
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'; // Adjust the import path
 import { isLoggedIn } from '@/lib/auth';
+import { useAlert } from '@/context/AlertContext';
 
 export default function Auth() {
+  const {showAlert} = useAlert()
+  
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -29,7 +32,7 @@ export default function Auth() {
     try {
       const success = await login({ username, password });
       if (success) {
-        console.log("successful log in");
+        showAlert("Log-in successful","","success")
         setFeedbackType("success")
         setFeedbackMessage('Login successful. Redirecting...'); // Optionally provide feedback
         router.push('/profile'); // Redirect to profile page or another page upon successful login
@@ -37,7 +40,7 @@ export default function Auth() {
         setFeedbackMessage('Authentication failed. Please try again.');
       }
     } catch (error) {
-      console.error("Log in error:", error);
+      showAlert("Log-in error","","warning")
       setFeedbackMessage(`Error: ${error.toString()}`);
     }
   };

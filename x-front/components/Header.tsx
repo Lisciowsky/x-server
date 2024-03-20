@@ -9,7 +9,7 @@ const Header = () => {
   const { isLoggedIn, logout } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const handleLogout = async (e) => {
+  const handleLogout = async (e: any) => {
     e.preventDefault();
     setIsMenuOpen(!isMenuOpen)
     await logout();
@@ -30,7 +30,7 @@ const Header = () => {
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
           </button>
         </div>
-          <div className={`flex flex-col max-md: items-center md:flex-row md:items-center md:space-x-8 md:text-xl ${isMenuOpen ? 'block' : 'hidden md:block'}`}>
+          <div className={`flex font-light flex-col max-md: items-center md:flex-row md:items-center md:space-x-8 md:text-xl ${isMenuOpen ? 'block' : 'hidden md:block'}`}>
             <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href="/about" className="hover:text-sunset-orange">About</Link>
             <Link onClick={() => setIsMenuOpen(!isMenuOpen)} href="/contact" className="hover:text-sunset-orange">Contact</Link>
             {isLoggedIn ? (

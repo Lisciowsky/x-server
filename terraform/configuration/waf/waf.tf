@@ -35,29 +35,6 @@ resource "aws_wafv2_web_acl" "example" {
       sampled_requests_enabled   = true
     }
   }
-
-  # Geo Match Rule to block Finland
-  rule {
-    name     = "GeoBlockFinland"
-    priority = 2
-
-    action {
-      block {}
-    }
-
-    statement {
-      geo_match_statement {
-        country_codes = ["FI"] # ISO 3166 country code for Finland
-      }
-    }
-
-    visibility_config {
-      cloudwatch_metrics_enabled = true
-      metric_name                = "GeoBlockFinland"
-      sampled_requests_enabled   = true
-    }
-  }
-
   # Add more rules as needed
 }
 

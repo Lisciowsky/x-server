@@ -2,24 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
 import axiosInstance from '@/lib/axiosInstance';
-import { Button } from "@/components/ui/button"
+
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { TableBody, TableCell, TableHead, TableRow, Table } from '@/components/ui/table';
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+
+
+import ProfileInfoComponent from '../../components/profile/profile-info';
+import EditAccountComponent from '../../components/profile/edit-account';
 
 interface UserInfo {
   username: string;
@@ -27,6 +20,7 @@ interface UserInfo {
   email: string | null;
   role: string | null;
 }
+
 
 const fetchUserInfo = async (username: string): Promise<UserInfo> => {
   try {
@@ -72,86 +66,30 @@ const Profile = () => {
     </div>;
   }
 
-  return (
-    <>
-      <div className='container flex mt-10 mb-10 justify-center'>
-        <Tabs defaultValue="account" className="w-[400px] bg-cultured text-rich-black">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="account">Account</TabsTrigger>
-            <TabsTrigger value="password">Password</TabsTrigger>
-          </TabsList>
-          <TabsContent value="account">
-            <Card>
-              <CardHeader>
-                <CardTitle>Account</CardTitle>
-                <CardDescription>
-                  Make changes to your account here. Click save when you're done.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="fullname">Fullname</Label>
-                  <Input id="fullname" defaultValue={userInfo.fullname} />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="username">Username</Label>
-                  <Input id="username" defaultValue={userInfo.username} />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save changes</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-          <TabsContent value="password">
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>
-                  Change your password here. After saving, you'll be logged out.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="space-y-1">
-                  <Label htmlFor="current">Current password</Label>
-                  <Input id="current" type="password" />
-                </div>
-                <div className="space-y-1">
-                  <Label htmlFor="new">New password</Label>
-                  <Input id="new" type="password" />
-                </div>
-              </CardContent>
-              <CardFooter>
-                <Button>Save password</Button>
-              </CardFooter>
-            </Card>
-          </TabsContent>
-        </Tabs>
-        {/* <div className='text-rich-black bg-cultured'>
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableHead >Username</TableHead>
-                <TableCell>{userInfo.username}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableHead >Full Name</TableHead>
-                <TableCell>{userInfo.fullname || 'N/A'}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableHead>Email</TableHead>
-                <TableCell>{userInfo.email || 'N/A'}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableHead>Role</TableHead>
-                <TableCell>{userInfo.role || 'N/A'}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </div> */}
-      </div>
-    </>
-  );
-};
 
-export default Profile;
+    return (
+      <>
+        <div className='max-sm:grid-rows-2 max-sm: space-y-10 mt-4 md:flex md:container md:mx-auto md:justify-around'>
+          <div className='text-black'>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1">
+                <AccordionTrigger>Your profile data</AccordionTrigger>
+                <AccordionContent>
+                  <ProfileInfoComponent userInfo={userInfo} />
+                </AccordionContent>
+              </AccordionItem>
+              <AccordionItem value="item-2">
+                <AccordionTrigger>Edit profile data</AccordionTrigger>
+                <AccordionContent>
+                  <EditAccountComponent userInfo={userInfo} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+
+  export default Profile;
