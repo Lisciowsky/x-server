@@ -1,3 +1,5 @@
+from typing import Optional
+
 from datetime import datetime, timedelta
 
 from fastapi import APIRouter, HTTPException, Depends, status
@@ -197,3 +199,48 @@ async def get_user(
         email=user.email,
         role=user.role,
     )
+
+
+class UpdateUserRequest(BaseModel):
+    password: Optional[str] = None
+    fullname: Optional[str] = None
+    email: Optional[str] = None
+
+
+@users_router.put("/{username}", response_model=CreateUserResponse)
+async def update_user(
+    username: str,
+    update_request: UpdateUserRequest,
+    current_user: UserPayload = Depends(get_current_user),
+):
+    if username != current_user.username and current_user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
+
+    try:
+        user = await DAL().get_user(username=username)
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+            )
+
+        if update_request.fullname:
+            user.full_name = update_request.fullname
+        if update_request.email:
+            user.email = update_request.email
+        if update_request.password:
+            user.hashed_password = hash_password(password=update_request.password)
+
+        await DAL().update_user(username=username, user=user)
+
+        return CreateUserResponse(
+            username=user.username,
+            fullname=user.full_name,
+            email=user.email,
+            role=user.role,
+        )
+    except Exception as ex:
+        logger.error(f"Failed to update user: {ex}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to update user",
+        )

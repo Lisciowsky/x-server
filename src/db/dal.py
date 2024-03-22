@@ -48,11 +48,9 @@ class DAL:
     async def create_user(self, user: User):
         return await create_user(async_session=self.async_session, user=user)
 
-    async def update_user(self, username: str, update_fields: dict):
+    async def update_user(self, username: str, user: User):
         return await update_user(
-            async_session=self.async_session,
-            username=username,
-            update_fields=update_fields,
+            async_session=self.async_session, username=username, updated_user=user
         )
 
     async def delete_user(self, username: str):

@@ -28,16 +28,28 @@ async def create_user(async_session: AsyncSession, user: User) -> User:
 
 
 async def update_user(
-    async_session: AsyncSession, username: str, update_fields: dict
+    async_session: AsyncSession, username: str, updated_user: User
 ) -> User:
     try:
         async with async_session() as session:
+
             stmt = select(User).where(User.username == username)
             result = await session.execute(stmt)
             user = result.scalar_one_or_none()
+
             if user:
-                for key, value in update_fields.items():
-                    setattr(user, key, value)
+                if updated_user.username is not None:
+                    user.username = updated_user.username
+                if updated_user.full_name is not None:
+                    user.full_name = updated_user.full_name
+                if updated_user.email is not None:
+                    user.email = updated_user.email
+                if updated_user.role is not None:
+                    user.role = updated_user.role
+
+                if updated_user.hashed_password is not None:
+                    user.hashed_password = updated_user.hashed_password
+
                 await session.commit()
                 await session.refresh(user)
                 return user

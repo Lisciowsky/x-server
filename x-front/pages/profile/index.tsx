@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/button';
 
 import ProfileInfoComponent from '../../components/profile/profile-info';
 import EditAccountComponent from '../../components/profile/edit-account';
-import EditAdminComponent from '@/components/profile/edit-admin';
+import EditRoleComponent from '@/components/profile/edit-admin';
 import AllUsersComponent from '../../components/profile/all-users';
 
 import { UserInfo } from '@/models/user';
@@ -36,6 +36,19 @@ const Profile = () => {
 
 
   const [showSheet, setShowSheet] = useState(false);
+
+  const refreshUserData = async () => {
+    try {
+      const allUsersData = await fetchAllUsersInfo(page, pageSize);
+      setAllUsersInfo(allUsersData.users);
+      setTotalUsers(allUsersData.total_users);
+      setPage(allUsersData.page);
+      setPageSize(allUsersData.page_size);
+    } catch (error) {
+      console.error('Failed to fetch all users info:', error);
+      setIsError(true);
+    }
+  };
 
   const onSelectUser = (user: UserInfo) => {
     setSelectedUser(user);
@@ -137,7 +150,7 @@ const Profile = () => {
                 <Button>Edit Role and Password</Button>
               </SheetTrigger>
               <SheetContent>
-                <EditAdminComponent userInfo={selectedUser} onCancel={() => setShowSheet(false)}/>
+                <EditRoleComponent userInfo={selectedUser} onCancel={() => setShowSheet(false)} onRoleUpdate={refreshUserData} />
               </SheetContent>
             </Sheet>
 

@@ -27,3 +27,14 @@ export const fetchUserInfo = async (username: string): Promise<UserInfo> => {
     throw error;
   }
 };
+
+export const updateUserRole = async (username: string, role: string): Promise<UserInfo> => {
+  try {
+    const data = {role: role}
+    const response = await axiosInstance.put(`/admin/update_role/${username}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update user role:', error);
+    throw error;
+  }
+};
