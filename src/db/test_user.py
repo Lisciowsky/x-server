@@ -83,8 +83,11 @@ async def test_update_user(dal_instance):
     new_email = generate_random_email()
     new_full_name = generate_random_full_name()
 
+    created_user.email = new_email
+    created_user.full_name = new_full_name
+
     updated_user = await dal_instance.update_user(
-        created_user.username, {"email": new_email, "full_name": new_full_name}
+        created_user.username, created_user
     )
 
     assert updated_user.email == new_email
