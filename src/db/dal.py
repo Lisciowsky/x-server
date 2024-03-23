@@ -5,7 +5,14 @@ from sqlalchemy.engine.url import make_url
 from sqlalchemy import text
 
 from src.db.models import User, Session
-from src.db.user import create_user, delete_user, get_user, update_user, get_all_users
+from src.db.user import (
+    create_user,
+    delete_user,
+    get_user,
+    update_user,
+    get_all_users,
+    search_users,
+)
 from src.db.session import get_session, create_session
 
 from settings import DATABASE_URL, DB_URL
@@ -55,6 +62,14 @@ class DAL:
 
     async def delete_user(self, username: str):
         return await delete_user(async_session=self.async_session, username=username)
+
+    async def search_users(self, username: str, email: str, fullname: str):
+        return await search_users(
+            async_session=self.async_session,
+            username=username,
+            email=email,
+            fullname=fullname,
+        )
 
     # SESSION TABLE
     async def create_session(self, new_session: Session):

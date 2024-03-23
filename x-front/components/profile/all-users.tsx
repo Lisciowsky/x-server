@@ -7,18 +7,17 @@ import {
   TableRow,
   TableHead,
   TableCell,
-} from '@/components/ui/table'; // Adjust the import path as needed
-import { AllUsers } from '@/models/user';
+} from '@/components/ui/table';
+import { User } from '@/models/user';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '../ui/hover-card';
-// Define the structure of your data for TypeScript
-interface TableData extends AllUsers { }
 
-// Define your columns
+interface TableData extends User { }
+
 const columns: ColumnDef<TableData>[] = [
   {
-    id: 'rowIndex', // Custom ID for the index column
-    header: () => '#', // Header label
-    cell: (info) => info.row.index + 1, // Display row index starting from 1
+    id: 'rowIndex',
+    header: () => '#',
+    cell: (info) => info.row.index + 1,
   },
   {
     accessorKey: 'username',
@@ -52,10 +51,10 @@ const columns: ColumnDef<TableData>[] = [
 ];
 
 interface AllUsersComponentProps {
-  allUsersInfo: AllUsers[];
-  onSelectUser: (user: AllUsers) => void;
+  allUsersInfo: User[];
+  onSelectUser: (user: User) => void;
 }
-// The component
+
 const AllUsersComponent: React.FC<AllUsersComponentProps> = ({ allUsersInfo, onSelectUser }) => {
   const table = useReactTable({
     data: allUsersInfo,
@@ -63,13 +62,9 @@ const AllUsersComponent: React.FC<AllUsersComponentProps> = ({ allUsersInfo, onS
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const renderHoverCardContent = (user: AllUsers) => (
+  const renderHoverCardContent = (user: User) => (
     <div className='opacity-100'>
-      {/* Customize this part with the information you want to show */}
-      {/* <p>email verified: {user.is_email_verified}</p> */}
-      {/* <p>password_changed_at: {user.password_changed_at}</p> */}
       <p>created_at: {user.created_at}</p>
-      {/* Add more user details here */}
     </div>
   );
 

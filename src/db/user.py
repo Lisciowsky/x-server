@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
@@ -49,6 +49,8 @@ async def update_user(
 
                 if updated_user.hashed_password is not None:
                     user.hashed_password = updated_user.hashed_password
+                if updated_user.password_changed_at is not None:
+                    user.password_changed_at = updated_user.password_changed_at
 
                 await session.commit()
                 await session.refresh(user)
@@ -103,6 +105,31 @@ async def get_all_users(
             total_users = await get_user_count(session=session)
 
             return users, total_users, page, page_size
+    except SQLAlchemyError as ex:
+        await session.rollback()
+        raise ex
+
+
+async def search_users(
+    async_session: AsyncSession,
+    username: Optional[str] = None,
+    email: Optional[str] = None,
+    fullname: Optional[str] = None,
+) -> list[User]:
+    try:
+        async with async_session() as session:
+            query = select(User)
+
+            if username:
+                query = query.filter(User.username.like(f"%{username}%"))
+            if email:
+                query = query.filter(User.email.like(f"%{email}%"))
+            if fullname:
+                query = query.filter(User.full_name.like(f"%{fullname}%"))
+
+            result = await session.execute(query)
+            users = result.scalars().all()
+            return users
     except SQLAlchemyError as ex:
         await session.rollback()
         raise ex

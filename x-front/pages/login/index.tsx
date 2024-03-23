@@ -21,7 +21,6 @@ export default function Auth() {
 
   useEffect(() => {
     const isLogged = isLoggedIn();
-    console.log("isLoggedIn", isLoggedIn);
     if (isLogged) {
       router.push("/");
     }
@@ -50,7 +49,6 @@ export default function Auth() {
     try {
       const success = await signup({ email, username, password, fullname: fullName });
       if (success) {
-        console.log("successfully signup");
         setSelectedTab('login'); // Switch to the login tab
         setFeedbackMessage('Signup successful. Please log in.'); // Optionally provide feedback
         setFeedbackType("success")
@@ -58,7 +56,6 @@ export default function Auth() {
         setFeedbackMessage('SignUp Failed. Please try again.');
       }
     } catch (error) {
-      console.error("SignUp Error:", error);
       setFeedbackMessage(`Error: ${error.toString()}`);
     }
   };

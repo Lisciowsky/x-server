@@ -21,6 +21,8 @@ interface EditAccountProps {
     onRoleUpdate: () => Promise<void>;
 }
 
+
+
 function EditRoleComponent({ userInfo, onCancel, onRoleUpdate }: EditAccountProps) {
     const [role, setRole] = useState(userInfo.role); // Ensure role is initialized from userInfo
     const { showAlert } = useAlert();
@@ -30,17 +32,17 @@ function EditRoleComponent({ userInfo, onCancel, onRoleUpdate }: EditAccountProp
     };
 
     const handleSaveChanges = async () => {
-        console.log(`Saving changes for user ${userInfo.username} with new role: ${role}`);
         try {
             await updateUserRole(userInfo.username, role);
             showAlert("Role changed successfully", "", "success");
-            await onRoleUpdate(); // Call the passed callback to refresh data
-            onCancel(); // Optionally close the sheet upon saving
+            await onRoleUpdate();
+            onCancel();
         } catch (error) {
-            console.error("Failed to update user role:", error);
-            showAlert("Failed to change role", "Please try again later", "error");
+            onCancel();
+            showAlert(error.message, "", "warning");
         }
     };
+    
 
     return (
         <Sheet>

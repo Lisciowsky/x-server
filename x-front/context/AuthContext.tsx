@@ -3,6 +3,7 @@ import axiosInstance from '@/lib/axiosInstance';
 
 interface AuthContextType {
   isLoggedIn: boolean;
+  setIsLoggedIn: (indicator: boolean) => void;
   username: string | null;
   login: (credentials: { username: string; password: string }) => Promise<boolean>;
   signup: (credentials: { email: string; username: string; password: string; fullname?: string }) => Promise<boolean>;
@@ -70,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUsername(null);
   }, []);
 
-  const value = { isLoggedIn, username, login, signup, logout };
+  const value = { isLoggedIn, setIsLoggedIn, username, login, signup, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

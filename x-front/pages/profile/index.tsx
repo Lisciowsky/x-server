@@ -19,21 +19,26 @@ import EditRoleComponent from '@/components/profile/edit-admin';
 import AllUsersComponent from '../../components/profile/all-users';
 
 import { UserInfo } from '@/models/user';
-import { AllUsers } from '@/models/user';
-import { fetchUserInfo } from '@/lib/auth';
-import { fetchAllUsersInfo } from '@/lib/users';
+import { User } from '@/models/user';
+import { clearAuthTokens } from '@/lib/auth';
+import { fetchUserInfo, fetchAllUsersInfo } from '@/lib/users';
+
+import { useAlert } from '@/context/AlertContext';
 
 const Profile = () => {
-  const { isLoggedIn, username } = useAuth();
   const router = useRouter();
+  const {showAlert} = useAlert()
+
+  const { isLoggedIn, setIsLoggedIn, username } = useAuth();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [allUsersInfo, setAllUsersInfo] = useState<AllUsers[]>([]);
+  const [allUsersInfo, setAllUsersInfo] = useState<User[]>([]);
   const [totalUsers, setTotalUsers] = useState<number>(0);
+  const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
-  const [isError, setIsError] = useState(false);
-  const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
+  const [totalPages, setTotalPages] = useState(0);
 
+  const [isError, setIsError] = useState(false);
 
   const [showSheet, setShowSheet] = useState(false);
 
@@ -56,6 +61,11 @@ const Profile = () => {
   };
 
   useEffect(() => {
+    setTotalPages(Math.ceil(totalUsers / pageSize));
+  }, [totalUsers, pageSize]);
+
+
+  useEffect(() => {
     if (!isLoggedIn) {
       router.push('/login');
       return;
@@ -74,12 +84,16 @@ const Profile = () => {
               setPageSize(allUsersData.page_size)
             } catch (error) {
               console.error('Failed to fetch all users info:', error);
+              showAlert(`Failed to fetch all users info: ${error.toString()}`, "", "warning")
               setIsError(true);
             }
           }
           setUserInfo(fetchedUserInfo);
         } catch (error) {
+          setIsLoggedIn(false)
+          clearAuthTokens()
           setIsError(true);
+          showAlert(error.message, "", "warning");
         }
       };
       getUserInfo();
@@ -90,7 +104,7 @@ const Profile = () => {
   if (!userInfo) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
   if (isError) {
-    return <div>
+    return <div className='text-rich-black container mx-auto justify-center flex text-2xl underline'>
       <h1>Backend Error</h1>
     </div>;
   }
@@ -105,11 +119,10 @@ const Profile = () => {
       // Optionally, update totalUsers if it changes or is returned by fetchAllUsersInfo
     } catch (error) {
       console.error('Failed to fetch more users info:', error);
+      showAlert(`Failed to fetch more users info: ${error.toString()}`, "", "warning")
       setIsError(true);
     }
   };
-
-  const totalPages = Math.ceil(totalUsers / pageSize);
 
 
   return (

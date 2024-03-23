@@ -50,18 +50,18 @@ export default function About() {
         <title>About Us</title>
         <meta name="description" content="Learn more about our team and mission." />
       </Head>
-      <h1 className="scroll-m-20 text-4xl font-extralight tracking-tight lg:text-5xl text-rich-black text-center">
+      <h1 className="text-4xl font-extralight tracking-tight lg:text-4xl text-rich-black text-center">
         About Our Team
       </h1>
       <div className="mt-10 mb-10 grid md:grid-cols-3 gap-4 ">
         {teamMembers.map((member) => (
           <Card key={member.id} className="w-full bg-cultured text-rich-black">
             <CardHeader>
-              <img src={member.imageUrl} alt={member.name} width={member.imageWidth} height={member.imageHeight} />
+              <img className="rounded-xl"src={member.imageUrl} alt={member.name} width={member.imageWidth} height={member.imageHeight} />
             </CardHeader>
             <CardContent>
-              <CardTitle className="mb-3 underline">{member.name}</CardTitle>
-              <CardDescription>{member.position}</CardDescription>
+              <CardTitle className="mb-3 underline text-lg">{member.name}</CardTitle>
+              <CardDescription className="text-md">{member.position}</CardDescription>
               <p className="mt-2 text-sm">{member.description}</p>
             </CardContent>
             <CardFooter className="flex justify-center">

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from datetime import datetime, timedelta
 
@@ -202,6 +202,7 @@ async def get_user(
 
 
 class UpdateUserRequest(BaseModel):
+    current_password: Optional[str] = None
     password: Optional[str] = None
     fullname: Optional[str] = None
     email: Optional[str] = None
@@ -218,29 +219,78 @@ async def update_user(
 
     try:
         user = await DAL().get_user(username=username)
-        if not user:
+    except Exception as ex:
+        ex_msg = "Failed to fetch user"
+        logger.warning(ex_msg + f": {ex}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ex_msg,
+        )
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+
+    if update_request.fullname:
+        user.full_name = update_request.fullname
+    if update_request.email:
+        user.email = update_request.email
+    if update_request.password:
+
+        if not update_request.current_password:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="current password not provided",
             )
 
-        if update_request.fullname:
-            user.full_name = update_request.fullname
-        if update_request.email:
-            user.email = update_request.email
-        if update_request.password:
-            user.hashed_password = hash_password(password=update_request.password)
+        if update_request.current_password == update_request.password:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="current and new password must be different",
+            )
 
-        await DAL().update_user(username=username, user=user)
+        if not verify_password(
+            plain_password=update_request.current_password,
+            hashed_password=user.hashed_password,
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="current password doesn't match",
+            )
 
-        return CreateUserResponse(
+        user.hashed_password = hash_password(password=update_request.password)
+        user.password_changed_at = datetime.utcnow()
+
+    await DAL().update_user(username=username, user=user)
+
+    return CreateUserResponse(
+        username=user.username,
+        fullname=user.full_name,
+        email=user.email,
+        role=user.role,
+    )
+
+
+class UserSearchRequest(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    fullname: Optional[str] = None
+
+
+@users_router.post("/search_user", response_model=List[CreateUserResponse])
+async def search_users(search_request: UserSearchRequest):
+    users = await DAL().search_users(
+        username=search_request.username,
+        email=search_request.email,
+        fullname=search_request.fullname,
+    )
+    return [
+        CreateUserResponse(
             username=user.username,
             fullname=user.full_name,
             email=user.email,
             role=user.role,
         )
-    except Exception as ex:
-        logger.error(f"Failed to update user: {ex}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Failed to update user",
-        )
+        for user in users
+    ]
