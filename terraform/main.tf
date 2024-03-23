@@ -28,6 +28,17 @@ module "secret" {
   database_username = var.database_username
 }
 
+module "route53" {
+  source = "./configuration/route53"
+  alb_alb_dns_name = module.alb.alb_dns_name
+  alb_alb_zone_id = module.alb.alb_zone_id
+  s3_cloudfront_cloudfront_distribution_domain = module.s3_cloudfront.cloudfront_distribution_domain
+}
+
+module "certificates" {
+  source = "./certificates"
+  aws_route53_zone_main_zone_id = module.route53.aws_route53_zone_main_zone_id
+}
 module "database" {
   source = "./configuration/database"
   
@@ -67,7 +78,7 @@ module "lambda" {
   database_username     = module.database.db_instance_username
   database_password     = module.database.db_instance_password
   database_address      = module.database.db_instance_address
-  database_name         = "twitter_db"  # Assuming you have this defined elsewhere
+  database_name         = var.database_name  # Assuming you have this defined elsewhere
   subnet_a_id =   module.networking.subnet_a_id
   lambda_security_group_id = module.security.lambda_sg_id  # Ensure this is a list
   jwt_secret            = "846368bb86f674f8d5d706667ddbb003"  # Or source this from a secure location
@@ -82,6 +93,7 @@ module "alb" {
   aws_security_group_alb_sg_id = module.security.alb_sg_id
   subnet_a_id = module.networking.subnet_a_id
   subnet_b_id =  module.networking.subnet_b_id
+  aws_acm_certificate_my_cert_arn = module.certificates.aws_acm_certificate_my_cert_arn
 }
 
 module "ecs" {
@@ -108,12 +120,14 @@ module "ecs" {
   environment           = "PRODUCTION"
 }
 
+
 module "s3_cloudfront" {
   source = "./configuration/s3_cloudfront"
-  # Pass any necessary variables
+  aws_acm_certificate_my_cert_arn = module.certificates.aws_acm_certificate_my_cert_cloudfront_arn
 }
 
 module "waf" {
   source = "./configuration/waf"
   alb_arn = module.alb.alb_arn
 }
+

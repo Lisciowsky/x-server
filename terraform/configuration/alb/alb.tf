@@ -24,10 +24,12 @@ resource "aws_lb_target_group" "fastapi_tg" {
   }
 }
 
-resource "aws_lb_listener" "front_end" {
+resource "aws_lb_listener" "https" {
   load_balancer_arn = aws_lb.my_alb.arn
-  port              = 8080
-  protocol          = "HTTP"
+  port              = 443
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08" # Default policy, adjust as needed
+  certificate_arn   = var.aws_acm_certificate_my_cert_arn # Reference your certificate here
 
   default_action {
     type             = "forward"

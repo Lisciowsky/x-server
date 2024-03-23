@@ -14,7 +14,7 @@ resource "aws_cloudfront_distribution" "website_distribution" {
 
   enabled             = true
   is_ipv6_enabled     = true
-  default_root_object = "_next/server/pages/index.html"
+  default_root_object = "index"
 
   # Removed the aliases parameter
 
@@ -31,7 +31,7 @@ resource "aws_cloudfront_distribution" "website_distribution" {
     }
 
     # viewer_protocol_policy = "redirect-to-https"
-    viewer_protocol_policy = "allow-all"  # This line is changed
+    viewer_protocol_policy = "redirect-to-https"  # This line is changed
 
     min_ttl                = 0
     default_ttl            = 3600
@@ -47,7 +47,9 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
+    acm_certificate_arn            = var.aws_acm_certificate_my_cert_arn
+    ssl_support_method             = "sni-only"
+    minimum_protocol_version       = "TLSv1.2_2018"
   }
 
   tags = {
