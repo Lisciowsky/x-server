@@ -11,7 +11,7 @@ dal = DAL()
 # CORS middleware setup
 origins = [
     "http://localhost:3000",
-    "https://api.szumi-dev.com"
+    "https://szumi-dev.com"
     # "https://d2oaxem1qljagm.cloudfront.net",
     # "http://d2oaxem1qljagm.cloudfront.net",
 ]
