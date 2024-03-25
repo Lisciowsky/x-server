@@ -21,3 +21,14 @@ variable "database_name" {
   type        = string
   default     = "twitter_db"
 }
+
+variable "domain_name" {
+  description = "The name of the domain"
+  type        = string
+  default     = "szumi-dev.com"
+}
+variable "appex_domain_name" {
+  description = "The name of the appex domain"
+  type        = string
+  default     = "api.szumi-dev.com"
+}

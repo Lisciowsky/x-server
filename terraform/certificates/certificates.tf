@@ -1,15 +1,16 @@
 resource "aws_acm_certificate" "szumi_dev_cert" {
-  domain_name       = "szumi-dev.com"
+  domain_name       = "api.szumi-dev.com"
+
   validation_method = "DNS"
 
-  subject_alternative_names = ["*.szumi-dev.com"]
+  # subject_alternative_names = ["api.szumi-dev.com"]
 
   lifecycle {
     create_before_destroy = true
   }
 
   tags = {
-    Name = "szumi-dev.com Certificate"
+    Name = "szumi-dev.com Certificate for api apex subdomain"
   }
 }
 

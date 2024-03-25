@@ -20,9 +20,8 @@ import {
 
 import { UserInfo } from '@/models/user';
 
-import axiosInstance from '@/lib/axiosInstance';
 import { clearAuthTokens } from '@/lib/auth';
-import { updateUserInfo, updateUserPassword } from '@/lib/users'; // Adjust the import path as needed
+import { updateUserInfo, updateUserPassword } from '@/api/users-endpoints';
 
 import { useAlert } from '@/context/AlertContext';
 

@@ -24,6 +24,16 @@ resource "aws_acm_certificate" "szumi_dev_cert_us_east_1" {
   }
 }
 
+
+# Certificate validation in us-east-1
+resource "aws_acm_certificate_validation" "szumi_dev_cert_validation_us_east_1" {
+  provider              = aws.us-east-1
+  certificate_arn       = aws_acm_certificate.szumi_dev_cert_us_east_1.arn
+  validation_record_fqdns = [for record in aws_route53_record.szumi_dev_cert_validation_us_east_1 : record.fqdn]
+
+  depends_on = [aws_route53_record.szumi_dev_cert_validation_us_east_1]
+}
+
 # DNS validation for the new certificate (us-east-1)
 resource "aws_route53_record" "szumi_dev_cert_validation_us_east_1" {
   provider = aws.us-east-1
@@ -41,13 +51,4 @@ resource "aws_route53_record" "szumi_dev_cert_validation_us_east_1" {
   type    = each.value.type
   records = [each.value.record]
   ttl     = 60
-}
-
-# Certificate validation in us-east-1
-resource "aws_acm_certificate_validation" "szumi_dev_cert_validation_us_east_1" {
-  provider              = aws.us-east-1
-  certificate_arn       = aws_acm_certificate.szumi_dev_cert_us_east_1.arn
-  validation_record_fqdns = [for record in aws_route53_record.szumi_dev_cert_validation_us_east_1 : record.fqdn]
-
-  depends_on = [aws_route53_record.szumi_dev_cert_validation_us_east_1]
 }

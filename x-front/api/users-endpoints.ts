@@ -1,5 +1,6 @@
-import axiosInstance from "./axiosInstance";
+import axiosInstance from "../lib/axiosInstance";
 import { PaginatedUsersResponse } from "@/models/user";
+import { UserInfo } from "@/models/user";
 
 export const fetchUserInfo = async (username: string): Promise<UserInfo> => {
   try {

@@ -21,7 +21,7 @@ import AllUsersComponent from '../../components/profile/all-users';
 import { UserInfo } from '@/models/user';
 import { User } from '@/models/user';
 import { clearAuthTokens } from '@/lib/auth';
-import { fetchUserInfo, fetchAllUsersInfo } from '@/lib/users';
+import { fetchUserInfo, fetchAllUsersInfo } from '@/api/users-endpoints';
 
 import { useAlert } from '@/context/AlertContext';
 

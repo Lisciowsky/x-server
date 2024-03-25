@@ -3,6 +3,8 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 }
 
 resource "aws_cloudfront_distribution" "website_distribution" {
+
+  aliases = [ var.aws_route53_zone_name ]
   origin {
     domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
     origin_id   = "${terraform.workspace}-website-origin"

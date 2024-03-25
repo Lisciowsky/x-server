@@ -10,3 +10,11 @@ variable "s3_cloudfront_cloudfront_distribution_domain" {
     type = string
 }
 
+variable "domain_name" {
+    type = string
+}
+
+variable "appex_domain_name" {
+    type = string
+}
+

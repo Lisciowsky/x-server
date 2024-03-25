@@ -33,6 +33,8 @@ module "route53" {
   alb_alb_dns_name = module.alb.alb_dns_name
   alb_alb_zone_id = module.alb.alb_zone_id
   s3_cloudfront_cloudfront_distribution_domain = module.s3_cloudfront.cloudfront_distribution_domain
+  appex_domain_name = var.appex_domain_name
+  domain_name = var.domain_name
 }
 
 module "certificates" {
@@ -124,6 +126,7 @@ module "ecs" {
 module "s3_cloudfront" {
   source = "./configuration/s3_cloudfront"
   aws_acm_certificate_my_cert_arn = module.certificates.aws_acm_certificate_my_cert_cloudfront_arn
+  aws_route53_zone_name = module.route53.aws_route53_zone_name
 }
 
 module "waf" {

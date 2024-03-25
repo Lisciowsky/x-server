@@ -1,10 +1,10 @@
 resource "aws_route53_zone" "main" {
-  name = "szumi-dev.com"
+  name = var.domain_name
 }
 
 resource "aws_route53_record" "alb_record" {
   zone_id = aws_route53_zone.main.zone_id
-  name    = "api.szumi-dev.com"
+  name    = var.appex_domain_name
   type    = "A"
 
   alias {
@@ -16,7 +16,7 @@ resource "aws_route53_record" "alb_record" {
 
 resource "aws_route53_record" "cloudfront_record" {
   zone_id = aws_route53_zone.main.zone_id
-  name    = "szumi-dev.com"
+  name    = var.domain_name
   type    = "A"
 
   alias {
