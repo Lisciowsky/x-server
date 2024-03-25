@@ -13,7 +13,7 @@ import {
 import { UserInfo } from '@/models/user';
 import { useAlert } from '@/context/AlertContext';
 
-import { updateUserRole } from '@/lib/auth';
+import { updateUserRole } from '@/api/auth-endpoints';
 
 interface EditAccountProps {
     userInfo: UserInfo;

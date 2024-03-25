@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
 
 // Adjust the import path as needed
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { Alert} from '@/components/ui/alert';
 import { useRef } from 'react';
 // Extending the AlertContextType to include alertState
 interface Alert {

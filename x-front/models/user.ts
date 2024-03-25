@@ -27,3 +27,10 @@ export interface UpdateUserResponse {
     username: string
     role: string
 }
+
+export interface CreateUserResponse {
+  username: string
+  fullname: string
+  email: string
+  role: string
+}

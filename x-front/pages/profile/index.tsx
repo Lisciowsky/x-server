@@ -12,6 +12,7 @@ import {
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 import ProfileInfoComponent from '../../components/profile/profile-info';
 import EditAccountComponent from '../../components/profile/edit-account';
@@ -21,14 +22,20 @@ import AllUsersComponent from '../../components/profile/all-users';
 import { UserInfo } from '@/models/user';
 import { User } from '@/models/user';
 import { clearAuthTokens } from '@/lib/auth';
+import { searchUser } from '@/api/users-endpoints';
 import { fetchUserInfo, fetchAllUsersInfo } from '@/api/users-endpoints';
 
 import { useAlert } from '@/context/AlertContext';
 
+const searchFields = [
+  { label: "Username", value: "username" },
+  { label: "Email", value: "email" },
+  { label: "Role", value: "fullname" },
+];
+
 const Profile = () => {
   const router = useRouter();
-  const {showAlert} = useAlert()
-
+  const { showAlert } = useAlert();
   const { isLoggedIn, setIsLoggedIn, username } = useAuth();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [allUsersInfo, setAllUsersInfo] = useState<User[]>([]);
@@ -37,10 +44,32 @@ const Profile = () => {
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(10);
   const [totalPages, setTotalPages] = useState(0);
-
   const [isError, setIsError] = useState(false);
-
   const [showSheet, setShowSheet] = useState(false);
+  const [searchField, setSearchField] = useState(searchFields[0].value);
+  const [searchQuery, setSearchQuery] = useState("");
+
+
+  const handleSearchSubmit = () => {
+    // Using an immediately-invoked async function within the handler
+    (async () => {
+      try {
+        // Assuming searchUser expects an object with a key that matches your searchField state and the query as its value
+        // The API call structure might need adjustments based on the actual expected request body on the backend
+        const searchRequest = {
+          [searchField]: searchQuery, // Dynamic key based on the current search field
+        };
+
+        const result = await searchUser(searchRequest);
+        console.log(result);
+        setAllUsersInfo
+        
+        // Here you can set the result to a state or perform other actions based on the result
+      } catch (error) {
+        showAlert(error.message, "", "warning");
+      }
+    })();
+  };
 
   const refreshUserData = async () => {
     try {
@@ -124,7 +153,6 @@ const Profile = () => {
     }
   };
 
-
   return (
     <>
       <div className='max-sm:grid-rows-2 max-sm: space-y-10 mt-4 md:flex md:container md:mx-auto md:justify-around'>
@@ -147,10 +175,30 @@ const Profile = () => {
                 <AccordionTrigger>Admin - All Users</AccordionTrigger>
                 <AccordionContent>
                   <>
-                    <AllUsersComponent allUsersInfo={allUsersInfo} onSelectUser={onSelectUser} />
-                    {page < totalPages && (
-                      <Button onClick={loadMoreUsers} className="container mx-auto mt-5 ">Load More</Button>
-                    )}
+                    <div className="flex flex-col gap-4 mb-4">
+                      <div className="flex gap-4">
+                        <select
+                          className="rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                          value={searchField}
+                          onChange={(e) => setSearchField(e.target.value)}
+                        >
+                          {searchFields.map((field) => (
+                            <option key={field.value} value={field.value}>{field.label}</option>
+                          ))}
+                        </select>
+                        <Input
+                          className="border p-2"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          placeholder="Search..."
+                        />
+                        <Button onClick={handleSearchSubmit}>Search</Button>
+                      </div>
+                      <AllUsersComponent allUsersInfo={allUsersInfo} onSelectUser={onSelectUser} />
+                      {page < totalPages && (
+                        <Button onClick={loadMoreUsers} className="container mx-auto mt-5">Load More</Button>
+                      )}
+                    </div>
                   </>
                 </AccordionContent>
               </AccordionItem>
@@ -166,9 +214,7 @@ const Profile = () => {
                 <EditRoleComponent userInfo={selectedUser} onCancel={() => setShowSheet(false)} onRoleUpdate={refreshUserData} />
               </SheetContent>
             </Sheet>
-
           )}
-
         </div>
       </div>
     </>

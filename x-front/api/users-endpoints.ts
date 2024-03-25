@@ -1,6 +1,6 @@
 import axiosInstance from "../lib/axiosInstance";
 import { PaginatedUsersResponse } from "@/models/user";
-import { UserInfo } from "@/models/user";
+import { UserInfo, CreateUserResponse } from "@/models/user";
 
 export const fetchUserInfo = async (username: string): Promise<UserInfo> => {
   try {
@@ -47,6 +47,21 @@ export const updateUserPassword = async (username: string, password: string, cur
     }
   } catch (error) {
     const errorMessage = error.response?.data?.detail || "Failed to change password due to a network or server error.";
+    throw new Error(errorMessage);
+  }
+};
+
+export interface UserSearchRequest {
+  searchField: string;
+}
+
+export const searchUser = async (searchRequest: UserSearchRequest): Promise<CreateUserResponse[]> => {
+  try {
+    const response = await axiosInstance.post(`/users/search_user`, searchRequest);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to search users:', error);
+    const errorMessage = error.response?.data?.detail || "Failed to search users due to a network or server error.";
     throw new Error(errorMessage);
   }
 };
