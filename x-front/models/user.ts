@@ -3,7 +3,7 @@ export interface UserInfo {
     fullname: string;
     email: string;
     role: string;
-  }
+}
   
 export interface User {
   username: string;

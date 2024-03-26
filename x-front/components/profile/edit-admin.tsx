@@ -10,21 +10,21 @@ import {
     SheetDescription,
 } from '../ui/sheet'; // Adjust the import path as needed
 
-import { UserInfo } from '@/models/user';
+import { User } from '@/models/user';
 import { useAlert } from '@/context/AlertContext';
 
-import { updateUserRole } from '@/api/auth-endpoints';
+import { updateUserRole, UpdateUserRequest } from '@/api/auth-endpoints';
 
 interface EditAccountProps {
-    userInfo: UserInfo;
+    user: User;
     onCancel: () => void;
     onRoleUpdate: () => Promise<void>;
 }
 
 
 
-function EditRoleComponent({ userInfo, onCancel, onRoleUpdate }: EditAccountProps) {
-    const [role, setRole] = useState(userInfo.role); // Ensure role is initialized from userInfo
+function EditRoleComponent({ user, onCancel, onRoleUpdate }: EditAccountProps) {
+    const [role, setRole] = useState(user.role); // Ensure role is initialized from userInfo
     const { showAlert } = useAlert();
 
     const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -33,7 +33,10 @@ function EditRoleComponent({ userInfo, onCancel, onRoleUpdate }: EditAccountProp
 
     const handleSaveChanges = async () => {
         try {
-            await updateUserRole(userInfo.username, role);
+            const updateUserRequest: UpdateUserRequest = {
+                role: role
+            }
+            await updateUserRole(user.username, updateUserRequest);
             showAlert("Role changed successfully", "", "success");
             await onRoleUpdate();
             onCancel();
@@ -52,7 +55,7 @@ function EditRoleComponent({ userInfo, onCancel, onRoleUpdate }: EditAccountProp
             <SheetContent>
                 <div className="space-y-4 p-4">
                     <SheetHeader>
-                        <SheetTitle>Edit User: {userInfo.username}</SheetTitle>
+                        <SheetTitle>Edit User: {user.username}</SheetTitle>
                         <SheetDescription>Manage user role.</SheetDescription>
                     </SheetHeader>
 

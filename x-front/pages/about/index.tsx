@@ -71,7 +71,7 @@ export default function About() {
         ))}
       </div>
       <div className="mt-15 text-center rounded-lg">
-        <h2 className="text-3xl font-semibold">Our Vision</h2>
+        <h2 className="text-4xl font-extralight tracking-tight lg:text-4xl text-rich-black text-center">Our Vision</h2>
         <p className="text-rich-black flex container mx-auto justify-center m-5 bg-cultured rounded-2xl p-5">
           In a world inundated with information, our mission is to cut through the noise, offering our users a way to stay informed without feeling overwhelmed. By leveraging advanced AI models to scrape social media and distill this information into streamlined, concise news, we aim to save valuable time for those seeking to stay informed. Our vision is to transform the way news is consumed, making it more accessible, efficient, and relevant for today s fast-paced lifestyle. We are dedicated to innovation in the field of information processing and committed to creating a future where everyone can stay informed effortlessly. Through our technology, we strive to empower individuals with the knowledge they need to make informed decisions, fostering a well-informed community connected by the power of understanding.
         </p>

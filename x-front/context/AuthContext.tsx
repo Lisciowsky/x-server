@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { UserInfo } from '@/models/user';
 import { useAlert } from './AlertContext';
 import { checkSession, loginUser, createUser, logoutUser, CreateUserRequest } from '@/api/users-endpoints';
-
+import { registerGlobalLogout } from '@/lib/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -31,11 +31,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { showAlert } = useAlert();
 
-  const handleLogout = useCallback(() => {
-    setIsLoggedIn(false);
-    setUserInfo(null);
-    router.push('/login');
-  }, [router]);
+  registerGlobalLogout(() => {
+    console.log("registering logout")
+    return logout()
+  })
 
   const checkUserSession = async () => {
     try {
@@ -43,8 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setIsLoggedIn(true);
       setUserInfo(response);
     } catch (error) {
-      setIsLoggedIn(false);
-      setUserInfo(null);
+      logout()
     }
   };
 
@@ -78,12 +76,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = useCallback(async () => {
     try {
-      await logoutUser(); // Implement this endpoint to clear cookies on the server
-      handleLogout();
+      console.log("logging out the user")
+      await logoutUser(); // Ensure this sends a request to the correct endpoint
+      setIsLoggedIn(false);
+      setUserInfo(null);
+      console.log("pushing to /login")
+      router.push('/login');
     } catch (error) {
-      showAlert("Error during logout. Please try again.", "", "error");
+      showAlert("Error during logout. Please try again.", "", "warning");
     }
-  }, [handleLogout, showAlert]);
+  }, [router, showAlert]);
 
   const value = { isLoggedIn, setIsLoggedIn, userInfo, setUserInfo, login, signup, logout };
 

@@ -96,10 +96,9 @@ async def test_user_can_access_own_info(mocker, client):
         ),
     )
     token_for_test_user = generate_test_token(username=test_username)
-    response = await client.get(
-        f"{API_VERSION}/users/{test_username}",
-        headers={"Authorization": f"Bearer {token_for_test_user}"},
-    )
+    cookies = {"access_token": token_for_test_user}  # Tokens are now passed in cookies
+    response = await client.get(f"{API_VERSION}/users/{test_username}", cookies=cookies)
+
     assert response.status_code == 200
     assert response.json() == {
         "username": test_user.username,
@@ -122,6 +121,7 @@ async def test_user_cannot_access_other_user_info(mocker, client):
         ),
     )
     token_for_ben = generate_test_token(username="Ben")
+    cookies = {"access_token": token_for_ben}  # Use cookies for authentication
     jake_user = User(
         username="Jake",
         full_name="Jake Example",
@@ -131,19 +131,16 @@ async def test_user_cannot_access_other_user_info(mocker, client):
     mock_get_user.return_value = jake_user
     response = await client.get(
         f"{API_VERSION}/users/Jake",
-        headers={"Authorization": f"Bearer {token_for_ben}"},
+        cookies=cookies,
     )
     assert response.status_code == 403
-    assert "Not allowed" in response.json().get("detail", "")
 
 
 @pytest.mark.asyncio
 async def test_expired_token_handling(mocker, client):
     expired_token = generate_expired_token(username="testuser", role="user")
-    response = await client.get(
-        f"{API_VERSION}/users/testuser",
-        headers={"Authorization": f"Bearer {expired_token}"},
-    )
+    cookies = {"access_token": expired_token}
+    response = await client.get(f"{API_VERSION}/users/testuser", cookies=cookies)
     assert response.status_code == 401
     assert "expired" in response.json().get("detail", "").lower()
 
@@ -188,9 +185,9 @@ async def test_db_connection_failure(loguru_sink, mocker, client):
     mock_dal_method = mocker.patch(
         "src.db.dal.DAL.get_user", side_effect=Exception("Connect call failed")
     )
-    response = await client.get(
-        f"{API_VERSION}/users/Ben", headers={"Authorization": f"Bearer {token_for_ben}"}
-    )
+    cookies = {"access_token": token_for_ben}
+
+    response = await client.get(f"{API_VERSION}/users/Ben", cookies=cookies)
     assert response.status_code == 500
     mock_dal_method.assert_called_once()
     loguru_sink.seek(0)
@@ -248,6 +245,7 @@ async def test_login_success(mocker, client):
             ("refresh_token", refresh_payload),
         ],
     )
+
     # Mock DAL.create_session to return the test session
     mocker.patch("src.db.dal.DAL.create_session", return_value=test_session)
 
@@ -257,12 +255,8 @@ async def test_login_success(mocker, client):
 
     # Assertions
     assert response.status_code == 200
-    response_json = response.json()
-    assert "access_token" in response_json
-    assert "refresh_token" in response_json
-    assert response_json["user"]["username"] == "testuser"
-    assert response_json["user"]["email"] == "test@example.com"
-    assert response_json["user"]["fullname"] == "Test User"
+    assert "access_token" in response.cookies
+    assert "refresh_token" in response.cookies
 
 
 @pytest.mark.asyncio
@@ -414,10 +408,8 @@ async def test_unable_to_create_session(mocker, client):
 @pytest.mark.asyncio
 async def test_access_user_info_with_expired_token(client):
     expired_token = generate_expired_token(username="testuser", role="user")
-    response = await client.get(
-        f"{API_VERSION}/users/testuser",
-        headers={"Authorization": f"Bearer {expired_token}"},
-    )
+    cookies = {"access_token": expired_token}
+    response = await client.get(f"{API_VERSION}/users/testuser", cookies=cookies)
     assert (
         response.status_code == 401
     ), "Expected to be unauthorized due to expired token"

@@ -1,6 +1,6 @@
 import axiosInstance from "../lib/axiosInstance";
 
-import { GetUserResponse, UpdateUserRequest, CreateUserResponse} from "@/models/user-responses";
+import { GetUserResponse, UpdateUserRequest, CreateUserResponse, UpdateUserResponse} from "@/models/user-responses";
 import { UserInfo } from "@/models/user";
 
 export const fetchUserInfo = async (username: string): Promise<GetUserResponse> => {
@@ -13,9 +13,10 @@ export const fetchUserInfo = async (username: string): Promise<GetUserResponse> 
   }
 };
 
-export const updateUserInfo = async (username: string, updateUserRequest: UpdateUserRequest): Promise<void> => {
+export const updateUserInfo = async (username: string, updateUserRequest: UpdateUserRequest): Promise<UserInfo> => {
   try {
-    const _ = await axiosInstance.put(`/users/${username}`, updateUserRequest);
+    const response = await axiosInstance.put(`/users/${username}`, updateUserRequest);
+    return response.data
   } catch (error) {
     const errorMessage = error.response?.data?.detail || "Failed to update user info due to a network or server error.";
     throw new Error(errorMessage);
@@ -63,14 +64,14 @@ export const logoutUser = async (): Promise<void> => {
   }
 };
 
-export const refreshToken = async (): Promise<void> => {
-  try {
-    await axiosInstance.post("/users/refresh_token");
-  } catch (error) {
-    const errorMessage = error.response?.data?.detail || "Failed to refresh token due to a network or server error.";
-    throw new Error(errorMessage);
-  }
-};
+// export const refreshToken = async (): Promise<void> => {
+//   try {
+//     await axiosInstance.post("/users/refresh_token");
+//   } catch (error) {
+//     const errorMessage = error.response?.data?.detail || "Failed to refresh token due to a network or server error.";
+//     throw new Error(errorMessage);
+//   }
+// };
 
 export const checkSession = async (): Promise<UserInfo> => {
   try {
@@ -81,4 +82,3 @@ export const checkSession = async (): Promise<UserInfo> => {
     throw new Error(errorMessage);
   }
 };
-

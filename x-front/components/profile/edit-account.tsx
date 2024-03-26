@@ -1,80 +1,68 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { UserInfo } from '@/models/user';
-
-import { clearAuthTokens } from '@/lib/auth';
-import { updateUserInfo} from '@/api/users-endpoints';
+import { updateUserInfo } from '@/api/users-endpoints';
 import { useAlert } from '@/context/AlertContext';
-
-import { useRouter } from 'next/router';
 import { UpdateUserRequest } from '@/models/user-responses';
-
+import { useAuth } from '@/context/AuthContext';
 interface EditAccountProps {
   userInfo: UserInfo;
 }
 
 function EditAccountComponent({ userInfo }: EditAccountProps) {
-  const router = useRouter()
-
   const { showAlert } = useAlert();
-
+  const {logout, setUserInfo} = useAuth()
   const [fullname, setFullname] = useState(userInfo.fullname || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  const handleAccountSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (userInfo.fullname === fullname) {
-      showAlert("The new fullname must be different from the current one", "", "warning");
-      return;
-    }
+  // External function for handling input changes
+  const handleFullNameChange = (e) => {
+    setFullname(e.target.value)
+    console.log(fullname)
+  }
+  const handleNewPasswordChange = (e) => {
+    setNewPassword(e.target.value)
+    console.log(newPassword)
+  }
+  const handleCurrentPasswordChange = (e) => {
+    setCurrentPassword(e.target.value)
+    console.log(currentPassword)
+  }
+
+  const handleAccountUpdate = async () => {
     try {
       const updateUserRequest: UpdateUserRequest = {
-        fullname: userInfo.fullname
+        fullname: fullname
       }
-      await updateUserInfo(userInfo.username, updateUserRequest);
+      const updatedUserInfo = await updateUserInfo(userInfo.username, updateUserRequest);
+      setUserInfo(updatedUserInfo)
       showAlert("Fullname changed successfully", "", "success");
-      router.push("/profile");
     } catch (error) {
       showAlert(error.toString(), "", "warning");
     }
   };
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordUpdate = async () => {
     try {
       const updateUserRequest: UpdateUserRequest = {
         current_password: currentPassword,
         password: newPassword
       }
-
       await updateUserInfo(userInfo.username, updateUserRequest);
       showAlert("Password changed successfully", "", "success");
-      clearAuthTokens();
-      router.push("/login");
+      logout()
+      // router.push("/login");
+
     } catch (error) {
       showAlert(error.toString(), "", "warning");
     }
   };
-
 
   return (
     <Tabs defaultValue="account" className="w-[350px] bg-cultured text-rich-black">
@@ -84,51 +72,47 @@ function EditAccountComponent({ userInfo }: EditAccountProps) {
       </TabsList>
 
       <TabsContent value="account">
-        <form onSubmit={handleAccountSubmit}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Account</CardTitle>
-              <CardDescription>
-                Make changes to your account here. Click save when you're done.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="fullname">Fullname</Label>
-                <Input id="fullname" value={fullname} onChange={(e) => setFullname(e.target.value)} />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="mr-2">Save changes</Button>
-            </CardFooter>
-          </Card>
-        </form>
+        <Card>
+          <CardHeader>
+            <CardTitle>Account</CardTitle>
+            <CardDescription>
+              Make changes to your account here. Click save when you're done.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="space-y-1">
+              <Label htmlFor="fullname">Fullname</Label>
+              <Input id="fullname" value={fullname} onChange={handleFullNameChange} />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handleAccountUpdate} className="mr-2">Save changes</Button>
+          </CardFooter>
+        </Card>
       </TabsContent>
 
       <TabsContent value="password">
-        <form onSubmit={handlePasswordSubmit}>
-          <Card>
-            <CardHeader>
-              <CardTitle>Password</CardTitle>
-              <CardDescription>
-                Change your password here. After saving, you'll be logged out.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="space-y-1">
-                <Label htmlFor="current">Current password</Label>
-                <Input id="current" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="new">New password</Label>
-                <Input id="new" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="mr-2">Save password</Button>
-            </CardFooter>
-          </Card>
-        </form>
+        <Card>
+          <CardHeader>
+            <CardTitle>Password</CardTitle>
+            <CardDescription>
+              Change your password here. After saving, you'll be logged out.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <div className="space-y-1">
+              <Label htmlFor="current">Current password</Label>
+              <Input id="current" type="password" value={currentPassword} onChange={handleCurrentPasswordChange} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="new">New password</Label>
+              <Input id="new" type="password" value={newPassword} onChange={handleNewPasswordChange} />
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={handlePasswordUpdate} className="mr-2">Save password</Button>
+          </CardFooter>
+        </Card>
       </TabsContent>
     </Tabs>
   );

@@ -109,7 +109,13 @@ class UserSearchRequest(BaseModel):
 
 
 @admin_router.post("/search_user", response_model=List[UserOut])
-async def search_users(search_request: UserSearchRequest):
+async def search_users(
+    search_request: UserSearchRequest,
+    current_user: UserPayload = Depends(get_current_user),
+):
+    if current_user.role != "admin":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
+
     users = await DAL().search_users(
         username=search_request.username,
         email=search_request.email,
