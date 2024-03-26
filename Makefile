@@ -78,10 +78,10 @@ front-images:
 	aws s3 cp ./x-front/public/ s3://dev-website-bucket-random-text-string-12/ --recursive
 
 update-front:
-	aws s3 sync ./x-front/.next s3://dev-website-bucket-random-text-string-12/_next --delete
-	find ./x-front/.next/server/pages -name "*.html" | while read -r file; do \
+	aws s3 sync ./x-front/out s3://dev-website-bucket-random-text-string-12/ --delete
+	find ./x-front/out -name "*.html" | while read -r file; do \
 		newname=$$(echo "$$file" | sed 's/\.html$$//'); \
-		aws s3 cp "$$file" "s3://dev-website-bucket-random-text-string-12/$${newname#./x-front/.next/server/pages/}"; \
+		aws s3 cp "$$file" "s3://dev-website-bucket-random-text-string-12/$${newname#./x-front/out/}"; \
 	done
 	
 # AWS CloudFront Distribution ID
