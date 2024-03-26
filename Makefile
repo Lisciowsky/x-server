@@ -79,9 +79,11 @@ front-images:
 
 update-front:
 	aws s3 sync ./x-front/.next s3://dev-website-bucket-random-text-string-12/_next --delete
-
-# Makefile
-
+	find ./x-front/.next/server/pages -name "*.html" | while read -r file; do \
+		newname=$$(echo "$$file" | sed 's/\.html$$//'); \
+		aws s3 cp "$$file" "s3://dev-website-bucket-random-text-string-12/$${newname#./x-front/.next/server/pages/}"; \
+	done
+	
 # AWS CloudFront Distribution ID
 DISTRIBUTION_ID := E1Q7ZM7N8Z32VK
 

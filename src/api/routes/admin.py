@@ -100,3 +100,19 @@ async def update_user(
     await DAL().update_user(username=username, user=user)
 
     return UpdateUserResponse(success=True, username=username, role=user.role)
+
+
+class UserSearchRequest(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    fullname: Optional[str] = None
+
+
+@admin_router.post("/search_user", response_model=List[UserOut])
+async def search_users(search_request: UserSearchRequest):
+    users = await DAL().search_users(
+        username=search_request.username,
+        email=search_request.email,
+        fullname=search_request.fullname,
+    )
+    return [UserOut(**user.__dict__) for user in users]

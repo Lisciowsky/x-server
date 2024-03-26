@@ -5,23 +5,20 @@ from loguru import logger
 from src.db.dal import DAL
 from src.api.main_router import main_router
 
-server = FastAPI(title="my web server", version="1.0.0")
+server = FastAPI(title="x-server webserver", version="1.0.0")
 dal = DAL()
 
-# CORS middleware setup
 origins = [
     "http://localhost:3000",
-    "https://szumi-dev.com"
-    # "https://d2oaxem1qljagm.cloudfront.net",
-    # "http://d2oaxem1qljagm.cloudfront.net",
+    "https://szumi-dev.com",
 ]
 
 server.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Or specify just the methods you need: ["GET", "POST"]
-    allow_headers=["*"],  # Or specify headers you need
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
@@ -29,7 +26,6 @@ server.add_middleware(
 @server.middleware("http")
 async def log_responses(request: Request, call_next):
     response = await call_next(request)
-    # Log with Loguru
     logger.info(
         f"REQUEST: {request.method} {request.url} - STATUS: {response.status_code}"
     )

@@ -5,7 +5,7 @@ from pydantic import BaseModel, Field
 
 from settings import JWT_SECRET, ACCESS_TOKEN_DURATION_MINUTES
 
-from fastapi import Header, HTTPException
+from fastapi import Header, HTTPException, Request
 import jwt
 from jwt import PyJWTError
 
@@ -17,7 +17,22 @@ class UserPayload(BaseModel):
     exp: datetime
 
 
-def get_current_user(authorization: str = Header(None)):
+def get_current_user(request: Request):
+    access_token = request.cookies.get("access_token")
+    if not access_token:
+        raise HTTPException(status_code=401, detail="Access token missing")
+
+    try:
+        decoded_payload = jwt.decode(access_token, JWT_SECRET, algorithms=["HS256"])
+        user_payload = UserPayload(**decoded_payload)
+        return user_payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Access token has expired")
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Invalid access token")
+
+
+def get_current_user_header_based_authentication(authorization: str = Header(None)):
     if authorization is None:
         raise HTTPException(status_code=401, detail="Authorization header missing")
     try:
@@ -45,26 +60,15 @@ class JWTTokenManager:
     def create_token(username: str, role: str, expires_delta: timedelta = None):
         if expires_delta is None:
             expires_delta = timedelta(minutes=int(ACCESS_TOKEN_DURATION_MINUTES))
-
         expire = datetime.utcnow() + expires_delta
-
         payload = UserPayload(username=username, role=role, exp=expire)
-
         dict_payload = payload.model_dump()
         dict_payload["id"] = str(dict_payload["id"])
-
         token = jwt.encode(dict_payload, JWT_SECRET, algorithm="HS256")
         return token, payload
 
     @staticmethod
     def verify_token(token):
-        try:
-            decoded_payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
-            decoded_payload_model = UserPayload(**decoded_payload)
-            return decoded_payload_model
-        except jwt.ExpiredSignatureError:
-            print("Token has expired.")
-            return None
-        except jwt.PyJWTError as e:
-            print(f"Token verification error: {e}")
-            return None
+        decoded_payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        decoded_payload_model = UserPayload(**decoded_payload)
+        return decoded_payload_model
