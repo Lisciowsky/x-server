@@ -1,14 +1,9 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import axiosInstance from '@/lib/axiosInstance';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
+import { useRouter } from 'next/router';
+import { UserInfo } from '@/models/user';
+import { useAlert } from './AlertContext';
+import { checkSession, loginUser, createUser, logoutUser, CreateUserRequest } from '@/api/users-endpoints';
 
-interface AuthContextType {
-  isLoggedIn: boolean;
-  setIsLoggedIn: (indicator: boolean) => void;
-  username: string | null;
-  login: (credentials: { username: string; password: string }) => Promise<boolean>;
-  signup: (credentials: { email: string; username: string; password: string; fullname?: string }) => Promise<boolean>;
-  logout: () => void;
-}
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,58 +15,77 @@ export const useAuth = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface AuthContextType {
+  isLoggedIn: boolean;
+  setIsLoggedIn: (indicator: boolean) => void;
+  userInfo: UserInfo | null;
+  setUserInfo: (userInfo: UserInfo | null) => void;
+  login: (credentials: { username: string; password: string }) => Promise<boolean>;
+  signup: (credentials: { email: string; username: string; password: string; fullname?: string }) => Promise<boolean>;
+  logout: () => void;
+}
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const router = useRouter();
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-  const [username, setUsername] = useState<string | null>(null);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const { showAlert } = useAlert();
+
+  const handleLogout = useCallback(() => {
+    setIsLoggedIn(false);
+    setUserInfo(null);
+    router.push('/login');
+  }, [router]);
+
+  const checkUserSession = async () => {
+    try {
+      const response: UserInfo = await checkSession(); // Implement this endpoint on your server
+      setIsLoggedIn(true);
+      setUserInfo(response);
+    } catch (error) {
+      setIsLoggedIn(false);
+      setUserInfo(null);
+    }
+  };
 
   useEffect(() => {
-    // Check for access token and username in localStorage when component mounts
-    const token = localStorage.getItem('access_token');
-    const storedUsername = localStorage.getItem('username');
-    
-    if (token && storedUsername) {
-      setIsLoggedIn(true);
-      setUsername(storedUsername);
-    }
+    checkUserSession();
   }, []);
 
   const login = useCallback(async (credentials: { username: string; password: string }) => {
     try {
-      const response = await axiosInstance.post('/users/login', credentials);
-      const { access_token, refresh_token, user} = response.data;
-      localStorage.setItem('access_token', access_token);
-      localStorage.setItem('refresh_token', refresh_token);
-      localStorage.setItem('role', user.role);
-      localStorage.setItem('username', user.username);
+      await loginUser(credentials);
       setIsLoggedIn(true);
-      setUsername(credentials.username);
+      await checkUserSession(); // Re-fetch user info after successful login
       return true;
     } catch (error) {
-      console.error('Login error:', error);
+      showAlert(error.toString(), "", "warning");
       return false;
     }
-  }, []);
+  }, [showAlert]);
 
-  const signup = useCallback(async (credentials: { email: string; username: string; password: string; fullname?: string }) => {
+  const signup = useCallback(async (createUserRequest: CreateUserRequest) => {
     try {
-      await axiosInstance.post('/users/', credentials);
-      // Optionally, log the user in immediately after signup
-      // return login({ username: credentials.username, password: credentials.password });
+      await createUser(createUserRequest);
+      showAlert("Signup successful. Please log in.", "", "success");
+      router.push('/login');
       return true;
     } catch (error) {
-      console.error('Signup error:', error);
+      showAlert(error.toString(), "", "warning");
       return false;
     }
-  }, [login]); // Include login in the dependency array if you choose to log the user in immediately after signup
+  }, [router, showAlert]);
 
-  const logout = useCallback(() => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('username');
-    setIsLoggedIn(false);
-    setUsername(null);
-  }, []);
+  const logout = useCallback(async () => {
+    try {
+      await logoutUser(); // Implement this endpoint to clear cookies on the server
+      handleLogout();
+    } catch (error) {
+      showAlert("Error during logout. Please try again.", "", "error");
+    }
+  }, [handleLogout, showAlert]);
 
-  const value = { isLoggedIn, setIsLoggedIn, username, login, signup, logout };
+  const value = { isLoggedIn, setIsLoggedIn, userInfo, setUserInfo, login, signup, logout };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

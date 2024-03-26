@@ -1,29 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/AuthContext';
+import { useAdminUsers, AdminUsersProvider } from '@/context/AdminUsersContext';
 
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion"
+} from "@/components/ui/accordion";
 
 import { Sheet, SheetTrigger, SheetContent } from '@/components/ui/sheet';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-
 import ProfileInfoComponent from '../../components/profile/profile-info';
 import EditAccountComponent from '../../components/profile/edit-account';
 import EditRoleComponent from '@/components/profile/edit-admin';
 import AllUsersComponent from '../../components/profile/all-users';
-
-import { UserInfo } from '@/models/user';
-import { User } from '@/models/user';
-import { clearAuthTokens } from '@/lib/auth';
-import { searchUser } from '@/api/users-endpoints';
-import { fetchUserInfo, fetchAllUsersInfo } from '@/api/users-endpoints';
 
 import { useAlert } from '@/context/AlertContext';
 
@@ -36,122 +29,70 @@ const searchFields = [
 const Profile = () => {
   const router = useRouter();
   const { showAlert } = useAlert();
-  const { isLoggedIn, setIsLoggedIn, username } = useAuth();
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const [allUsersInfo, setAllUsersInfo] = useState<User[]>([]);
-  const [totalUsers, setTotalUsers] = useState<number>(0);
-  const [selectedUser, setSelectedUser] = useState<UserInfo | null>(null);
-  const [page, setPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
-  const [totalPages, setTotalPages] = useState(0);
-  const [isError, setIsError] = useState(false);
-  const [showSheet, setShowSheet] = useState(false);
-  const [searchField, setSearchField] = useState(searchFields[0].value);
-  const [searchQuery, setSearchQuery] = useState("");
+  const { isLoggedIn, userInfo } = useAuth();
 
+  const [showSheet, setShowSheet] = React.useState(false);
+  const [searchField, setSearchField] = React.useState(searchFields[0].value);
+  const [searchQuery, setSearchQuery] = React.useState("");
 
-  const handleSearchSubmit = () => {
-    // Using an immediately-invoked async function within the handler
-    (async () => {
-      try {
-        // Assuming searchUser expects an object with a key that matches your searchField state and the query as its value
-        // The API call structure might need adjustments based on the actual expected request body on the backend
-        const searchRequest = {
-          [searchField]: searchQuery, // Dynamic key based on the current search field
-        };
-
-        const result = await searchUser(searchRequest);
-        console.log(result);
-        setAllUsersInfo
-        
-        // Here you can set the result to a state or perform other actions based on the result
-      } catch (error) {
-        showAlert(error.message, "", "warning");
-      }
-    })();
-  };
-
-  const refreshUserData = async () => {
+  const handleSearchSubmit = async () => {
     try {
-      const allUsersData = await fetchAllUsersInfo(page, pageSize);
-      setAllUsersInfo(allUsersData.users);
-      setTotalUsers(allUsersData.total_users);
-      setPage(allUsersData.page);
-      setPageSize(allUsersData.page_size);
+      await searchUsers(searchField, searchQuery);
     } catch (error) {
-      console.error('Failed to fetch all users info:', error);
-      setIsError(true);
+      showAlert(error.message, "", "warning");
     }
   };
-
-  const onSelectUser = (user: UserInfo) => {
-    setSelectedUser(user);
-    setShowSheet(true); // Open the Sheet when a user is selected
-  };
-
-  useEffect(() => {
-    setTotalPages(Math.ceil(totalUsers / pageSize));
-  }, [totalUsers, pageSize]);
-
 
   useEffect(() => {
     if (!isLoggedIn) {
       router.push('/login');
-      return;
     }
-
-    if (username) {
-      const getUserInfo = async () => {
-        try {
-          const fetchedUserInfo = await fetchUserInfo(username);
-          if (fetchedUserInfo.role === "admin") {
-            try {
-              const allUsersData = await fetchAllUsersInfo(page, pageSize);
-              setAllUsersInfo(allUsersData.users);
-              setTotalUsers(allUsersData.total_users)
-              setPage(allUsersData.page)
-              setPageSize(allUsersData.page_size)
-            } catch (error) {
-              console.error('Failed to fetch all users info:', error);
-              showAlert(`Failed to fetch all users info: ${error.toString()}`, "", "warning")
-              setIsError(true);
-            }
-          }
-          setUserInfo(fetchedUserInfo);
-        } catch (error) {
-          setIsLoggedIn(false)
-          clearAuthTokens()
-          setIsError(true);
-          showAlert(error.message, "", "warning");
-        }
-      };
-      getUserInfo();
-    }
-  }, [isLoggedIn, username, router]);
-
+  }, [isLoggedIn, router]);
 
   if (!userInfo) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
-  if (isError) {
-    return <div className='text-rich-black container mx-auto justify-center flex text-2xl underline'>
-      <h1>Backend Error</h1>
-    </div>;
+  const AdminAllUsers = () => {
+    const {
+      allUsersInfo,
+      selectedUser,
+      setSelectedUser,
+      totalPages,
+      searchUsers,
+      loadMoreUsers,
+      refreshUserData
+    } = useAdminUsers();
+
+    return <AccordionItem value="item-3">
+      <AccordionTrigger>Admin - All Users</AccordionTrigger>
+      <AccordionContent>
+        <div className="flex flex-col gap-4 mb-4">
+          <div className="flex gap-4">
+            <select
+              className="rounded-md border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              value={searchField}
+              onChange={(e) => setSearchField(e.target.value)}
+            >
+              {searchFields.map((field) => (
+                <option key={field.value} value={field.value}>{field.label}</option>
+              ))}
+            </select>
+            <Input
+              className="p-2 border-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+            />
+            <Button onClick={handleSearchSubmit}>Search</Button>
+          </div>
+          <AllUsersComponent allUsersInfo={allUsersInfo} onSelectUser={(user) => { setSelectedUser(user); setShowSheet(true); }} />
+          {totalPages > 1 && (
+            <Button onClick={loadMoreUsers} className="container mx-auto mt-5">Load More</Button>
+          )}
+        </div>
+      </AccordionContent>
+    </AccordionItem>
+
   }
-
-  const loadMoreUsers = async () => {
-    try {
-      const nextPage = page + 1; // Load the next page of users
-      const allUsersData = await fetchAllUsersInfo(nextPage, pageSize); // Assuming pageSize remains constant
-
-      setAllUsersInfo(prevUsers => [...prevUsers, ...allUsersData.users]); // Extend the existing users list
-      setPage(nextPage); // Update the page state to the next page
-      // Optionally, update totalUsers if it changes or is returned by fetchAllUsersInfo
-    } catch (error) {
-      console.error('Failed to fetch more users info:', error);
-      showAlert(`Failed to fetch more users info: ${error.toString()}`, "", "warning")
-      setIsError(true);
-    }
-  };
 
   return (
     <>
@@ -170,42 +111,12 @@ const Profile = () => {
                 <EditAccountComponent userInfo={userInfo} />
               </AccordionContent>
             </AccordionItem>
-            {userInfo.role === "admin" &&
-              <AccordionItem value="item-3">
-                <AccordionTrigger>Admin - All Users</AccordionTrigger>
-                <AccordionContent>
-                  <>
-                    <div className="flex flex-col gap-4 mb-4">
-                      <div className="flex gap-4">
-                        <select
-                          className="rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-                          value={searchField}
-                          onChange={(e) => setSearchField(e.target.value)}
-                        >
-                          {searchFields.map((field) => (
-                            <option key={field.value} value={field.value}>{field.label}</option>
-                          ))}
-                        </select>
-                        <Input
-                          className="border p-2"
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          placeholder="Search..."
-                        />
-                        <Button onClick={handleSearchSubmit}>Search</Button>
-                      </div>
-                      <AllUsersComponent allUsersInfo={allUsersInfo} onSelectUser={onSelectUser} />
-                      {page < totalPages && (
-                        <Button onClick={loadMoreUsers} className="container mx-auto mt-5">Load More</Button>
-                      )}
-                    </div>
-                  </>
-                </AccordionContent>
-              </AccordionItem>
-            }
+            {userInfo && userInfo.role === "admin" && (
+              <AdminUsersProvider><AdminAllUsers /></AdminUsersProvider>
+            )}
           </Accordion>
 
-          {showSheet && selectedUser && (
+          {/* {showSheet && selectedUser && (
             <Sheet open={showSheet} onOpenChange={setShowSheet}>
               <SheetTrigger asChild>
                 <Button>Edit Role and Password</Button>
@@ -214,7 +125,7 @@ const Profile = () => {
                 <EditRoleComponent userInfo={selectedUser} onCancel={() => setShowSheet(false)} onRoleUpdate={refreshUserData} />
               </SheetContent>
             </Sheet>
-          )}
+          )} */}
         </div>
       </div>
     </>

@@ -1,46 +1,37 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useAuth } from '@/context/AuthContext'; // Adjust the import path as necessary
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'; // Adjust the import path
-import { isLoggedIn } from '@/lib/auth';
+import { useAuth } from '@/context/AuthContext';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { useAlert } from '@/context/AlertContext';
 
 export default function Auth() {
-  const {showAlert} = useAlert()
-  
+  const { showAlert } = useAlert();
+  const { isLoggedIn, login, signup, logout } = useAuth();
+  const router = useRouter();
+
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
-  const [feedbackMessage, setFeedbackMessage] = useState('');
-  const [feedbackType, setFeedbackType] = useState('error'); // New state to track feedback type
+  const [selectedTab, setSelectedTab] = useState('login');
 
-  const [selectedTab, setSelectedTab] = useState('login'); // State to track the active tab
-  const { login, signup } = useAuth(); // Destructure login and signup functions from context
-  const router = useRouter();
-
+  // Redirect if already logged in
   useEffect(() => {
-    const isLogged = isLoggedIn();
-    if (isLogged) {
-      router.push("/");
+    if (isLoggedIn) {
+      router.push('/profile');
     }
-  }, [router]);
+  }, [isLoggedIn, router]);
 
   const handleSubmitLogin = async (event) => {
     event.preventDefault();
     try {
       const success = await login({ username, password });
       if (success) {
-        showAlert("Log-in successful","","success")
-        setFeedbackType("success")
-        setFeedbackMessage('Login successful. Redirecting...'); // Optionally provide feedback
-        router.push('/profile'); // Redirect to profile page or another page upon successful login
-      } else {
-        setFeedbackMessage('Authentication failed. Please try again.');
+        showAlert("Log-in successful", "", "success");
+        router.push('/profile');
       }
     } catch (error) {
-      showAlert("Log-in error","","warning")
-      setFeedbackMessage(`Error: ${error.toString()}`);
+      showAlert("Login error: " + error.toString(), "", "error");
     }
   };
 
@@ -49,26 +40,21 @@ export default function Auth() {
     try {
       const success = await signup({ email, username, password, fullname: fullName });
       if (success) {
-        setSelectedTab('login'); // Switch to the login tab
-        setFeedbackMessage('Signup successful. Please log in.'); // Optionally provide feedback
-        setFeedbackType("success")
-      } else {
-        setFeedbackMessage('SignUp Failed. Please try again.');
+        showAlert("Signup successful. Please log in.", "", "success");
+        setSelectedTab('login');
       }
     } catch (error) {
-      setFeedbackMessage(`Error: ${error.toString()}`);
+      showAlert("Signup error: " + error.toString(), "", "error");
     }
   };
 
   return (
-
     <div className="flex items-center justify-center min-h-screen">
       <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl shadow-lg z-10">
-
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
           <TabsList aria-label="Login or Signup">
-            <TabsTrigger value="login" className="w-full text-2xl data-[state=active]:text-sunset-orange data-[state=inactive]:text-cerulean-blue">Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className="w-full text-2xl data-[state=active]:text-sunset-orange data-[state=inactive]:text-cerulean-blue">Sign Up</TabsTrigger>
+            <TabsTrigger value="login" className='text-xl'>Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className='text-xl'>Sign Up</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <form onSubmit={handleSubmitLogin} className="space-y-6">
@@ -109,11 +95,7 @@ export default function Auth() {
             </form>
           </TabsContent>
         </Tabs>
-        {feedbackMessage && (
-          <p className={`mt-4 text-center ${feedbackType === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-            {feedbackMessage}
-          </p>
-        )}</div>
+      </div>
     </div>
   );
 }

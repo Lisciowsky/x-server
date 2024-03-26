@@ -1,27 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect} from 'react';
 import { useForm } from 'react-hook-form';
-import { Input } from '@/components/ui/input'; // Adjust the import path according to your project structure
-import { Button } from '@/components/ui/button'; // Adjust this import as well
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 
-import axiosInstance from '@/lib/axiosInstance';
-
 export default function ContactForm() {
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
-  const { username } = useAuth();
-  const [email, setEmail] = useState("");
+  const { register, handleSubmit, setValue, formState: { errors } } = useForm();
+  const { userInfo } = useAuth();
 
+  // This effect will prepopulate the form fields if userInfo is available
   useEffect(() => {
-    if (username) {
-      axiosInstance.get(`/users/${username}`).then((resp) => {
-        if (resp.data.email) {
-          setEmail(resp.data.email);
-          setValue("email", resp.data.email); // Prepopulate the email field
-        }
-      });
-      setValue("name", username); // Prepopulate the name field with username
+    if (userInfo) {
+      setValue("email", userInfo.email);
+      setValue("name", userInfo.username); // Assuming you want to prefill the name with the username
     }
-  }, [username, setValue]);
+  }, [userInfo, setValue]);
 
   const onSubmit = data => console.log(data);
 

@@ -21,11 +21,11 @@ import {
 import { UserInfo } from '@/models/user';
 
 import { clearAuthTokens } from '@/lib/auth';
-import { updateUserInfo, updateUserPassword } from '@/api/users-endpoints';
-
+import { updateUserInfo} from '@/api/users-endpoints';
 import { useAlert } from '@/context/AlertContext';
 
 import { useRouter } from 'next/router';
+import { UpdateUserRequest } from '@/models/user-responses';
 
 interface EditAccountProps {
   userInfo: UserInfo;
@@ -47,23 +47,31 @@ function EditAccountComponent({ userInfo }: EditAccountProps) {
       return;
     }
     try {
-      await updateUserInfo(userInfo.username, fullname);
+      const updateUserRequest: UpdateUserRequest = {
+        fullname: userInfo.fullname
+      }
+      await updateUserInfo(userInfo.username, updateUserRequest);
       showAlert("Fullname changed successfully", "", "success");
       router.push("/profile");
     } catch (error) {
-      showAlert(error.message, "", "warning");
+      showAlert(error.toString(), "", "warning");
     }
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await updateUserPassword(userInfo.username, newPassword, currentPassword);
+      const updateUserRequest: UpdateUserRequest = {
+        current_password: currentPassword,
+        password: newPassword
+      }
+
+      await updateUserInfo(userInfo.username, updateUserRequest);
       showAlert("Password changed successfully", "", "success");
       clearAuthTokens();
       router.push("/login");
     } catch (error) {
-      showAlert(error.message, "", "warning");
+      showAlert(error.toString(), "", "warning");
     }
   };
 

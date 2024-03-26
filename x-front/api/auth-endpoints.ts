@@ -1,26 +1,42 @@
 import axiosInstance from "../lib/axiosInstance";
 
-import { UpdateUserResponse } from "@/models/user";
+import { UpdateUserResponse, PaginatedUsersResponse, } from "@/models/admin-responses";
+import { User } from "@/models/user";
+export interface UpdateUserRequest {
+  role: string
+}
 
-export const updateUserRole = async (username: string, role: string): Promise<UpdateUserResponse> => {
+export const updateUserRole = async (username: string, updateRequest: UpdateUserRequest): Promise<UpdateUserResponse> => {
   try {
-    const data = { role: role };
-    const response = await axiosInstance.put(`/admin/update_role/${username}`, data);
-
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      const error = new Error("Failed to update user role due to unexpected server response");
-      error.response = response;
-      throw error;
-    }
+    const response = await axiosInstance.put(`/admin/update_role/${username}`, updateRequest);
+    return response.data
   } catch (error) {
-    console.error('Failed to update user role:', error);
+    const errorMessage = error.response?.data?.detail || "Failed to update user role due to a network or server error.";
+    throw new Error(errorMessage);
+  }
+};
 
-    if (error.response && error.response.data && error.response.data.detail) {
-      throw new Error(error.response.data.detail);
-    } else {
-      throw new Error("Please check your network connection and try again");
-    }
+
+export const fetchAllUsersInfo = async (page: number, page_size: number): Promise<PaginatedUsersResponse> => {
+  try {
+    const response = await axiosInstance.get(`/admin/all_users?page=${page}&page_size=${page_size}`);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.detail || "Failed to fetch users due to a network or server error.";
+    throw new Error(errorMessage);
+  }
+};
+
+export interface UserSearchRequest {
+  searchField: string;
+}
+
+export const searchUser = async (searchRequest: UserSearchRequest): Promise<User[]> => {
+  try {
+    const response = await axiosInstance.post(`/admin/search_user`, searchRequest);
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.detail || "Failed to search users due to a network or server error.";
+    throw new Error(errorMessage);
   }
 };
