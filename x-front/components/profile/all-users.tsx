@@ -34,20 +34,7 @@ const columns: ColumnDef<TableData>[] = [
   {
     accessorKey: 'email',
     header: 'Email',
-  },
-  // {
-  //   accessorKey: 'is_email_verified',
-  //   header: 'Email Verified',
-  //   cell: info => info.getValue() ? 'Yes' : 'No',
-  // },
-  // {
-  //   accessorKey: 'password_changed_at',
-  //   header: 'Password Changed At',
-  // },
-  // {
-  //   accessorKey: 'created_at',
-  //   header: 'Created At',
-  // },
+  }
 ];
 
 interface AllUsersComponentProps {
@@ -69,7 +56,7 @@ const AllUsersComponent: React.FC<AllUsersComponentProps> = ({ allUsersInfo, onS
   );
 
   return (
-    <div className="overflow-x-auto text-black">
+    <div className="overflow-x-auto text-black rounded-md p-2">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map(headerGroup => (

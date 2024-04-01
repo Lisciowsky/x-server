@@ -60,10 +60,6 @@ export function AdminUsersProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  useEffect(() => {
-    refreshUserData();
-  }, [page, pageSize]);
-
   return (
     <AdminUsersContext.Provider value={{
       allUsersInfo,

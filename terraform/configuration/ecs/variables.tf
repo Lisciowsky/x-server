@@ -61,3 +61,12 @@ variable "database_username" {
 variable "database_password" {
     type = string
 }
+
+# Storage S3 Bucket app env variables
+variable "bucket_name" {
+    type = string
+}
+
+variable "bucket_region_name" {
+    type = string
+}

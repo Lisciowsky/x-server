@@ -2,6 +2,7 @@ import axios from 'axios';
 import { handleGlobalLogout } from './auth';
 
 const axiosInstance = axios.create({
+  // baseURL: "https://bxir3sbg45xgooe7mq5enzetau0lslsu.lambda-url.eu-central-1.on.aws/v1",
   // baseURL: "http://localhost:8080/v1",
   baseURL: "https://api.szumi-dev.com/v1",
   withCredentials: true,

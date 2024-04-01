@@ -45,6 +45,14 @@ resource "aws_ecs_task_definition" "my_task" {
         {
           name = "ENVIRONMENT",
           value = var.environment
+        },
+        {
+          name = "BUCKET_NAME",
+          value = var.bucket_name
+        },
+        {
+          name = "BUCKET_REGION_NAME",
+          value = var.bucket_region_name
         }
       ]
     }

@@ -18,8 +18,8 @@ export const useAuth = () => {
 interface AuthContextType {
   isLoggedIn: boolean;
   setIsLoggedIn: (indicator: boolean) => void;
-  userInfo: UserInfo | null;
-  setUserInfo: (userInfo: UserInfo | null) => void;
+  userInfo: UserInfo;
+  setUserInfo: (userInfo: UserInfo) => void;
   login: (credentials: { username: string; password: string }) => Promise<boolean>;
   signup: (credentials: { email: string; username: string; password: string; fullname?: string }) => Promise<boolean>;
   logout: () => void;

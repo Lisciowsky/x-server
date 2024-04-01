@@ -19,6 +19,7 @@ module "ecr" {
 
 module "iam" {
   source = "./configuration/iam"
+  aws_s3_bucket_user_storage_arn = module.s3_cloudfront.user_storage_bucket_arn
   # Add any required variables for the IAM module here
 }
 
@@ -120,6 +121,8 @@ module "ecs" {
   access_token_duration_minutes = "15"
   refresh_token_duration_minutes = "60"
   environment           = "PRODUCTION"
+  bucket_name = module.s3_cloudfront.user_storage_bucket_name
+  bucket_region_name = var.aws_region
 }
 
 

@@ -50,7 +50,7 @@ export default function Auth() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl shadow-lg z-10">
+      <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl shadow-lg">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
           <TabsList aria-label="Login or Signup">
             <TabsTrigger value="login" className='text-xl'>Sign In</TabsTrigger>

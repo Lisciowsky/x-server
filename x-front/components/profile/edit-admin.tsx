@@ -14,11 +14,11 @@ import { User } from '@/models/user';
 import { useAlert } from '@/context/AlertContext';
 
 import { updateUserRole, UpdateUserRequest } from '@/api/auth-endpoints';
-
+import { UpdateUserResponse } from '@/models/admin-responses';
 interface EditAccountProps {
     user: User;
     onCancel: () => void;
-    onRoleUpdate: () => Promise<void>;
+    onRoleUpdate: (updateResponse: UpdateUserResponse) => void;
 }
 
 
@@ -36,9 +36,9 @@ function EditRoleComponent({ user, onCancel, onRoleUpdate }: EditAccountProps) {
             const updateUserRequest: UpdateUserRequest = {
                 role: role
             }
-            await updateUserRole(user.username, updateUserRequest);
+            const response = await updateUserRole(user.username, updateUserRequest);
             showAlert("Role changed successfully", "", "success");
-            await onRoleUpdate();
+            onRoleUpdate(response);
             onCancel();
         } catch (error) {
             onCancel();

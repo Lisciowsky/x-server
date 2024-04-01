@@ -16,8 +16,10 @@ import ProfileInfoComponent from '../../components/profile/profile-info';
 import EditAccountComponent from '../../components/profile/edit-account';
 import EditRoleComponent from '@/components/profile/edit-admin';
 import AllUsersComponent from '../../components/profile/all-users';
+import UserStorage from '@/components/profile/user-storage';
 
 import { useAlert } from '@/context/AlertContext';
+import { UpdateUserResponse } from '@/models/admin-responses';
 
 const searchFields = [
   { label: "Username", value: "username" },
@@ -40,13 +42,37 @@ const Profile = () => {
   const AdminAllUsers = () => {
     const {
       allUsersInfo,
+      setAllUsersInfo,
       selectedUser,
       setSelectedUser,
-      totalPages,
       searchUsers,
       loadMoreUsers,
-      refreshUserData
+      totalUsers
     } = useAdminUsers();
+
+    const onUpdateRoleHandler = (updatedUserResponse: UpdateUserResponse) => {
+      const userIndex = allUsersInfo.findIndex(user => user.username === updatedUserResponse.username);
+      if (userIndex !== -1) {
+        const updatedUser = {
+          ...allUsersInfo[userIndex],
+          role: updatedUserResponse.role, // Update the role from the response
+        };
+    
+        const updatedUsersInfo = [
+          ...allUsersInfo.slice(0, userIndex),
+          updatedUser,
+          ...allUsersInfo.slice(userIndex + 1),
+        ];
+    
+        setAllUsersInfo(updatedUsersInfo);
+      }
+    };
+    
+    const handleSearchChange = (e) => {
+      console.log(e.target.value)
+      e.preventDefault()
+      setSearchQuery(e.target.value)
+    }
 
     const handleSearchSubmit = async () => {
       try {
@@ -57,9 +83,6 @@ const Profile = () => {
     };
 
     return <>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Admin - All Users</AccordionTrigger>
-        <AccordionContent>
           <div className="flex flex-col gap-4 mb-4">
             <div className="flex gap-4">
               <select
@@ -74,18 +97,16 @@ const Profile = () => {
               <Input
                 className="p-2 border-none"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 placeholder="Search..."
               />
-              <Button onClick={handleSearchSubmit}>Search</Button>
+              <Button className="shadow-sm" onClick={handleSearchSubmit}>Search</Button>
             </div>
             <AllUsersComponent allUsersInfo={allUsersInfo} onSelectUser={(user) => { setSelectedUser(user); setShowSheet(true); }} />
-            {totalPages > 1 && (
+            {allUsersInfo.length < totalUsers && (
               <Button onClick={loadMoreUsers} className="container mx-auto mt-5">Load More</Button>
             )}
           </div>
-        </AccordionContent>
-      </AccordionItem>
       {
         showSheet && selectedUser && (
           <Sheet open={showSheet} onOpenChange={setShowSheet}>
@@ -93,7 +114,7 @@ const Profile = () => {
               <Button>Edit Role and Password</Button>
             </SheetTrigger>
             <SheetContent>
-              <EditRoleComponent user={selectedUser} onCancel={() => setShowSheet(false)} onRoleUpdate={refreshUserData} />
+              <EditRoleComponent user={selectedUser} onCancel={() => setShowSheet(false)} onRoleUpdate={onUpdateRoleHandler} />
             </SheetContent>
           </Sheet>
         )
@@ -103,27 +124,42 @@ const Profile = () => {
 
   return (
     <>
-      <div className='max-sm:grid-rows-2 max-sm: space-y-10 mt-4 md:flex md:container md:mx-auto md:justify-around'>
-        <div className='text-black'>
-          <Accordion type="single" collapsible className="w-full">
-            <AccordionItem value="item-1">
+      <div className='flex flex-col items-center mt-4'>
+        <div className='text-black w-full'>
+          <Accordion type="single" collapsible>
+            <AccordionItem value="item-1">  
               <AccordionTrigger>Your profile data</AccordionTrigger>
               <AccordionContent>
+                <div className='md:flex md:container md:mx-auto md:justify-center'>
                 <ProfileInfoComponent userInfo={userInfo} />
+                </div>
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-2">
               <AccordionTrigger>Edit your data</AccordionTrigger>
               <AccordionContent>
+              <div className='md:flex md:container md:mx-auto md:justify-center'>
                 <EditAccountComponent userInfo={userInfo} />
+              </div>
+              </AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="item3">
+              <AccordionTrigger>User Storage</AccordionTrigger>
+              <AccordionContent>
+                <UserStorage/>
               </AccordionContent>
             </AccordionItem>
             {userInfo && userInfo.role === "admin" && (
-              <AdminUsersProvider><AdminAllUsers /></AdminUsersProvider>
+            <AdminUsersProvider>
+              <AccordionItem value="item-4">
+                <AccordionTrigger>Admin - All Users</AccordionTrigger>
+                  <AccordionContent>
+                    <AdminAllUsers />
+                </AccordionContent>
+              </AccordionItem>
+            </AdminUsersProvider>
             )}
           </Accordion>
-
-
         </div>
       </div>
     </>

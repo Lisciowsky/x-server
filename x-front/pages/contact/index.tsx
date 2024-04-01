@@ -58,7 +58,7 @@ export default function ContactForm() {
           {errors.message && <p className="text-red-500 text-xs mt-2">Message is required.</p>}
         </div>
 
-        <Button type="submit" className="px-6 py-3 bg-deep-sky-blue text-white rounded-md hover:bg-cerulean-blue text-lg">Send Message</Button>
+        <Button type="submit" className="px-6 py-3 bg-deep-sky-blue text-white rounded-xl hover:bg-cerulean-blue text-lg">Send Message</Button>
       </form>
     </div>
   );

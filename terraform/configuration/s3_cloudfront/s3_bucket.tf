@@ -12,7 +12,6 @@ resource "aws_s3_bucket" "website_bucket" {
   }
 }
 
-# Bucket policy to allow access from CloudFront
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.website_bucket.id
 
@@ -28,10 +27,3 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
     ]
   })
 }
-
-# resource "aws_s3_object" "my_nextjs_deployment" {
-#   bucket       = aws_s3_bucket.website_bucket.id
-#   key          = "next_build"
-#   source       = "../x-front/.next"
-#   # content_type = "text/html"
-# }

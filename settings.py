@@ -9,7 +9,6 @@ class Environment(str, Enum):
 
 
 ENVIRONMENT = os.getenv("ENVIRONMENT")
-# ENVIRONMENT = "TESTING"
 
 if not Environment:
     raise ValueError("Could not determine the environemnt")
@@ -17,11 +16,17 @@ if not Environment:
 if ENVIRONMENT == Environment.TESTING:
     load_dotenv("app.env")
 
+# DB
 DATABASE_URL = os.getenv("DATABASE_URL")
 MOCK_DB_URL = os.getenv("MOCK_DB_URL")
 
+# Server
 SERVER_HOST = os.getenv("SERVER_HOST")
 SERVER_PORT = os.getenv("SERVER_PORT")
+
+# Storage - AWS S3
+BUCKET_NAME = os.getenv("BUCKET_NAME")
+BUCKET_REGION_NAME = os.getenv("BUCKET_REGION_NAME")
 
 JWT_SECRET = os.getenv("JWT_SECRET")
 ACCESS_TOKEN_DURATION_MINUTES = os.getenv("ACCESS_TOKEN_DURATION_MINUTES")
@@ -48,6 +53,8 @@ variables_to_print = [
     "REFRESH_TOKEN_DURATION_MINUTES",
     "API_VERSION",
     "DB_URL",
+    "BUCKET_NAME",
+    "BUCKET_REGION_NAME",
 ]
 
 for var in variables_to_print:
