@@ -22,6 +22,7 @@ pytest_args = [
     "src/api/routes",
     # '-p no:warnings'
     # '--verbose',  # Verbose output
+    "-x",
     # Add other pytest arguments as needed
 ]
 

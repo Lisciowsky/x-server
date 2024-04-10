@@ -103,6 +103,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_policy_attachment" {
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_s3_access_attachment" {
-  role       = aws_iam_role.ecs_tasks_execution_role.name
+  role       = aws_iam_role.ecs_tasks_role.name
   policy_arn = aws_iam_policy.ecs_s3_access.arn
 }

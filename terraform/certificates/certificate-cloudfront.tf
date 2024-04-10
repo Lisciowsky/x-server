@@ -1,8 +1,3 @@
-# Existing AWS provider (default region, likely not us-east-1)
-provider "aws" {
-  # Your existing provider configuration
-}
-
 # Additional AWS provider for us-east-1
 provider "aws" {
   alias  = "us-east-1"

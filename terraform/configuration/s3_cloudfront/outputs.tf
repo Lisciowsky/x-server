@@ -14,5 +14,5 @@ output "user_storage_bucket_arn" {
   value = aws_s3_bucket.user_storage.arn
 }
 output "user_storage_bucket_name" {
-  value = aws_s3_bucket.website_bucket.bucket
+  value = aws_s3_bucket.user_storage.bucket
 }

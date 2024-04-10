@@ -11,12 +11,16 @@ storage_router = APIRouter(prefix="/storage")
 
 # session = Session(profile_name="private")
 
-# s3_client = session.client("s3", region_name="eu-central-1")
+# s3_client = session.client("s3", region_name=BUCKET_REGION_NAME)
 s3_client = boto3.client("s3", region_name=BUCKET_REGION_NAME)  # for deployment
 
 
 class GetUserStorageResponse(BaseModel):
     folders: dict
+
+
+class GetPresignedUrlResponse(BaseModel):
+    url: str
 
 
 def list_files_folders(prefix=""):
@@ -58,7 +62,9 @@ async def get_user_storage(
     return GetUserStorageResponse(folders=user_storage_structure)
 
 
-@storage_router.get("/upload-url/{username}/{file_path:path}")
+@storage_router.get(
+    "/upload-url/{username}/{file_path:path}", response_model=GetPresignedUrlResponse
+)
 async def get_upload_url(
     username: str, file_path: str, current_user: UserPayload = Depends(get_current_user)
 ):
@@ -74,13 +80,15 @@ async def get_upload_url(
             Params={"Bucket": BUCKET_NAME, "Key": f"{username}/{file_path}"},
             ExpiresIn=3600,
         )
-        return {"url": presigned_url}
+        return GetPresignedUrlResponse(url=presigned_url)
     except Exception as e:
         logger.exception("Failed to generate presigned URL for upload")
         raise HTTPException(status_code=500, detail="Failed to generate upload URL")
 
 
-@storage_router.get("/download-url/{username}/{file_path:path}")
+@storage_router.get(
+    "/download-url/{username}/{file_path:path}", response_model=GetPresignedUrlResponse
+)
 async def get_download_url(
     username: str, file_path: str, current_user: UserPayload = Depends(get_current_user)
 ):
@@ -95,7 +103,7 @@ async def get_download_url(
             Params={"Bucket": BUCKET_NAME, "Key": f"{username}/{file_path}"},
             ExpiresIn=3600,
         )  # URL expires in 1 hour
-        return {"url": presigned_url}
+        return GetPresignedUrlResponse(url=presigned_url)
     except Exception as e:
         logger.exception("Failed to generate presigned URL for download")
         raise HTTPException(status_code=500, detail="Failed to generate download URL")

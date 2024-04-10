@@ -111,6 +111,7 @@ module "ecs" {
   rds_sg_id = module.security.rds_sg_id
   aws_lb_target_group_fastapi_tg_arn = module.alb.aws_lb_target_group_fastapi_tg_arn
   ecs_tasks_execution_role = module.iam.ecs_tasks_execution_role
+  ecs_tasks_task_role_arn = module.iam.ecs_tasks_role
 
   # fastapi webserver requirements
   database_name = var.database_name

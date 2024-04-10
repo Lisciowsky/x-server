@@ -1,3 +1,12 @@
+# TODO
+- [X] Terrafor minfrastructure AWS
+- [X] User Authentication
+- [ ] Singup email verification on account create
+
+# Ideas
+- Use scraped users followers data, categorize use vertical db use llm to answer questions about the followers base and info ?
+
+
 ## Instal terraform
 sudo apt-get update
 sudo apt-get install -y gnupg software-properties-common curl
@@ -37,5 +46,4 @@ with aws rds proxy, that's why I will try to integrate pgbouncer running as a ta
 https://github.com/MagicStack/asyncpg/issues/952
 
 UPDATE: moved to subfolder, pgbouncer add more complexity + didn't see much of a improvement. Moved all the related pgbouncer files to /research/pgbouncer subfolder.
-
 

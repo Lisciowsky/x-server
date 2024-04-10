@@ -1,15 +1,14 @@
 resource "aws_s3_bucket" "user_storage" {
-  bucket_prefix = "${terraform.workspace}-user-storage-"
+  bucket_prefix = "${terraform.workspace}-user-storage-bucket-random-string"
   acl           = "private"
 
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["PUT", "POST", "GET", "DELETE", "HEAD"]
-    allowed_origins = ["http://localhost:3000", "https://szumi-dev.com"] # Adjust this for production
-    expose_headers  = []
+    allowed_origins = ["http://localhost:3000", "https://szumi-dev.com"]
+    expose_headers  = ["ETag"] # Add any headers your application needs to read from the response
     max_age_seconds = 3000
   }
-
   tags = {
     Name = "${terraform.workspace} User Storage"
   }
