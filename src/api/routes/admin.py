@@ -106,6 +106,7 @@ class UserSearchRequest(BaseModel):
     username: Optional[str] = None
     email: Optional[str] = None
     fullname: Optional[str] = None
+    role: Optional[str] = None
 
 
 @admin_router.post("/search_user", response_model=List[UserOut])
@@ -120,5 +121,6 @@ async def search_users(
         username=search_request.username,
         email=search_request.email,
         fullname=search_request.fullname,
+        role=search_request.role,
     )
     return [UserOut(**user.__dict__) for user in users]

@@ -1,8 +1,6 @@
 import * as React from "react";
 import Head from 'next/head';
-// import Image from 'next/image';
 
-// Assuming these components exist in your project structure
 import {
   Card,
   CardContent,
@@ -19,7 +17,7 @@ const teamMembers = [
     name: "Jane Doe",
     position: "Lead Developer",
     description: "Expert in frontend technologies and UX design.",
-    imageUrl: "/dear.jpeg", // Assuming this image is in the public/images folder
+    imageUrl: "/dear.jpeg",
     imageWidth: 400,
     imageHeight: 400,
   },

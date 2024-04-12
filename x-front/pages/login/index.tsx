@@ -15,7 +15,6 @@ export default function Auth() {
   const [fullName, setFullName] = useState('');
   const [selectedTab, setSelectedTab] = useState('login');
 
-  // Redirect if already logged in
   useEffect(() => {
     if (isLoggedIn) {
       router.push('/profile');

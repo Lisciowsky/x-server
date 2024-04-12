@@ -63,12 +63,13 @@ class DAL:
     async def delete_user(self, username: str):
         return await delete_user(async_session=self.async_session, username=username)
 
-    async def search_users(self, username: str, email: str, fullname: str):
+    async def search_users(self, username: str, email: str, fullname: str, role: str):
         return await search_users(
             async_session=self.async_session,
             username=username,
             email=email,
             fullname=fullname,
+            role=role,
         )
 
     # SESSION TABLE

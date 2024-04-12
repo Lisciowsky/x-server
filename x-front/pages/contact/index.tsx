@@ -8,11 +8,10 @@ export default function ContactForm() {
   const { register, handleSubmit, setValue, formState: { errors } } = useForm();
   const { userInfo } = useAuth();
 
-  // This effect will prepopulate the form fields if userInfo is available
   useEffect(() => {
     if (userInfo) {
       setValue("email", userInfo.email);
-      setValue("name", userInfo.username); // Assuming you want to prefill the name with the username
+      setValue("name", userInfo.username);
     }
   }, [userInfo, setValue]);
 
@@ -53,7 +52,7 @@ export default function ContactForm() {
             id="message"
             name="message"
             {...register("message", { required: true })}
-            className={`mt-1 p-3 w-full border ${errors.message ? "border-red-500" : "border-sonic-silver"} rounded-md shadow-sm h-40 text-rich-black align-top`} // Added align-top class
+            className={`mt-1 p-3 w-full border ${errors.message ? "border-red-500" : "border-sonic-silver"} rounded-md shadow-sm h-40 text-rich-black align-top`}
           />
           {errors.message && <p className="text-red-500 text-xs mt-2">Message is required.</p>}
         </div>

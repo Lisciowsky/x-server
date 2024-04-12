@@ -115,6 +115,7 @@ async def search_users(
     username: Optional[str] = None,
     email: Optional[str] = None,
     fullname: Optional[str] = None,
+    role: Optional[str] = None,
 ) -> list[User]:
     try:
         async with async_session() as session:
@@ -126,6 +127,8 @@ async def search_users(
                 query = query.filter(User.email.like(f"%{email}%"))
             if fullname:
                 query = query.filter(User.full_name.like(f"%{fullname}%"))
+            if role:
+                query = query.filter(User.role.like(f"%{role}%"))
 
             result = await session.execute(query)
             users = result.scalars().all()

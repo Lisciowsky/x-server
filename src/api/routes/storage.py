@@ -1,6 +1,6 @@
 import boto3
 from boto3.session import Session
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import Depends, APIRouter, HTTPException, status
 from src.token.token_maker import get_current_user, UserPayload
 from pydantic import BaseModel
 from loguru import logger
@@ -58,7 +58,12 @@ async def get_user_storage(
     try:
         user_storage_structure = list_files_folders(prefix=prefix)
     except Exception as ex:
-        logger.exception(f"failed to load the user: {username} storage")
+        ex_msg = f"failed to load the user: {username} storage"
+        logger.exception(ex_msg)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ex_msg,
+        )
     return GetUserStorageResponse(folders=user_storage_structure)
 
 

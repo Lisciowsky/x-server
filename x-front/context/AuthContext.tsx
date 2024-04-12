@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const checkUserSession = async () => {
     try {
-      const response: UserInfo = await checkSession(); // Implement this endpoint on your server
+      const response: UserInfo = await checkSession();
       setIsLoggedIn(true);
       setUserInfo(response);
     } catch (error) {
@@ -54,7 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       await loginUser(credentials);
       setIsLoggedIn(true);
-      await checkUserSession(); // Re-fetch user info after successful login
+      await checkUserSession();
       return true;
     } catch (error) {
       showAlert(error.toString(), "", "warning");
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = useCallback(async () => {
     try {
       console.log("logging out the user")
-      await logoutUser(); // Ensure this sends a request to the correct endpoint
+      await logoutUser();
       setIsLoggedIn(false);
       setUserInfo(null);
       console.log("pushing to /login")

@@ -34,6 +34,7 @@ export function AdminUsersProvider({ children }: { children: ReactNode }) {
       setAllUsersInfo(allUsersData.users);
       setTotalUsers(allUsersData.total_users);
       setTotalPages(Math.ceil(allUsersData.total_users / pageSize));
+      setPage(1)
     } catch (error) {
       showAlert(`Failed to fetch all users info: ${error.toString()}`, "", "warning");
     }

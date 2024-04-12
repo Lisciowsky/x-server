@@ -1,16 +1,14 @@
 import React from 'react';
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import { useAlert } from '../context/AlertContext'; // Adjust the import path as needed
-import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert'; // Adjust the import path as needed
+import { useAlert } from '../context/AlertContext';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXTwitter } from '@fortawesome/free-brands-svg-icons';
 
 
 const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { alerts, hideAlert } = useAlert();
-
-  // No need for useEffect to manage timeouts, as this is handled in the context
 
   return (
     <div className="flex flex-col min-h-screen">

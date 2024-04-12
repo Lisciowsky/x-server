@@ -1,21 +1,18 @@
 import React, { createContext, useContext, useState, ReactNode, useCallback } from 'react';
-
-// Adjust the import path as needed
 import { Alert} from '@/components/ui/alert';
 import { useRef } from 'react';
-// Extending the AlertContextType to include alertState
 interface Alert {
   id: number;
   message: string;
   title: string;
   variant: 'default' | 'destructive' | 'success' | 'warning' | 'info';
-  shouldFadeOut: boolean; // New property to manage fade-out
+  shouldFadeOut: boolean;
 }
 
 interface AlertContextType {
   showAlert: (message: string, title?: string, variant?: 'default' | 'destructive' | 'success' | 'warning' | 'info') => void;
-  hideAlert: (id: number) => void; // Updated to hide by id
-  alerts: Alert[]; // Updated to support multiple alerts
+  hideAlert: (id: number) => void;
+  alerts: Alert[];
 }
 
 const AlertContext = createContext<AlertContextType | undefined>(undefined);
@@ -33,16 +30,14 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   let alertId = useRef(0);
 
   const showAlert = useCallback((message: string, title: string = '', variant: 'default' | 'destructive' | 'success' | 'warning' | 'info' = 'default') => {
-    const id = ++alertId.current; // Increment and use as new ID
+    const id = ++alertId.current;
     setAlerts(currentAlerts => [...currentAlerts, { id, message, title, variant, shouldFadeOut: false }]);
-    // Set a timeout to mark the alert for fade out
     setTimeout(() => {
       setAlerts(currentAlerts => currentAlerts.map(alert => alert.id === id ? { ...alert, shouldFadeOut: true } : alert));
-      // Optionally, automatically remove the alert after fade-out
       setTimeout(() => {
         setAlerts(currentAlerts => currentAlerts.filter(alert => alert.id !== id));
-      }, 1000); // Assuming fade-out transition is 1s
-    }, 5000); // Adjust time as needed
+      }, 1000);
+    }, 5000);
   }, []);
 
   const hideAlert = useCallback((id: number) => {

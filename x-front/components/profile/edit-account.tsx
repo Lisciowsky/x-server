@@ -21,7 +21,6 @@ function EditAccountComponent({ userInfo }: EditAccountProps) {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
-  // External function for handling input changes
   const handleFullNameChange = (e) => {
     setFullname(e.target.value)
     console.log(fullname)
@@ -57,7 +56,6 @@ function EditAccountComponent({ userInfo }: EditAccountProps) {
       await updateUserInfo(userInfo.username, updateUserRequest);
       showAlert("Password changed successfully", "", "success");
       logout()
-      // router.push("/login");
 
     } catch (error) {
       showAlert(error.toString(), "", "warning");

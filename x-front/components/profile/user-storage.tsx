@@ -1,14 +1,15 @@
 import React, { useState, useMemo, useEffect } from 'react';
+import axios from 'axios';
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbSeparator } from '../ui/breadcrumb';
 import { FolderIcon, ArchiveIcon, DownloadIcon, UserRemoveIcon, FolderRemoveIcon } from '@heroicons/react/outline';
 import { useDropzone, FileWithPath } from 'react-dropzone';
 import { useAuth } from '@/context/AuthContext';
 import { getUploadUrl, getDownloadUrl, deleteStorage } from '@/api/storage-endpoints';
-import axios from 'axios';
 import { fetchUserStorage } from '@/api/storage-endpoints';
 import { useAlert } from '@/context/AlertContext';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import useEffectOnce from '@/common/hooks/use-effect-once';
 
 const UserStorage = () => {
   const { userInfo } = useAuth();
@@ -20,20 +21,20 @@ const UserStorage = () => {
   const [newFolderName, setNewFolderName] = useState('');
   const [showAddFolderInput, setShowAddFolderInput] = useState(false);
 
-  useEffect(() => {
+  useEffectOnce(() => {
     const fetchStorage = async () => {
       try {
         const userStorage = await fetchUserStorage(userInfo.username);
         setStorageStructure(userStorage.folders);
       } catch (error) {
-        console.error('Failed to fetch user storage:', error);
+        showAlert('Error', `Failed to fetch user storage: ${error.toString()}`, 'warning');
       }
     };
 
     if (userInfo && userInfo.username) {
       fetchStorage();
     }
-  }, [userInfo.username]);
+  });
 
   const { folders, files } = useMemo(() => {
     const pathFolders = Object.keys(storageStructure).reduce((acc, path) => {
@@ -57,45 +58,36 @@ const UserStorage = () => {
   }, [currentPath]);
 
   const onDrop = async (acceptedFiles: FileWithPath[]) => {
-    setUploading(true); // Set uploading state to true to indicate process start
-  
-    // Use Promise.all to handle multiple file uploads concurrently
-    // Assuming handleFileUpload is appropriately typed to accept a File object
-    await Promise.all(acceptedFiles.map((file: File) => handleFileUpload(file)));
-  
-    setUploading(false); // Reset uploading state after all uploads are complete
-    showAlert('Success', 'All files uploaded successfully!', 'success');
-  
-    // Fetch updated storage structure after all files are uploaded
-    // Assuming userInfo.username is of type string and fetchUserStorage accepts a string parameter
-    const userStorage = await fetchUserStorage(userInfo.username);
-    setStorageStructure(userStorage.folders);
+    try {
+      setUploading(true);
+      await Promise.all(acceptedFiles.map((file: File) => handleFileUpload(file)));
+      setUploading(false);
+      showAlert('Success', 'All files uploaded successfully!', 'success');
+      const userStorage = await fetchUserStorage(userInfo.username);
+      setStorageStructure(userStorage.folders);
+    } catch (error) {
+      setUploading(false);
+      showAlert('Error', 'Error uploading file.', 'warning');
+    }
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
   const handleFileUpload = async (file) => {
     setUploading(true);
-    try {
-      const pathWithoutFirstElement = currentPath.split('/').slice(1).join('/');
-      const filePath = `${pathWithoutFirstElement}${file.name}`;
-      const { url } = await getUploadUrl(userInfo.username, filePath);
-      await axios.put(url, file, {
-        headers: {
-          'Content-Type': file.type,
-        },
-      });
-      setUploading(false);
-      showAlert('Success', 'File uploaded successfully!', 'success');
-      setStorageStructure(prevStructure => {
-        const updatedFiles = prevStructure[currentPath] ? [...prevStructure[currentPath], file.name] : [file.name];
-        return { ...prevStructure, [currentPath]: updatedFiles };
-      });
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      setUploading(false);
-      showAlert('Error', 'Error uploading file.', 'error');
-    }
+    const pathWithoutFirstElement = currentPath.split('/').slice(1).join('/');
+    const filePath = `${pathWithoutFirstElement}${file.name}`;
+    const { url } = await getUploadUrl(userInfo.username, filePath);
+    await axios.put(url, file, {
+      headers: {
+        'Content-Type': file.type,
+      },
+    });
+    setUploading(false);
+    setStorageStructure(prevStructure => {
+      const updatedFiles = prevStructure[currentPath] ? [...prevStructure[currentPath], file.name] : [file.name];
+      return { ...prevStructure, [currentPath]: updatedFiles };
+    });
   };
 
   const handleFileDownload = async (filePath: string) => {
@@ -105,24 +97,19 @@ const UserStorage = () => {
       const { url } = await getDownloadUrl(userInfo.username, fullFilePath);
       window.open(url, '_blank');
     } catch (error) {
-      console.error('Error fetching download URL:', error);
-      showAlert('Error', 'Failed to fetch download URL.', 'error');
+      showAlert('Error', 'Failed to fetch download URL.', 'warning');
     }
   };
 
   const handleDelete = async (filePath: string) => {
     const filePathWithoutFirstElement = filePath.split('/').slice(1).join('/');
-    
-    setUploading(true); // Reuse the uploading state to indicate processing
+    setUploading(true);
     try {
-      // Append '/' for folders to differentiate on the backend
       await deleteStorage(userInfo.username, filePathWithoutFirstElement);
       showAlert('Success', 'deleted successfully!', 'success');
-
       const userStorage = await fetchUserStorage(userInfo.username);
       setStorageStructure(userStorage.folders);
     } catch (error) {
-      console.error('Error deleting:', error);
       showAlert('Error', 'Error deleting item.', 'warning');
     } finally {
       setUploading(false);
@@ -132,7 +119,7 @@ const UserStorage = () => {
   const handleAddFolder = () => {
     const trimmedFolderName = newFolderName.trim();
     if (!trimmedFolderName) {
-      showAlert('Error', 'Folder name cannot be empty', 'error');
+      showAlert('Error', 'Folder name cannot be empty', 'warning');
       return;
     }
     const newPath = `${currentPath}${trimmedFolderName}/`;
@@ -202,7 +189,7 @@ const UserStorage = () => {
           </div>
         ))}
         {files.map((filePath) => (
-          <div key={filePath} className="flex items-center p-2 text-lg justify-between">
+          <div key={filePath} className="flex items-center p-2 text-md justify-between">
             <div className="flex items-center">
               <ArchiveIcon className="h-6 w-6 mr-2 text-green-500" />
               <span>{filePath}</span>

@@ -48,8 +48,8 @@ function ProfileInfoComponent({ userInfo }: ProfileInfoProps) {
           username: {userInfo.username}
         </div>
         <div className="text-black rounded-md border px-4 py-2 font-mono text-sm shadow-sm">
-          role: {userInfo.role}
         </div>
+          role: {userInfo.role}
       </CollapsibleContent>
     </Collapsible>
 

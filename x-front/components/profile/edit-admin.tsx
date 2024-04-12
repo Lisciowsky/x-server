@@ -8,7 +8,7 @@ import {
     SheetFooter,
     SheetTitle,
     SheetDescription,
-} from '../ui/sheet'; // Adjust the import path as needed
+} from '../ui/sheet';
 
 import { User } from '@/models/user';
 import { useAlert } from '@/context/AlertContext';
@@ -24,7 +24,7 @@ interface EditAccountProps {
 
 
 function EditRoleComponent({ user, onCancel, onRoleUpdate }: EditAccountProps) {
-    const [role, setRole] = useState(user.role); // Ensure role is initialized from userInfo
+    const [role, setRole] = useState(user.role);
     const { showAlert } = useAlert();
 
     const handleRoleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
