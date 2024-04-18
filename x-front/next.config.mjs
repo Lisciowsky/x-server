@@ -1,7 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  output: "export",
+  // output: "export", // for static "out" folder
+  output: "standalone", // for dockerized app
   typescript: {
     // !! WARN !!
     // Dangerously allow production builds to successfully complete even if

@@ -29,6 +29,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@tanstack/react-table": "^8.14.0",
     "add": "^2.0.6",
+    "axios": "^1.6.8",
     "button": "^1.1.1",
     "card": "^2.5.4",
     "class-variance-authority": "^0.7.0",
