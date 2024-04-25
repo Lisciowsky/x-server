@@ -1,11 +1,10 @@
-resource "aws_secretsmanager_secret" "postgres_credentials" {
-  name = "${terraform.workspace}_postgres_credentials_v2"
+resource "aws_secretsmanager_secret" "mediaconvert_job_settings" {
+  name = "${terraform.workspace}_mediaconvert_job_settings"
 }
 
-resource "aws_secretsmanager_secret_version" "postgres_credentials" {
-  secret_id     = aws_secretsmanager_secret.postgres_credentials.id
+resource "aws_secretsmanager_secret_version" "mediaconvert_job_settings" {
+  secret_id     = aws_secretsmanager_secret.mediaconvert_job_settings.id
   secret_string = jsonencode({
-    username = var.database_username
-    password = var.database_password
+
   })
 }

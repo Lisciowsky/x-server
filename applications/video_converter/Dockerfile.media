@@ -1,0 +1,10 @@
+FROM public.ecr.aws/lambda/python:3.12
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /var/task
+
+COPY . .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["lambda_handler.lambda_handler"]
