@@ -54,6 +54,10 @@ resource "aws_ecs_task_definition" "my_task" {
         {
           name = "BUCKET_REGION_NAME",
           value = var.bucket_region_name
+        },
+        {
+          name = "MEDIA_CONVERT_BUCKET_NAME",
+          value = var.media_convert_bucket_name
         }
       ]
     }

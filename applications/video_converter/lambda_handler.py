@@ -19,7 +19,7 @@ def lambda_handler(event, context):
     bucket = event["Records"][0]["s3"]["bucket"]["name"]
     key = event["Records"][0]["s3"]["object"]["key"]
 
-    job_settings = {}
+    username = key.split("/")[1]
 
     job_settings = {
         "Inputs": [
@@ -35,7 +35,7 @@ def lambda_handler(event, context):
                 "OutputGroupSettings": {
                     "Type": "FILE_GROUP_SETTINGS",
                     "FileGroupSettings": {
-                        "Destination": f"s3://{settings.OUTPUT_BUCKET}/output/"
+                        "Destination": f"s3://{settings.OUTPUT_BUCKET}/output/{username}/"
                     },
                 },
             }
@@ -52,9 +52,6 @@ def lambda_handler(event, context):
 
     return response
 
-
-# def lambda_handler(*_):
-#     return("Hello from entry point")
 
 if __name__ == "__main__":
     event = {

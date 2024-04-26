@@ -75,3 +75,7 @@ variable "bucket_name" {
 variable "bucket_region_name" {
     type = string
 }
+
+variable "media_convert_bucket_name" {
+  type =  string
+}

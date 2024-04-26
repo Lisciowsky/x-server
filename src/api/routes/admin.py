@@ -36,7 +36,6 @@ async def get_all_users(
 ):
     if current_user.role != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed")
-
     try:
         users, total_users, page, page_size = await DAL().get_all_users(
             page=page, page_size=page_size

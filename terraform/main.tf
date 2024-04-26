@@ -102,6 +102,7 @@ module "ecs" {
   environment                    = "PRODUCTION"
   bucket_name                    = module.s3_cloudfront.user_storage_bucket_name
   bucket_region_name             = var.aws_region
+  media_convert_bucket_name = module.s3_media.aws_s3_video_bucket_name
 }
 
 module "media_convert" {

@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.engine.url import make_url
 from sqlalchemy import text
 
-from src.db.models import User, Session
+from src.db.models import User, Session, Media
 from src.db.user import (
     create_user,
     delete_user,
@@ -14,6 +14,7 @@ from src.db.user import (
     search_users,
 )
 from src.db.session import get_session, create_session
+from src.db.media import create_media, get_media
 
 from settings import DATABASE_URL, DB_URL
 
@@ -83,20 +84,28 @@ class DAL:
             async_session=self.async_session, session_id=session_id
         )
 
+    # MEDIA TABLE
+    async def create_media(self, new_media: Media) -> Media:
+        return await create_media(async_session=self.async_session, new_media=new_media)
+
+    async def get_media(self, media_name: str, owner_username: str):
+        return await get_media(
+            async_session=self.async_session,
+            media_name=media_name,
+            owner_username=owner_username,
+        )
+
     async def run_migrations(self):
         from alembic.config import Config
         from alembic import command
         import os
 
-        # Specify the location of your Alembic configuration file
         alembic_cfg = Config(
             os.path.join(os.path.dirname(__file__), "../../alembic.ini")
         )
 
-        # Optionally, override the sqlalchemy.url setting in alembic.ini dynamically
         alembic_cfg.set_main_option("sqlalchemy.url", DB_URL)
 
-        # Apply the 'head' migration to the database
         command.upgrade(alembic_cfg, "head")
 
     async def create_database_if_not_exists(self):
