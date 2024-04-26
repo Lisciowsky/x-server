@@ -85,7 +85,7 @@ update-front:
 	done
 	
 # AWS CloudFront Distribution ID
-DISTRIBUTION_ID := E1Q7ZM7N8Z32VK
+DISTRIBUTION_ID := 	E6FH89ZELIAJ5
 
 # Path to invalidate, use '/*' to invalidate everything
 INVALIDATION_PATHS := "/*"
@@ -95,4 +95,16 @@ invalidate:
 	@echo "Invalidating CloudFront distribution $(DISTRIBUTION_ID) for paths $(INVALIDATION_PATHS)"
 	@aws cloudfront create-invalidation --distribution-id $(DISTRIBUTION_ID) --paths $(INVALIDATION_PATHS)
 
+# --------------------------------------------------------------------
+TAG_CONVERTER_LAMBDA := converter-latest
+CONVERTER_LAMBDA_IMAGE_NAME := media_converter
+
+build-converter-lambda:
+	docker build -t media_converter:converter-latest -f ./applications/video_converter/Dockerfile.media ./applications/video_converter/.
+tag-converter-lambda:
+	docker tag $(CONVERTER_LAMBDA_IMAGE_NAME):$(TAG_CONVERTER_LAMBDA) $(ECR_REPOSITORY_URI):$(TAG_CONVERTER_LAMBDA)
+push-converter-lambda:
+	docker push $(ECR_REPOSITORY_URI):$(TAG_CONVERTER_LAMBDA)
+
+deploy-converter: build-converter-lambda tag-converter-lambda push-converter-lambda
 # --------------------------------------------------------------------

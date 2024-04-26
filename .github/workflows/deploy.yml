@@ -51,7 +51,39 @@ jobs:
       run: make test
 
 
-  deploy-lambda:
+  # deploy-lambda:
+  #   name: Deploy to Amazon ECR and Update Lambda
+  #   runs-on: ubuntu-latest
+  #   needs: test  # Ensure this runs only if 'test' succeeds
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2
+  
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v1
+  #       with:
+  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  #         aws-region: ${{ secrets.AWS_REGION }}
+  
+  #     - name: Log in to Amazon ECR
+  #       uses: aws-actions/amazon-ecr-login@v1
+  
+  #     - name: Build Docker image
+  #       run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} -f Dockerfile.lambda .
+  
+  #     - name: Tag Docker image
+  #       run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+  
+  #     - name: Push Docker image to Amazon ECR
+  #       run: docker push ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+  
+  #     # Update Lambda function to use the new Docker image
+  #     - name: Update Lambda function
+  #       run: |
+  #         aws lambda update-function-code --function-name ${{ secrets.DEV_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+
+  deploy-converter-lambda:
     name: Deploy to Amazon ECR and Update Lambda
     runs-on: ubuntu-latest
     needs: test  # Ensure this runs only if 'test' succeeds
@@ -70,18 +102,19 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
   
       - name: Build Docker image
-        run: docker build -t ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} -f Dockerfile.lambda .
+        run: docker build -t ${{ secrets.CONVERTER_LAMBDA_IMAGE_NAME }}:${{ secrets.TAG_CONVERTER_LAMBDA }} -f ./applications/video_converter/Dockerfile.media ./applications/video_converter/.
   
       - name: Tag Docker image
-        run: docker tag ${{ secrets.IMAGE_NAME }}:${{ secrets.TAG_LAMBDA }} ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+        run: docker tag ${{ secrets.CONVERTER_LAMBDA_IMAGE_NAME }}:${{ secrets.TAG_CONVERTER_LAMBDA }} ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
   
       - name: Push Docker image to Amazon ECR
-        run: docker push ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+        run: docker push ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
   
       # Update Lambda function to use the new Docker image
       - name: Update Lambda function
         run: |
-          aws lambda update-function-code --function-name ${{ secrets.DEV_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_LAMBDA }}
+          aws lambda update-function-code --function-name ${{ secrets.DEV_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
+
 
   deploy-ecs:
     name: Deploy to Amazon ECR and Update ECS
