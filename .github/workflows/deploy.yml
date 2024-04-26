@@ -113,7 +113,7 @@ jobs:
       # Update Lambda function to use the new Docker image
       - name: Update Lambda function
         run: |
-          aws lambda update-function-code --function-name ${{ secrets.DEV_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
+          aws lambda update-function-code --function-name ${{ secrets.CONVERTER_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
 
 
   deploy-ecs:
