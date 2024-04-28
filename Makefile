@@ -117,5 +117,4 @@ gen_pub_priv_cloudfront_keys:
 	openssl rsa -pubout -in private_key.pem -out public_key.pem
 
 gen_dummy_signed_url:
-	aws cloudfront sign --url "https://d1aa0yisny9egq.cloudfront.net/output/lisciowsky/moto.mp4" --key-pair-id "
-	K3QTFHGRUDWZ0T" --private-key file://private_key.pem --date-less-than '2024-12-31'
+	aws cloudfront sign --url "https://d1aa0yisny9egq.cloudfront.net/output/lisciowsky/moto.mp4" --key-pair-id "K3QTFHGRUDWZ0T" --private-key file://private_key.pem --date-less-than '2024-12-31'

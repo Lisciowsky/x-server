@@ -89,25 +89,13 @@ def get_secret(secret_name: str):
 def create_signed_url(
     url: str, private_key_pem: str, key_pair_id: str, expiration: datetime
 ):
-    try:
-        private_key = load_pem_private_key(
-            data=private_key_pem.encode(), password=None, backend=default_backend()
-        )
-    except Exception as ex:
-        logger.error(f"Failed to load private key: {ex}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error loading private key",
-        )
-
     def rsa_signer(message):
-        return private_key.sign(
-            message,
-            padding.PSS(
-                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
-            ),
-            hashes.SHA256(),
+        private_key = load_pem_private_key(
+            private_key_pem.encode(),
+            password=None,
+            backend=default_backend()
         )
+        return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
 
     signer = CloudFrontSigner(key_pair_id, rsa_signer)
 
