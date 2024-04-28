@@ -1,6 +1,3 @@
-variable "database_username" {
-    type = string
-}
-variable "database_password" {
-    type = string
+variable "media_cdn_public_key_id" {
+  type = string
 }

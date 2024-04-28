@@ -1,21 +1,43 @@
-from datetime import datetime
+import json
+import base64
+from datetime import datetime, timedelta
+
 from boto3 import client, Session
-from fastapi import Depends, APIRouter, HTTPException, status
+from botocore.exceptions import ClientError
+from botocore.signers import CloudFrontSigner
+
 from loguru import logger
 from pydantic import BaseModel
+from fastapi import Depends, APIRouter, HTTPException, status
+
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives.serialization import load_pem_private_key
+from cryptography.hazmat.backends import default_backend
 
 from src.token.token_maker import get_current_user, UserPayload
-from src.db.models import Media, MediaPermission
+from src.db.models import Media
 from src.db.dal import DAL
+from src.db.enums import PermissionTypes
 
-from settings import MEDIA_CONVERT_BUCKET_NAME, BUCKET_REGION_NAME
+from settings import (
+    MEDIA_CONVERT_BUCKET_NAME,
+    BUCKET_REGION_NAME,
+    MEDIA_CLOUDFRONT_DOMAIN,
+    MEDIA_PRIVATE_KEY_CDN_SECRET_NAME,
+    MEDIA_CDN_PUBLIC_KEY_SECRET_NAME,
+)
+
 
 media_router = APIRouter(prefix="/media")
 
-# session = Session(profile_name="private")
+session = Session(profile_name="private", region_name=BUCKET_REGION_NAME)
 
-# s3_client = session.client("s3", region_name=BUCKET_REGION_NAME)
-s3_client = client("s3", region_name=BUCKET_REGION_NAME)  # for deployment
+s3_client = session.client("s3")
+secrets_client = session.client("secretsmanager")
+
+# s3_client = client("s3")
+# secrets_client = client("secretsmanager")
 
 
 def _get_media_path(username: str, media_name: str) -> str:
@@ -43,6 +65,62 @@ def _get_s3_object_info(key: str) -> tuple:
             return False, 0.0
         else:
             raise
+
+
+def _get_secret(secret_name: str):
+    response = secrets_client.get_secret_value(SecretId=secret_name)
+    if "SecretString" in response:
+        secret = json.loads(response["SecretString"])
+        return secret.get("key")
+    else:
+        return None
+
+
+def get_secret(secret_name: str):
+    try:
+        secret = _get_secret(secret_name=secret_name)
+    except Exception as ex:
+        ex_msg = f"Getting secret for secret_name: {secret_name} failed with: {ex}"
+        logger.warning(ex_msg)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    return secret
+
+
+def create_signed_url(
+    url: str, private_key_pem: str, key_pair_id: str, expiration: datetime
+):
+    try:
+        private_key = load_pem_private_key(
+            data=private_key_pem.encode(), password=None, backend=default_backend()
+        )
+    except Exception as ex:
+        logger.error(f"Failed to load private key: {ex}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Error loading private key",
+        )
+
+    def rsa_signer(message):
+        return private_key.sign(
+            message,
+            padding.PSS(
+                mgf=padding.MGF1(hashes.SHA256()), salt_length=padding.PSS.MAX_LENGTH
+            ),
+            hashes.SHA256(),
+        )
+
+    signer = CloudFrontSigner(key_pair_id, rsa_signer)
+
+    try:
+        presigned_url = signer.generate_presigned_url(url, date_less_than=expiration)
+    except Exception as ex:
+        logger.warning(f"Failed to generate presigned url with ex: {ex}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Signed url creation error",
+        )
+
+    return presigned_url
 
 
 class PresignedUrlResponse(BaseModel):
@@ -85,7 +163,7 @@ async def register_media(
     media_name: str, current_user: UserPayload = Depends(get_current_user)
 ):
     try:
-        media: Media = await DAL().get_media(
+        media = await DAL().get_media(
             media_name=media_name, owner_username=current_user.username
         )
     except Exception as ex:
@@ -105,7 +183,16 @@ async def register_media(
             )
 
     media_path = _get_media_path(username=current_user.username, media_name=media_name)
-    exists, size_in_mb = _get_s3_object_info(media_path)
+    try:
+        exists, size_in_mb = _get_s3_object_info(media_path)
+    except ClientError as ex:
+        logger.warning(
+            f"Unable to get object info for media_path: {media_path}, ex: {ex}"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
     if not exists:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -132,10 +219,63 @@ async def register_media(
     )
 
 
-class GetMediaResponse(BaseModel): ...
+class GetMediaAccessResponse(BaseModel):
+    signed_url: str
 
 
-@media_router.get("/{media_path}", response_model=GetMediaResponse)
-async def get_media(
-    username: str, current_user: UserPayload = Depends(get_current_user)
-): ...
+@media_router.get("/access/{media_id}")
+async def get_media_signed_url(
+    media_id: int, current_user: UserPayload = Depends(get_current_user)
+):
+    try:
+        media_permission = await DAL().get_permission_for_user(
+            media_id=media_id, username=current_user.username
+        )
+    except Exception as ex:
+        ex_msg = f"Getting media_permission for user failed with: {ex}"
+        logger.warning(ex_msg)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Getting media_permission for media_id: {media_id} failed",
+        )
+    if (
+        not media_permission
+        or media_permission.permission_type not in PermissionTypes.__members__
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN, detail="Access Denied"
+        )
+
+    try:
+        media = await DAL().get_media_by_id(media_id=media_id)
+    except Exception as ex:
+        ex_msg = f"Getting media for media_id: {media_id} failed with ex: {ex}"
+        logger.warning(ex_msg)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Getting media with media_id: {media_id} failed",
+        )
+    if not media:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Media not found"
+        )
+
+    url = f"https://{MEDIA_CLOUDFRONT_DOMAIN}/output/{media.media_owner}/{media.media_name}"
+    expiration = datetime.utcnow() + timedelta(hours=1)
+
+    private_key = get_secret(secret_name=MEDIA_PRIVATE_KEY_CDN_SECRET_NAME)
+    key_pair_id = get_secret(secret_name=MEDIA_CDN_PUBLIC_KEY_SECRET_NAME)
+    
+    try:
+        signed_url = create_signed_url(
+            url=url,
+            private_key_pem=private_key,
+            key_pair_id=key_pair_id,
+            expiration=expiration,
+        )
+    except Exception as ex:
+        logger.warning(ex)
+
+    response = GetMediaAccessResponse(signed_url=signed_url)
+
+    return response

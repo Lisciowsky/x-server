@@ -108,3 +108,14 @@ push-converter-lambda:
 
 deploy-converter: build-converter-lambda tag-converter-lambda push-converter-lambda
 # --------------------------------------------------------------------
+
+delete-secret:
+	aws secretsmanager delete-secret --secret-id "arn:aws:secretsmanager:eu-central-1:654654262492:secret:dev_media_cdn_private_key-08K4MD" --force-delete-without-recovery
+
+gen_pub_priv_cloudfront_keys:
+	openssl genpkey -algorithm RSA -out private_key.pem -pkeyopt rsa_keygen_bits:2048
+	openssl rsa -pubout -in private_key.pem -out public_key.pem
+
+gen_dummy_signed_url:
+	aws cloudfront sign --url "https://d1aa0yisny9egq.cloudfront.net/output/lisciowsky/moto.mp4" --key-pair-id "
+	K3QTFHGRUDWZ0T" --private-key file://private_key.pem --date-less-than '2024-12-31'

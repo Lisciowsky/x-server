@@ -102,20 +102,23 @@ module "ecs" {
   environment                    = "PRODUCTION"
   bucket_name                    = module.s3_cloudfront.user_storage_bucket_name
   bucket_region_name             = var.aws_region
-  media_convert_bucket_name = module.s3_media.aws_s3_video_bucket_name
+  media_convert_bucket_name      = module.s3_media.aws_s3_video_bucket_name
+  media_cloudfront_domain        = module.cloudfront_media.cloudfront_video_distribution_domain
+  media_cdn_public_key_secret_name = module.secret.media_cdn_public_key_secret_name
+  media_private_key_cdn_secret_name = module.secret.media_cdn_private_key_secret_name
 }
 
 module "media_convert" {
   source                    = "./configuration/features/video_converter/mediaconvert"
   mediaconvert_endpoint_url = "https://usryickja.mediaconvert.eu-central-1.amazonaws.com"
-  video_bucket_name = module.s3_media.aws_s3_video_bucket_name
+  video_bucket_name         = module.s3_media.aws_s3_video_bucket_name
 }
 
 module "lambda_convert" {
-  source                         = "./configuration/features/video_converter/lambda_convert"
-  aws_s3_bucket_video_bucket_arn = module.s3_media.aws_s3_video_bucket_arn
-  ecr_repository_url             = module.ecr.ecr_repository_url
-  aws_s3_bucket_video_bucket_id = module.s3_media.aws_s3_video_bucket_id
+  source                          = "./configuration/features/video_converter/lambda_convert"
+  aws_s3_bucket_video_bucket_arn  = module.s3_media.aws_s3_video_bucket_arn
+  ecr_repository_url              = module.ecr.ecr_repository_url
+  aws_s3_bucket_video_bucket_id   = module.s3_media.aws_s3_video_bucket_id
   mediaconvert_execution_role_arn = module.media_convert.mediaconvert_execution_role_arn
 }
 
@@ -131,6 +134,12 @@ module "cloudfront_media" {
   aws_acm_certificate_my_cert_arn          = module.certificates.aws_acm_certificate_my_cert_cloudfront_arn
   aws_s3_video_bucket_origin_id            = module.s3_media.aws_s3_video_bucket_id
   aws_s3_video_bucket_regional_domain_name = module.s3_media.aws_s3_video_bucket_regional_domain_name
+  aws_account_id                           = var.aws_account_id
+}
+
+module "secret" {
+  source                  = "./configuration/secrets"
+  media_cdn_public_key_id = module.cloudfront_media.media_public_key_id
 }
 
 # module "apigateway" {
@@ -157,8 +166,4 @@ module "cloudfront_media" {
 #   environment           = "PRODUCTION"
 # }
 
-# module "secret" {
-#   source = "./configuration/secrets"
-#   database_password = var.database_password
-#   database_username = var.database_username
-# }
+

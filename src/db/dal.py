@@ -14,7 +14,12 @@ from src.db.user import (
     search_users,
 )
 from src.db.session import get_session, create_session
-from src.db.media import create_media, get_media
+from src.db.media import (
+    create_media,
+    get_media,
+    get_media_by_id,
+    get_permission_for_user,
+)
 
 from settings import DATABASE_URL, DB_URL
 
@@ -93,6 +98,20 @@ class DAL:
             async_session=self.async_session,
             media_name=media_name,
             owner_username=owner_username,
+        )
+
+    async def get_media_by_id(self, media_id: str) -> Media:
+        return await get_media_by_id(
+            async_session=self.async_session,
+            media_id=media_id,
+        )
+
+    # MEDIA PERMISSION
+    async def get_permission_for_user(self, media_id: int, username: str):
+        return await get_permission_for_user(
+            async_session=self.async_session,
+            media_id=media_id,
+            username=username,
         )
 
     async def run_migrations(self):

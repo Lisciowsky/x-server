@@ -21,10 +21,10 @@ output "cloudfront_distribution_domain" {
   value = module.s3_cloudfront.cloudfront_distribution_domain
 }
 
+output "cloudfront_media_distribution_domain" {
+  value = module.cloudfront_media.cloudfront_video_distribution_domain
+}
+
 output "storage_bucket_name" {
   value = module.s3_cloudfront.user_storage_bucket_name
 }
-
-# output "api_gateway_lambda_url" {
-#   value = module.apigateway.api_gateway_invoke_url
-# }

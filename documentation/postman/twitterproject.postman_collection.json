@@ -13,10 +13,49 @@
 					"name": "users",
 					"item": [
 						{
+							"name": "update_user",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"current_password\": \"mialababakota\",\n    \"password\": \"mialababakota\"    \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/lisciowsky",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"lisciowsky"
+									]
+								}
+							},
+							"response": []
+						},
+						{
 							"name": "get_user",
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/users/lisciowsky",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"lisciowsky"
+									]
+								}
 							},
 							"response": [
 								{
@@ -242,13 +281,53 @@
 							]
 						},
 						{
-							"name": "login",
+							"name": "search_user",
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"username\": \"lisciowsky\",\n    \"password\": \"mialababakota\"\n}",
+									"raw": "{\n    \"fullname\": \"Pe\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/search_user",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"search_user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"lisciowsky\",\"password\":\"mialababakota\"}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -267,58 +346,131 @@
 									]
 								}
 							},
-							"response": [
+							"response": []
+						},
+						{
+							"name": "refresh_token",
+							"event": [
 								{
-									"name": "success",
-									"originalRequest": {
-										"method": "POST",
-										"header": [],
-										"body": {
-											"mode": "raw",
-											"raw": "    {\n        \"username\": \"lisciowsky\",\n        \"password\": \"mialababakota\"\n    }",
-											"options": {
-												"raw": {
-													"language": "json"
-												}
-											}
-										},
-										"url": {
-											"raw": "{{host}}/v1/users/login",
-											"host": [
-												"{{host}}"
-											],
-											"path": [
-												"v1",
-												"users",
-												"login"
-											]
-										}
-									},
-									"status": "OK",
-									"code": 200,
-									"_postman_previewlanguage": "json",
-									"header": [
-										{
-											"key": "date",
-											"value": "Tue, 27 Feb 2024 05:19:30 GMT"
-										},
-										{
-											"key": "server",
-											"value": "uvicorn"
-										},
-										{
-											"key": "content-length",
-											"value": "724"
-										},
-										{
-											"key": "content-type",
-											"value": "application/json"
-										}
-									],
-									"cookie": [],
-									"body": "{\n    \"session_id\": \"fa4707f4-3ef8-4aea-b56e-5d7b55e90361\",\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjMDVhN2E4LWMxYjgtNGQ4OS1hZGRkLWZiZjE3Njk1MjJiMiIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5MDEyMDcxfQ.jk52zVkIzRTjku2aGXS7_fxR1YZDxE3lr5pYkbwgU-0\",\n    \"access_token_expires_at\": \"2024-02-27T05:34:31.292891\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZhNDcwN2Y0LTNlZjgtNGFlYS1iNTZlLTVkN2I1NWU5MDM2MSIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5MDE0NzcxfQ.HBep1AHRFNpiHHAJmwwTTdP44jL33kb3w8Eu5y4kom0\",\n    \"refresh_token_expires_at\": \"2024-02-27T06:19:31.293119\",\n    \"user\": {\n        \"username\": \"lisciowsky\",\n        \"fullname\": \"Jakub Szumlas\",\n        \"email\": \"szumlas.kuba@gmail.com\"\n    }\n}"
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
 								}
-							]
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\"username\":\"lisciowsky\",\"password\":\"mialababakota2\"}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/refresh_token",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"refresh_token"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "check_session",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/session/check",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"session",
+										"check"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/logout",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"logout"
+									]
+								}
+							},
+							"response": []
 						}
 					]
 				},
@@ -497,8 +649,425 @@
 							]
 						}
 					]
+				},
+				{
+					"name": "admin",
+					"item": [
+						{
+							"name": "all_users",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/admin/all_users?page=1&page_size=3",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"admin",
+										"all_users"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "page_size",
+											"value": "3"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "all_users",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{host}}/v1/admin/all_users?page=1&page_size=3",
+											"host": [
+												"{{host}}"
+											],
+											"path": [
+												"v1",
+												"admin",
+												"all_users"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": "1"
+												},
+												{
+													"key": "page_size",
+													"value": "3"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "date",
+											"value": "Wed, 20 Mar 2024 19:46:20 GMT"
+										},
+										{
+											"key": "server",
+											"value": "uvicorn"
+										},
+										{
+											"key": "content-length",
+											"value": "696"
+										},
+										{
+											"key": "content-type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"page\": 1,\n    \"page_size\": 3,\n    \"total_users\": 67,\n    \"users\": [\n        {\n            \"username\": \"lisciowsky\",\n            \"full_name\": \"Jakub Szumlas\",\n            \"email\": \"szumlas.kuba@gmail.com\",\n            \"role\": \"admin\",\n            \"is_email_verified\": false,\n            \"password_changed_at\": \"0001-01-01T00:00:00\",\n            \"created_at\": \"2024-03-15T20:56:47.164112\"\n        },\n        {\n            \"username\": \"clinechristopher\",\n            \"full_name\": \"William Taylor\",\n            \"email\": \"tim41@example.com\",\n            \"role\": \"user\",\n            \"is_email_verified\": false,\n            \"password_changed_at\": \"0001-01-01T00:00:00\",\n            \"created_at\": \"2024-03-20T18:34:32.719036\"\n        },\n        {\n            \"username\": \"richardgraves\",\n            \"full_name\": \"Mr. Jerome Fowler\",\n            \"email\": \"luke63@example.org\",\n            \"role\": \"user\",\n            \"is_email_verified\": false,\n            \"password_changed_at\": \"0001-01-01T00:00:00\",\n            \"created_at\": \"2024-03-20T18:34:32.998634\"\n        }\n    ]\n}"
+								}
+							]
+						},
+						{
+							"name": "update_role",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/admin/update_role/lolzlolz",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"admin",
+										"update_role",
+										"lolzlolz"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "storage",
+					"item": [
+						{
+							"name": "get_user_storage",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/storage/lisciowsky",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"storage",
+										"lisciowsky"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get_presigned_upload",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/storage/lisciowsky/lol.jpg",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"storage",
+										"lisciowsky",
+										"lol.jpg"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get_presigned_download",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/storage/download-url/lisciowsky/lol.jpg",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"storage",
+										"download-url",
+										"lisciowsky",
+										"lol.jpg"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete_file",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/storage/delete/lisciowsky/lol.jpg",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"storage",
+										"delete",
+										"lisciowsky",
+										"lol.jpg"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "media",
+					"item": [
+						{
+							"name": "get_presigned_upload",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/media/upload-url/moto.mp4",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"media",
+										"upload-url",
+										"moto.mp4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "register_media",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/v1/media/register_media/moto.mp4",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"media",
+										"register_media",
+										"moto.mp4"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			],
+			"auth": {
+				"type": "noauth"
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
 				}
 			]
+		},
+		{
+			"name": "legacy",
+			"item": [
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"pm.collectionVariables.set(\"Token\", jsonData.access_token);",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"username\":\"lisciowsky\",\"password\":\"mialababakota2\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "success",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "    {\n        \"username\": \"lisciowsky\",\n        \"password\": \"mialababakota\"\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/v1/users/login",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"v1",
+										"users",
+										"login"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 27 Feb 2024 05:19:30 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "724"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"session_id\": \"fa4707f4-3ef8-4aea-b56e-5d7b55e90361\",\n    \"access_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImJjMDVhN2E4LWMxYjgtNGQ4OS1hZGRkLWZiZjE3Njk1MjJiMiIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5MDEyMDcxfQ.jk52zVkIzRTjku2aGXS7_fxR1YZDxE3lr5pYkbwgU-0\",\n    \"access_token_expires_at\": \"2024-02-27T05:34:31.292891\",\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZhNDcwN2Y0LTNlZjgtNGFlYS1iNTZlLTVkN2I1NWU5MDM2MSIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJ1c2VyIiwiZXhwIjoxNzA5MDE0NzcxfQ.HBep1AHRFNpiHHAJmwwTTdP44jL33kb3w8Eu5y4kom0\",\n    \"refresh_token_expires_at\": \"2024-02-27T06:19:31.293119\",\n    \"user\": {\n        \"username\": \"lisciowsky\",\n        \"fullname\": \"Jakub Szumlas\",\n        \"email\": \"szumlas.kuba@gmail.com\"\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "refresh_token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImUxMWYwNWU0LTU1ZjItNGVhNC05YjY2LWQ4MjEyNjIyMmUwMiIsInVzZXJuYW1lIjoibGlzY2lvd3NreSIsInJvbGUiOiJhZG1pbiIsImV4cCI6MTcxMTQ1NzI4OH0.NRCg2EoJKVn92BPh_YbA75uowwKae6KDVtRGKGPwrbs\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/v1/users/refresh_token",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"v1",
+								"users",
+								"refresh_token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "variable_key",
+			"value": ""
+		},
+		{
+			"key": "Token",
+			"value": ""
 		}
 	]
 }

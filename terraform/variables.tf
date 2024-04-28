@@ -32,3 +32,9 @@ variable "appex_domain_name" {
   type        = string
   default     = "api.szumi-dev.com"
 }
+
+variable "aws_account_id" {
+  description = "your aws account id"
+  type = string
+  default = "654654262492"
+}

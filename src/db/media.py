@@ -48,3 +48,33 @@ async def get_media(
     except SQLAlchemyError as ex:
         await session.rollback()
         raise ex
+
+
+async def get_media_by_id(async_session: AsyncSession, media_id: str) -> Media:
+    try:
+        async with async_session() as session:
+            query = select(Media).where(Media.id == media_id)
+            result = await session.execute(query)
+            media = result.scalars().first()
+            if not media:
+                return None
+            return media
+    except SQLAlchemyError as ex:
+        await session.rollback()
+        raise ex
+
+
+async def get_permission_for_user(
+    async_session: AsyncSession, media_id: int, username: str
+) -> MediaPermission:
+    try:
+        async with async_session() as session:
+            query = select(MediaPermission).where(
+                MediaPermission.media_id == media_id,
+                MediaPermission.granted_to_username == username,
+            )
+            result = await session.execute(query)
+            return result.scalars().first()
+    except SQLAlchemyError as ex:
+        await session.rollback()
+        raise ex

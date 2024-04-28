@@ -31,7 +31,9 @@ def lambda_handler(event, context):
         "OutputGroups": [
             {
                 "Name": "File Group",
-                "Outputs": [{"Preset": "BasicMP4VideoPreset", "NameModifier": "_1"}],
+                "Outputs": [
+                    {"Preset": "BasicMP4VideoPreset"}
+                ],  # "NameModifier": "_1" - for suffix added to file name
                 "OutputGroupSettings": {
                     "Type": "FILE_GROUP_SETTINGS",
                     "FileGroupSettings": {

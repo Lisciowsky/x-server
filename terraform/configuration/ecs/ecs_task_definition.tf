@@ -58,6 +58,18 @@ resource "aws_ecs_task_definition" "my_task" {
         {
           name = "MEDIA_CONVERT_BUCKET_NAME",
           value = var.media_convert_bucket_name
+        },
+        {
+          name = "MEDIA_CLOUDFRONT_DOMAIN",
+          value = var.media_cloudfront_domain
+        },
+        {
+          name = "MEDIA_PRIVATE_KEY_CDN_SECRET_NAME",
+          value = var.media_private_key_cdn_secret_name
+        },
+        {
+          name = "MEDIA_CDN_PUBLIC_KEY_SECRET_NAME",
+          value = var.media_cdn_public_key_secret_name
         }
       ]
     }

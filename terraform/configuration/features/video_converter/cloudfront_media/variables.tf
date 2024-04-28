@@ -1,10 +1,14 @@
 variable "aws_acm_certificate_my_cert_arn" {
-  type        = string
+  type = string
 }
 
 variable "aws_s3_video_bucket_regional_domain_name" {
-  type        = string
+  type = string
 }
 variable "aws_s3_video_bucket_origin_id" {
-  type        = string
+  type = string
+}
+
+variable "aws_account_id" {
+  type = string
 }

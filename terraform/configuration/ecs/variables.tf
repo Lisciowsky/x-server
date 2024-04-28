@@ -79,3 +79,14 @@ variable "bucket_region_name" {
 variable "media_convert_bucket_name" {
   type =  string
 }
+
+# Media Cloudfront Integration
+variable "media_cloudfront_domain" {
+  type = string
+}
+variable "media_private_key_cdn_secret_name" {
+  type = string
+}
+variable "media_cdn_public_key_secret_name" {
+  type = string
+}
