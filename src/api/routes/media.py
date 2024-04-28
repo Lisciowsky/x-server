@@ -31,13 +31,13 @@ from settings import (
 
 media_router = APIRouter(prefix="/media")
 
-session = Session(profile_name="private", region_name=BUCKET_REGION_NAME)
+# session = Session(profile_name="private", region_name=BUCKET_REGION_NAME)
 
-s3_client = session.client("s3")
-secrets_client = session.client("secretsmanager")
+# s3_client = session.client("s3")
+# secrets_client = session.client("secretsmanager")
 
-# s3_client = client("s3")
-# secrets_client = client("secretsmanager")
+s3_client = client("s3", region_name=BUCKET_REGION_NAME)
+secrets_client = client("secretsmanager", region_name=BUCKET_REGION_NAME)
 
 
 def _get_media_path(username: str, media_name: str) -> str:
