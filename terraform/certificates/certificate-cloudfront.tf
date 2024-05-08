@@ -4,7 +4,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# New ACM certificate in us-east-1 for CloudFront
 resource "aws_acm_certificate" "szumi_dev_cert_us_east_1" {
   provider            = aws.us-east-1
   domain_name         = "szumi-dev.com"
@@ -20,7 +19,6 @@ resource "aws_acm_certificate" "szumi_dev_cert_us_east_1" {
 }
 
 
-# Certificate validation in us-east-1
 resource "aws_acm_certificate_validation" "szumi_dev_cert_validation_us_east_1" {
   provider              = aws.us-east-1
   certificate_arn       = aws_acm_certificate.szumi_dev_cert_us_east_1.arn
@@ -29,7 +27,6 @@ resource "aws_acm_certificate_validation" "szumi_dev_cert_validation_us_east_1" 
   depends_on = [aws_route53_record.szumi_dev_cert_validation_us_east_1]
 }
 
-# DNS validation for the new certificate (us-east-1)
 resource "aws_route53_record" "szumi_dev_cert_validation_us_east_1" {
   provider = aws.us-east-1
 

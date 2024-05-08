@@ -10,25 +10,17 @@ async def create_media(async_session: AsyncSession, new_media: Media) -> Media:
         try:
             session.add(new_media)
             await session.flush()
-
             media_permission = MediaPermission(
                 granted_to_username=new_media.media_owner,
                 media_id=new_media.id,
                 permission_type=PermissionTypes.OWNER,
             )
             session.add(media_permission)
-
-            # Eagerly load relationships (if any)
             await session.refresh(new_media)
-
         except SQLAlchemyError as ex:
             await session.rollback()
             raise ex
-
-        # Expunge the object if you need to pass it around after the session is closed
         session.expunge(new_media)
-
-    # If needed, re-attach to a new session later
     return new_media
 
 

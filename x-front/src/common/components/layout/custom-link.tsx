@@ -4,7 +4,7 @@ import Link from 'next/link';
 type CustomLinkProps = {
   href: string;
   children: React.ReactNode;
-  onClick?: () => void; // Optional onClick event handler
+  onClick?: () => void;
 }
 
 const CustomLink: React.FC<CustomLinkProps> = ({ href, children, onClick }) => {

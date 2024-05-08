@@ -62,7 +62,7 @@ async def test_create_user(mocker, client):
         full_name=test_user_data["fullname"],
         email=test_user_data["email"],
         role=test_user_data["role"],
-        hashed_password="hashed_testpass",  # Assuming the password gets hashed
+        hashed_password="hashed_testpass",
     )
     mock_create_user.return_value = mock_user
     response = await client.post(f"{API_VERSION}/users/", json=test_user_data)
@@ -96,7 +96,7 @@ async def test_user_can_access_own_info(mocker, client):
         ),
     )
     token_for_test_user = generate_test_token(username=test_username)
-    cookies = {"access_token": token_for_test_user}  # Tokens are now passed in cookies
+    cookies = {"access_token": token_for_test_user}
     response = await client.get(f"{API_VERSION}/users/{test_username}", cookies=cookies)
 
     assert response.status_code == 200
@@ -121,7 +121,7 @@ async def test_user_cannot_access_other_user_info(mocker, client):
         ),
     )
     token_for_ben = generate_test_token(username="Ben")
-    cookies = {"access_token": token_for_ben}  # Use cookies for authentication
+    cookies = {"access_token": token_for_ben}
     jake_user = User(
         username="Jake",
         full_name="Jake Example",
@@ -192,14 +192,11 @@ async def test_db_connection_failure(loguru_sink, mocker, client):
     mock_dal_method.assert_called_once()
     loguru_sink.seek(0)
     log_contents = loguru_sink.read()
-    assert (
-        "Failed to fetch user: Connect call failed" in log_contents
-    )  # Adjust the message as needed
+    assert "Failed to fetch user: Connect call failed" in log_contents
 
 
 @pytest.mark.asyncio
 async def test_login_success(mocker, client):
-    # Setup mock user and session
     password = "testpass"
     hashed_testpass = hash_password(password=password)
     test_user = User(
@@ -217,14 +214,8 @@ async def test_login_success(mocker, client):
         client_ip="",
         expires_at=datetime.utcnow() + timedelta(days=1),
     )
-
-    # Mock DAL.get_user to return the test user
     mocker.patch("src.db.dal.DAL.get_user", return_value=test_user)
-
-    # Mock verify_password to return True
     mocker.patch("src.utils.password.verify_password", return_value=True)
-
-    # Prepare mock payloads for access and refresh tokens
     access_payload = UserPayload(
         username="testuser",
         role="user",
@@ -236,8 +227,6 @@ async def test_login_success(mocker, client):
         exp=datetime.utcnow() + timedelta(minutes=int(REFRESH_TOKEN_DURATION_MINUTES)),
         id=uuid.uuid4(),
     )
-
-    # Mock JWTTokenManager.create_token to return dummy tokens and payloads
     mocker.patch(
         "src.token.token_maker.JWTTokenManager.create_token",
         side_effect=[
@@ -245,15 +234,9 @@ async def test_login_success(mocker, client):
             ("refresh_token", refresh_payload),
         ],
     )
-
-    # Mock DAL.create_session to return the test session
     mocker.patch("src.db.dal.DAL.create_session", return_value=test_session)
-
-    # Perform login request
     login_data = {"username": "testuser", "password": password}
     response = await client.post(f"{API_VERSION}/users/login", json=login_data)
-
-    # Assertions
     assert response.status_code == 200
     assert "access_token" in response.cookies
     assert "refresh_token" in response.cookies
@@ -261,64 +244,43 @@ async def test_login_success(mocker, client):
 
 @pytest.mark.asyncio
 async def test_user_not_found(mocker, client):
-    # Mock DAL.get_user to return None, simulating user not found
     mocker.patch("src.db.dal.DAL.get_user", return_value=None)
-
-    # Perform login request with a non-existent user
     login_data = {"username": "nonexistentuser", "password": "password"}
     response = await client.post(f"{API_VERSION}/users/login", json=login_data)
-
-    # Assertions
     assert response.status_code == 404
     assert "Not Found" in response.json()["detail"]
 
 
 @pytest.mark.asyncio
 async def test_invalid_password(mocker, client):
-    # Setup mock user
     password = "testpass"
     hashed_testpass = hash_password(password=password)
-
     test_user = User(
         username="testuser",
-        hashed_password=hashed_testpass,  # Simulate a different password
+        hashed_password=hashed_testpass,
         email="test@example.com",
         full_name="Test User",
         role="user",
     )
-
-    # Mock DAL.get_user to return the test user
     mocker.patch("src.db.dal.DAL.get_user", return_value=test_user)
-
-    # Mock verify_password to return False, simulating password mismatch
     mocker.patch("src.utils.password.verify_password", return_value=False)
-
-    # Perform login request with an invalid password
     login_data = {"username": "testuser", "password": "wrongpassword"}
     response = await client.post(f"{API_VERSION}/users/login", json=login_data)
-
-    # Assertions
     assert response.status_code == 401
     assert "invalid password" in response.json()["detail"]
 
 
 @pytest.mark.asyncio
 async def test_unable_to_get_user(mocker, client):
-    # Mock DAL.get_user to raise an exception, simulating a database error
     mocker.patch("src.db.dal.DAL.get_user", side_effect=Exception("Database error"))
-
-    # Perform login request
     login_data = {"username": "testuser", "password": "testpass"}
     response = await client.post(f"{API_VERSION}/users/login", json=login_data)
-
-    # Assertions
     assert response.status_code == 500
     assert "unable to get user" in response.json()["detail"]
 
 
 @pytest.mark.asyncio
 async def test_unable_to_create_access_token_for_user(mocker, client):
-    # Setup mock user
     test_user = User(
         username="testuser",
         hashed_password=hash_password("testpass"),
@@ -326,48 +288,29 @@ async def test_unable_to_create_access_token_for_user(mocker, client):
         full_name="Test User",
         role="user",
     )
-
-    # Mock DAL.get_user to return the test user
     mocker.patch("src.db.dal.DAL.get_user", return_value=test_user)
-
-    # Mock verify_password to return True
     mocker.patch("src.utils.password.verify_password", return_value=True)
-
-    # Mock JWTTokenManager.create_token to raise an exception when trying to create access token
     mocker.patch(
         "src.token.token_maker.JWTTokenManager.create_token",
         side_effect=[Exception("Token creation error"), None],
     )
-
-    # Perform login request
     login_data = {"username": "testuser", "password": "testpass"}
     response = await client.post(f"{API_VERSION}/users/login", json=login_data)
-
-    # Assertions
     assert response.status_code == 500
     assert "unable to create access_token for user" in response.json()["detail"]
 
 
 @pytest.mark.asyncio
 async def test_unable_to_create_session(mocker, client):
-    # Setup mock user
     test_user = User(
         username="testuser",
-        hashed_password=hash_password(
-            "testpass"
-        ),  # Assuming hash_password is correctly mocked or implemented
+        hashed_password=hash_password("testpass"),
         email="test@example.com",
         full_name="Test User",
         role="user",
     )
-
-    # Mock DAL.get_user to return the test user
     mocker.patch("src.db.dal.DAL.get_user", return_value=test_user)
-
-    # Mock verify_password to return True
     mocker.patch("src.utils.password.verify_password", return_value=True)
-
-    # Prepare mock payloads for access and refresh tokens
     access_payload = UserPayload(
         username="testuser",
         role="user",
@@ -379,8 +322,6 @@ async def test_unable_to_create_session(mocker, client):
         exp=datetime.utcnow() + timedelta(days=int(REFRESH_TOKEN_DURATION_MINUTES)),
         id=uuid.uuid4(),
     )
-
-    # Mock JWTTokenManager.create_token to return dummy tokens and payloads
     mocker.patch(
         "src.token.token_maker.JWTTokenManager.create_token",
         side_effect=[
@@ -388,17 +329,11 @@ async def test_unable_to_create_session(mocker, client):
             ("refresh_token", refresh_payload),
         ],
     )
-
-    # Mock DAL.create_session to raise an exception, simulating a failure in session creation
     mocker.patch(
         "src.db.dal.DAL.create_session", side_effect=Exception("Session creation error")
     )
-
-    # Perform login request
     login_data = {"username": "testuser", "password": "testpass"}
     response = await client.post(f"{API_VERSION}/users/login", json=login_data)
-
-    # Assertions
     assert response.status_code == 500
     assert (
         "unable to create session" in response.json()["detail"]

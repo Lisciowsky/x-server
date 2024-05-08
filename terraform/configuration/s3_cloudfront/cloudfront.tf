@@ -18,8 +18,6 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   is_ipv6_enabled     = true
   default_root_object = "index"
 
-  # Removed the aliases parameter
-
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
@@ -32,8 +30,7 @@ resource "aws_cloudfront_distribution" "website_distribution" {
       }
     }
 
-    # viewer_protocol_policy = "redirect-to-https"
-    viewer_protocol_policy = "redirect-to-https"  # This line is changed
+    viewer_protocol_policy = "redirect-to-https"
 
     min_ttl                = 0
     default_ttl            = 3600

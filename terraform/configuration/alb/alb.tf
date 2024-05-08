@@ -10,8 +10,8 @@ resource "aws_lb_target_group" "fastapi_tg" {
   name     = "${terraform.workspace}-fastapi-tg"
   port     = 8080
   protocol = "HTTP"
-  vpc_id   = var.vpc_id  # Assuming you have a VPC ID variable defined
-  target_type = "ip" # Ensure this is set to 'ip'
+  vpc_id   = var.vpc_id
+  target_type = "ip"
 
   health_check {
     enabled             = true

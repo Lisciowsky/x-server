@@ -17,11 +17,11 @@ def display_contents(start_path):
         ".terraform.lock.hcl",
         "terraform.tfstate",
         "terraform.tfstate.backup",
+        "gen_prompt.py",
     ]
     ignore_dirs = [".terraform"]
 
     for root, dirs, files in os.walk(start_path):
-        # Ignore specified directories
         dirs[:] = [d for d in dirs if d not in ignore_dirs]
         for file in files:
             if file not in ignore_files:
@@ -32,7 +32,7 @@ def display_contents(start_path):
                         print(f.read())
                 except Exception as e:
                     print(f"Error reading file {file_path}: {e}")
-                print("\n" + "-" * 20 + "\n")  # Separator between files
+                print("\n" + "-" * 20 + "\n")
 
 
 def main():

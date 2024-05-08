@@ -19,6 +19,7 @@ from src.token.token_maker import get_current_user, UserPayload
 from src.db.models import Media
 from src.db.dal import DAL
 from src.db.enums import PermissionTypes
+from src.utils.s3_storage import list_files_folders
 
 from settings import (
     MEDIA_CONVERT_BUCKET_NAME,
@@ -86,14 +87,40 @@ def get_secret(secret_name: str):
     return secret
 
 
+class GetUserMediaResponse(BaseModel):
+    folders: dict
+
+
+@media_router.get("/{username}", response_model=GetUserMediaResponse)
+async def get_user_media(
+    username: str, current_user: UserPayload = Depends(get_current_user)
+):
+    if username != current_user.username:
+        raise HTTPException(
+            status_code=403, detail="Not authorized to access this storage"
+        )
+
+    prefix = f"{username}/"
+    try:
+        user_media_structure = list_files_folders(
+            s3_client=s3_client, bucket_name=MEDIA_CONVERT_BUCKET_NAME, prefix=prefix
+        )
+    except Exception as ex:
+        ex_msg = f"failed to load the user: {username} storage"
+        logger.exception(ex_msg)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=ex_msg,
+        )
+    return GetUserMediaResponse(folders=user_media_structure)
+
+
 def create_signed_url(
     url: str, private_key_pem: str, key_pair_id: str, expiration: datetime
 ):
     def rsa_signer(message):
         private_key = load_pem_private_key(
-            private_key_pem.encode(),
-            password=None,
-            backend=default_backend()
+            private_key_pem.encode(), password=None, backend=default_backend()
         )
         return private_key.sign(message, padding.PKCS1v15(), hashes.SHA1())
 
@@ -253,7 +280,7 @@ async def get_media_signed_url(
 
     private_key = get_secret(secret_name=MEDIA_PRIVATE_KEY_CDN_SECRET_NAME)
     key_pair_id = get_secret(secret_name=MEDIA_CDN_PUBLIC_KEY_SECRET_NAME)
-    
+
     try:
         signed_url = create_signed_url(
             url=url,

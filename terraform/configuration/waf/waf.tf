@@ -13,7 +13,6 @@ resource "aws_wafv2_web_acl" "example" {
     sampled_requests_enabled   = true
   }
 
-  # Existing RateLimitRule
   rule {
     name     = "RateLimitRule"
     priority = 1

@@ -22,7 +22,6 @@ server.add_middleware(
 )
 
 
-# Middleware to log responses
 @server.middleware("http")
 async def log_responses(request: Request, call_next):
     response = await call_next(request)

@@ -4,7 +4,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   lambda_function {
     lambda_function_arn = var.aws_lambda_function_media_convert_trigger_function_arn
     events              = ["s3:ObjectCreated:*"]
-    filter_prefix       = "uploads/"  # Assuming files are uploaded to an 'uploads/' prefix
+    filter_prefix       = "uploads/"
   }
 }
 
@@ -14,5 +14,4 @@ resource "aws_lambda_permission" "allow_bucket" {
   function_name = var.aws_lambda_function_media_convert_trigger_function_name
   principal     = "s3.amazonaws.com"
   source_arn    = aws_s3_bucket.video_bucket.arn
-  # source_account = var.aws_account_id # optional
 }

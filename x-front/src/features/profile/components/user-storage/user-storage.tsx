@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import axios from 'axios';
 import { useDropzone, FileWithPath } from 'react-dropzone';
-import { FolderIcon, ArchiveIcon, DownloadIcon, UserRemoveIcon, FolderRemoveIcon } from '@heroicons/react/outline';
+import { FolderIcon, ArchiveIcon, DownloadIcon, DocumentRemoveIcon, FolderRemoveIcon } from '@heroicons/react/outline';
 import { useAuth } from '@/context/auth-context';
 import { useAlert } from '@/context/alert-context';
 import useEffectOnce from '@/common/hooks/use-effect-once';
@@ -209,7 +209,7 @@ const UserStorage = () => {
                 <DownloadIcon className="h-5 w-5" />
               </Button>
               <Button onClick={() => handleDelete(`${currentPath}${filePath}`)} className="p-1">
-                <UserRemoveIcon className="h-5 w-5 text-red-500" />
+                <DocumentRemoveIcon className="h-5 w-5 text-red-500" />
               </Button>
             </div>
           </div>

@@ -63,7 +63,7 @@ const Header = () => {
 
   return (
     <header className="bg-gunmetal text-cultured">
-      <nav className="container mx-auto flex justify-between items-center p-4 relative">
+      <nav className="container mx-auto flex justify-between items-center h-20">
         <CustomLink href="/">
           <span className="ml-3 text-2xl font-bold font-serif">X-news</span>
         </CustomLink>

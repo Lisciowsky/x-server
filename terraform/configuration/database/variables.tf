@@ -1,4 +1,3 @@
-# POSTGRES DB INSTANCE
 variable "vpc_id" {}
 variable "db_subnet_group_name" {}
 variable "db_security_group_ids" {

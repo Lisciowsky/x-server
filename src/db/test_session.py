@@ -40,24 +40,16 @@ def dal_instance():
 
 @pytest.mark.asyncio
 async def test_create_and_get_session(dal_instance):
-    # Assuming you have a way to create or get a test user
-    test_user = create_random_user()  # Use the existing user creation method
-    created_user = await dal_instance.create_user(
-        test_user
-    )  # Ensure the user is created for session linkage
-
-    # Create a random session for the test user
+    test_user = create_random_user()
+    created_user = await dal_instance.create_user(test_user)
     session = create_random_session(created_user)
     created_session = await dal_instance.create_session(session)
 
-    # Assertions to ensure the session was created correctly
     assert created_session.id is not None
     assert created_session.username == created_user.username
 
-    # Retrieve the session using its ID
     retrieved_session = await dal_instance.get_session(created_session.id)
 
-    # Assertions to validate the retrieved session
     assert retrieved_session is not None
     assert retrieved_session.id == created_session.id
     assert retrieved_session.username == created_session.username

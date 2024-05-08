@@ -48,8 +48,8 @@ resource "aws_ecs_task_definition" "my_task" {
           value = var.environment
         },
         {
-          name = "BUCKET_NAME",
-          value = var.bucket_name
+          name = "STORAGE_BUCKET_NAME",
+          value = var.storage_bucket_name
         },
         {
           name = "BUCKET_REGION_NAME",
@@ -78,5 +78,5 @@ resource "aws_ecs_task_definition" "my_task" {
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
   name = "/ecs/${terraform.workspace}-my-fastapi-app"
-  retention_in_days = 1 # Optional: Adjust the retention period as needed
+  retention_in_days = 1
 }

@@ -14,17 +14,16 @@ def display_tree_structure():
 
 def display_contents(start_path):
     ignore_files = [
-        "Untitled-1.ipynb",  # Ignoring Jupyter notebooks
+        "Untitled-1.ipynb",
     ]
     ignore_dirs = [
         "node_modules",
         ".git",
-        "__pycache__",  # Python cache directories
+        "__pycache__",
     ]
-    allowed_extensions = [".py"]  # Display only Python files
+    allowed_extensions = [".py"]
 
     for root, dirs, files in os.walk(start_path):
-        # Ignore specified directories
         dirs[:] = [d for d in dirs if d not in ignore_dirs]
         for file in files:
             if file not in ignore_files and any(
@@ -37,11 +36,10 @@ def display_contents(start_path):
                         print(f.read())
                 except Exception as e:
                     print(f"Error reading file {file_path}: {e}")
-                print("\n" + "-" * 20 + "\n")  # Separator between files
+                print("\n" + "-" * 20 + "\n")
 
 
 def main():
-    # display_tree_structure()
     print("Displaying contents of each file:\n")
     cwd = os.getcwd()
     display_contents(cwd)

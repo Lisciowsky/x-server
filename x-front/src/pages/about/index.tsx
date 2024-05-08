@@ -51,9 +51,9 @@ export default function About() {
       <h1 className="text-4xl font-serif tracking-tight text-rich-black text-center">
         About Our Team
       </h1>
-      <div className="mt-5 mb-5 grid md:grid-cols-3 gap-4 ">
+      <div className="mt-5 mb-5 grid md:grid-cols-3 gap-4">
         {teamMembers.map((member) => (
-          <Card key={member.id} className="bg-cultured text-rich-black ">
+          <Card key={member.id} className="bg-cultured text-rich-black">
             <CardHeader>
               <img className="rounded-xl" src={member.imageUrl} alt={member.name} width={member.imageWidth} height={member.imageHeight} />
             </CardHeader>
@@ -63,7 +63,7 @@ export default function About() {
               <p className="mt-2 text-sm">{member.description}</p>
             </CardContent>
             <CardFooter className="grid container mx-auto justify-center">
-              <Button className="hover:bg-sunset-orange rounded-xl hover:text-lg mt-5">Learn More</Button>
+              <Button className="hover:bg-sunset-orange rounded-xl mt-5">Learn More</Button>
             </CardFooter>
           </Card>
         ))}
@@ -71,7 +71,10 @@ export default function About() {
       <div className="mt-15 text-center rounded-lg">
         <h2 className="text-4xl font-serif tracking-tight text-rich-black text-center">Our Vision</h2>
         <p className="text-sonic-silver flex container mx-auto justify-center m-5 bg-cultured rounded-2xl p-5">
-          In a world inundated with information, our mission is to cut through the noise, offering our users a way to stay informed without feeling overwhelmed. By leveraging advanced AI models to scrape social media and distill this information into streamlined, concise news, we aim to save valuable time for those seeking to stay informed. Our vision is to transform the way news is consumed, making it more accessible, efficient, and relevant for today s fast-paced lifestyle. We are dedicated to innovation in the field of information processing and committed to creating a future where everyone can stay informed effortlessly. Through our technology, we strive to empower individuals with the knowledge they need to make informed decisions, fostering a well-informed community connected by the power of understanding.
+          Lorem ipsum, dolor sit amet consectetur adipisicing elit. Error tempore obcaecati ex et fuga, quia voluptatem fugit consequatur. Dignissimos odio perferendis asperiores hic! Dolores dignissimos veniam ipsam repellat, ducimus quo!
+          Eos corporis iste magnam totam ex sint eaque! Ad libero non voluptatibus officia assumenda eum recusandae sit amet tempora, molestiae laboriosam sunt aperiam consectetur quas blanditiis iusto pariatur aut perspiciatis!
+          Minus soluta facere ea sequi voluptatem quas ex? Consequuntur saepe quidem architecto neque nam iusto? Consequuntur libero deserunt, consectetur minus velit tempore sunt suscipit sint quia enim. Vel, doloremque quaerat.
+          Amet saepe molestias, ipsam inventore exercitationem necessitatibus, aut consectetur nostrum omnis temporibus ducimus provident earum est? Tenetur minus iusto totam autem ducimus, sequi, optio voluptas voluptate quibusdam impedit, aut iure.
         </p>
       </div>
     </div>

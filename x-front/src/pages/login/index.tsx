@@ -52,8 +52,8 @@ export default function Auth() {
       <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl shadow-lg">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
           <TabsList aria-label="Login or Signup">
-            <TabsTrigger value="login" className='text-xl'>Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className='text-xl'>Sign Up</TabsTrigger>
+            <TabsTrigger value="login" className='text-xl hover:hover:text-cerulean-blue'>Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className='text-xl hover:hover:text-cerulean-blue'>Sign Up</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <form onSubmit={handleSubmitLogin} className="space-y-6">

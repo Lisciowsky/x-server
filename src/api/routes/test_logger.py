@@ -7,8 +7,7 @@ from loguru import logger
 def loguru_sink():
     sink = io.StringIO()
     sink_id = logger.add(sink, format="{message}")
-    yield sink  # This allows the test to use the sink
-    # Cleanup: remove the sink after the test to avoid side effects
+    yield sink
     logger.remove(sink_id)
 
 

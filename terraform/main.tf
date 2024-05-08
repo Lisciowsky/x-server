@@ -100,7 +100,7 @@ module "ecs" {
   access_token_duration_minutes  = "15"
   refresh_token_duration_minutes = "60"
   environment                    = "PRODUCTION"
-  bucket_name                    = module.s3_cloudfront.user_storage_bucket_name
+  storage_bucket_name            = module.s3_cloudfront.user_storage_bucket_name
   bucket_region_name             = var.aws_region
   media_convert_bucket_name      = module.s3_media.aws_s3_video_bucket_name
   media_cloudfront_domain        = module.cloudfront_media.cloudfront_video_distribution_domain

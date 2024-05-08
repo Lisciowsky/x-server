@@ -3,7 +3,6 @@ resource "aws_acm_certificate" "szumi_dev_cert" {
 
   validation_method = "DNS"
 
-  # subject_alternative_names = ["api.szumi-dev.com"]
 
   lifecycle {
     create_before_destroy = true
