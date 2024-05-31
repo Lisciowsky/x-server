@@ -24,12 +24,12 @@ resource "aws_iam_role_policy" "lambda_exec_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Action = "iam:PassRole",
+        Action   = "iam:PassRole",
         Resource = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/mediaconvert-execution-role",
-        Effect = "Allow",
+        Effect   = "Allow",
         Condition = {
           StringEquals = {
-            "iam:PassedToService": "mediaconvert.amazonaws.com"
+            "iam:PassedToService" : "mediaconvert.amazonaws.com"
           }
         }
       },
@@ -38,7 +38,7 @@ resource "aws_iam_role_policy" "lambda_exec_policy" {
 }
 
 resource "aws_iam_role_policy" "lambda_policy" {
-  role   = aws_iam_role.lambda_exec.id
+  role = aws_iam_role.lambda_exec.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -50,7 +50,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "logs:PutLogEvents"
         ],
         Resource = "arn:aws:logs:*:*:*",
-        Effect = "Allow"
+        Effect   = "Allow"
       },
       {
         Action = [
@@ -67,7 +67,7 @@ resource "aws_iam_role_policy" "lambda_policy" {
           "mediaconvert:*"
         ],
         Resource = "*",
-        Effect = "Allow"
+        Effect   = "Allow"
       }
     ],
   })

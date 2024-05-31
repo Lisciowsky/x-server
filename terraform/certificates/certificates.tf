@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "szumi_dev_cert" {
-  domain_name       = "api.szumi-dev.com"
+  domain_name = "api.${var.domain_name}"
 
   validation_method = "DNS"
 
@@ -9,7 +9,7 @@ resource "aws_acm_certificate" "szumi_dev_cert" {
   }
 
   tags = {
-    Name = "szumi-dev.com Certificate for api apex subdomain"
+    Name = "${var.domain_name} Certificate for api apex subdomain"
   }
 }
 

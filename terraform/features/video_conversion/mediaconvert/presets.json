@@ -1,25 +1,22 @@
 {
   "Name": "BasicMP4VideoPreset",
   "Settings": {
-    "ContainerSettings": {
-      "Container": "MP4"
-    },
     "VideoDescription": {
-      "Width": 1920,
-      "Height": 1080,
+      "Width": 1080,
+      "Height": 1920,
       "CodecSettings": {
         "Codec": "H_264",
         "H264Settings": {
+          "InterlaceMode": "PROGRESSIVE",
+          "ParNumerator": 1,
+          "GopSize": 90,
+          "ParDenominator": 1,
           "Bitrate": 5000000,
+          "RateControlMode": "CBR",
           "CodecProfile": "HIGH",
           "CodecLevel": "AUTO",
-          "InterlaceMode": "PROGRESSIVE",
-          "RateControlMode": "CBR",
-          "GopSize": 90,
           "GopSizeUnits": "FRAMES",
-          "ParControl": "SPECIFIED",
-          "ParNumerator": 1,
-          "ParDenominator": 1
+          "ParControl": "SPECIFIED"
         }
       },
       "ColorMetadata": "INSERT"
@@ -30,12 +27,15 @@
           "Codec": "AAC",
           "AacSettings": {
             "Bitrate": 192000,
+            "RateControlMode": "CBR",
             "CodingMode": "CODING_MODE_2_0",
-            "SampleRate": 48000,
-            "RateControlMode": "CBR"
+            "SampleRate": 48000
           }
         }
       }
-    ]
+    ],
+    "ContainerSettings": {
+      "Container": "MP4"
+    }
   }
 }

@@ -4,7 +4,7 @@ resource "aws_cloudfront_origin_access_identity" "oai" {
 
 resource "aws_cloudfront_distribution" "website_distribution" {
 
-  aliases = [ var.aws_route53_zone_name ]
+  aliases = [var.aws_route53_zone_name]
   origin {
     domain_name = aws_s3_bucket.website_bucket.bucket_regional_domain_name
     origin_id   = "${terraform.workspace}-website-origin"
@@ -32,9 +32,9 @@ resource "aws_cloudfront_distribution" "website_distribution" {
 
     viewer_protocol_policy = "redirect-to-https"
 
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
+    min_ttl     = 0
+    default_ttl = 3600
+    max_ttl     = 86400
   }
 
   price_class = "PriceClass_100"
@@ -46,9 +46,9 @@ resource "aws_cloudfront_distribution" "website_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn            = var.aws_acm_certificate_my_cert_arn
-    ssl_support_method             = "sni-only"
-    minimum_protocol_version       = "TLSv1.2_2018"
+    acm_certificate_arn      = var.aws_acm_certificate_my_cert_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2018"
   }
 
   tags = {

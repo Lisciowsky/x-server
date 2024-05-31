@@ -21,7 +21,7 @@ resource "aws_route53_record" "cloudfront_record" {
 
   alias {
     name                   = var.s3_cloudfront_cloudfront_distribution_domain # Replace this with your CloudFront distribution domain name
-    zone_id                = "Z2FDTNDATAQYW2" # This is the zone ID for CloudFront distributions
+    zone_id                = "Z2FDTNDATAQYW2"                                 # This is the zone ID for CloudFront distributions
     evaluate_target_health = false
   }
 }

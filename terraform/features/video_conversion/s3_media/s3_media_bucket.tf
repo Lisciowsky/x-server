@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "video_bucket" {
 
   cors_rule {
     allowed_headers = ["*"]
-    allowed_methods = ["GET", "HEAD"]
+    allowed_methods = ["GET", "HEAD", "PUT", "DELETE"]
     allowed_origins = ["*"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
@@ -27,12 +27,12 @@ resource "aws_s3_bucket_policy" "video_bucket_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect    = "Allow",
+        Effect = "Allow",
         Principal = {
           AWS = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${var.aws_cloudfront_origin_access_identity_video_oai_id}"
         },
-        Action    = "s3:GetObject",
-        Resource  = "${aws_s3_bucket.video_bucket.arn}/*"
+        Action   = "s3:GetObject",
+        Resource = "${aws_s3_bucket.video_bucket.arn}/*"
       }
     ]
   })

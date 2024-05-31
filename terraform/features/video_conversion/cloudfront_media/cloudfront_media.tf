@@ -52,11 +52,11 @@ resource "aws_cloudfront_distribution" "video_distribution" {
       }
     }
 
-    min_ttl         = 0
-    default_ttl     = 86400
-    max_ttl         = 31536000
-    compress        = true
-    smooth_streaming = true
+    min_ttl                   = 0
+    default_ttl               = 86400
+    max_ttl                   = 31536000
+    compress                  = true
+    smooth_streaming          = true
     field_level_encryption_id = ""
   }
 

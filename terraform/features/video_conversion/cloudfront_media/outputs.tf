@@ -4,7 +4,7 @@ output "cloudfront_video_distribution_domain" {
 }
 
 output "aws_cloudfront_origin_access_identity_video_oai_id" {
-    value = aws_cloudfront_origin_access_identity.video_oai.id
+  value = aws_cloudfront_origin_access_identity.video_oai.id
 }
 
 output "media_public_key_id" {

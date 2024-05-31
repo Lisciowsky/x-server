@@ -2,7 +2,7 @@ resource "aws_lambda_function" "media_convert_trigger" {
   function_name = "${terraform.workspace}_media_convert_trigger"
 
   image_uri    = "${var.ecr_repository_url}:converter-latest"
-  role = aws_iam_role.lambda_exec.arn
+  role         = aws_iam_role.lambda_exec.arn
   package_type = "Image"
 
   timeout     = 60

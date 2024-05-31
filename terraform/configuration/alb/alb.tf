@@ -7,10 +7,10 @@ resource "aws_lb" "my_alb" {
 }
 
 resource "aws_lb_target_group" "fastapi_tg" {
-  name     = "${terraform.workspace}-fastapi-tg"
-  port     = 8080
-  protocol = "HTTP"
-  vpc_id   = var.vpc_id
+  name        = "${terraform.workspace}-fastapi-tg"
+  port        = 8080
+  protocol    = "HTTP"
+  vpc_id      = var.vpc_id
   target_type = "ip"
 
   health_check {

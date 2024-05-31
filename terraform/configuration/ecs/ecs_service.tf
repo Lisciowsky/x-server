@@ -9,7 +9,7 @@ resource "aws_ecs_service" "fastapi_service" {
     container_name   = "${terraform.workspace}-fastapi-container"
     container_port   = 8080
   }
-  
+
   network_configuration {
     assign_public_ip = true
     subnets          = [var.subnet_a_id, var.subnet_b_id]

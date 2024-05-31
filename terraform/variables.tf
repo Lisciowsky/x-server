@@ -1,8 +1,8 @@
 # GLOBAL
 variable "aws_region" {
-  type = string
+  type        = string
   description = "aws region"
-  default = "eu-central-1"
+  default     = "eu-central-1"
 }
 
 # POSTGRES DB INSTANCE
@@ -35,6 +35,6 @@ variable "appex_domain_name" {
 
 variable "aws_account_id" {
   description = "your aws account id"
-  type = string
-  default = "654654262492"
+  type        = string
+  default     = "654654262492"
 }

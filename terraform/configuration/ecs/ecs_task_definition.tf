@@ -32,44 +32,48 @@ resource "aws_ecs_task_definition" "my_task" {
           value = "postgresql+asyncpg://${var.database_username}:${var.database_password}@${var.db_instance_address}/${var.database_name}"
         },
         {
-          name = "JWT_SECRET",
+          name  = "JWT_SECRET",
           value = var.jwt_secret
         },
         {
-          name = "ACCESS_TOKEN_DURATION_MINUTES",
+          name  = "ACCESS_TOKEN_DURATION_MINUTES",
           value = var.access_token_duration_minutes
         },
         {
-          name = "REFRESH_TOKEN_DURATION_MINUTES",
+          name  = "REFRESH_TOKEN_DURATION_MINUTES",
           value = var.refresh_token_duration_minutes
         },
         {
-          name = "ENVIRONMENT",
+          name  = "ENVIRONMENT",
           value = var.environment
         },
         {
-          name = "STORAGE_BUCKET_NAME",
+          name  = "STORAGE_BUCKET_NAME",
           value = var.storage_bucket_name
         },
         {
-          name = "BUCKET_REGION_NAME",
+          name  = "BUCKET_REGION_NAME",
           value = var.bucket_region_name
         },
         {
-          name = "MEDIA_CONVERT_BUCKET_NAME",
+          name  = "MEDIA_CONVERT_BUCKET_NAME",
           value = var.media_convert_bucket_name
         },
         {
-          name = "MEDIA_CLOUDFRONT_DOMAIN",
+          name  = "MEDIA_CLOUDFRONT_DOMAIN",
           value = var.media_cloudfront_domain
         },
         {
-          name = "MEDIA_PRIVATE_KEY_CDN_SECRET_NAME",
+          name  = "MEDIA_PRIVATE_KEY_CDN_SECRET_NAME",
           value = var.media_private_key_cdn_secret_name
         },
         {
-          name = "MEDIA_CDN_PUBLIC_KEY_SECRET_NAME",
+          name  = "MEDIA_CDN_PUBLIC_KEY_SECRET_NAME",
           value = var.media_cdn_public_key_secret_name
+        },
+        {
+          name  = "DOMAIN_NAME",
+          value = var.domain_name
         }
       ]
     }
@@ -77,6 +81,6 @@ resource "aws_ecs_task_definition" "my_task" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs_log_group" {
-  name = "/ecs/${terraform.workspace}-my-fastapi-app"
+  name              = "/ecs/${terraform.workspace}-my-fastapi-app"
   retention_in_days = 1
 }
