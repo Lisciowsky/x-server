@@ -9,8 +9,8 @@ import {
   TableCell,
 } from '@/common/components/ui/table';
 
-import { User } from '@/models/user';
-import { UpdateUserResponse } from '@/models/admin-responses';
+import { User } from '@/api/models/user';
+import { UpdateUserResponse } from '@/api/models/admin-responses';
 
 import useEffectOnce from '@/common/hooks/use-effect-once';
 
@@ -156,7 +156,6 @@ const AdminAllUsers = () => {
   };
 
   const handleSearchChange = (e) => {
-    console.log(e.target.value)
     e.preventDefault()
     setSearchQuery(e.target.value)
   }

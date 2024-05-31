@@ -1,5 +1,5 @@
-import { GetUserStorageResponse } from "@/models/storage-responses";
-import { GetPresignedUrlResponse } from "@/models/storage-responses";
+import { GetUserStorageResponse } from "@/api/models/storage-responses";
+import { GetPresignedUrlResponse } from "@/api/models/storage-responses";
 import axiosInstance from "@/lib/axiosInstance";
 
 export const fetchUserStorage = async (username: string): Promise<GetUserStorageResponse> => {

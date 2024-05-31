@@ -1,7 +1,7 @@
 import axiosInstance from "../lib/axiosInstance";
 
-import { UpdateUserResponse, PaginatedUsersResponse } from "@/models/admin-responses";
-import { User } from "@/models/user";
+import { UpdateUserResponse, PaginatedUsersResponse } from "@/api/models/admin-responses";
+import { User } from "@/api/models/user";
 
 export interface UpdateUserRequest {
   role: string

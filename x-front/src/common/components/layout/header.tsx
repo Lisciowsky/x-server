@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useAuth } from '@/context/auth-context';
 import { Button } from '@/common/components/ui/button';
@@ -47,6 +46,9 @@ const Header = () => {
       </CustomLink>
       {isLoggedIn ? (
         <>
+          <CustomLink href="/upload">
+            <span onClick={handleMenuItemClick}>Upload</span>
+          </CustomLink>
           <CustomLink href="/profile">
             <span onClick={handleMenuItemClick}>Profile</span>
           </CustomLink>
@@ -54,7 +56,7 @@ const Header = () => {
         </>
       ) : (
         <CustomLink href="/login">
-          <span onClick={handleMenuItemClick} className="hover:text-sunset-orange hover:text-2xl  cursor-pointer">Log In</span>
+          <span onClick={handleMenuItemClick} className="hover:text-sunset-orange  cursor-pointer">Log In</span>
         </CustomLink>
       )}
     </>
@@ -63,7 +65,7 @@ const Header = () => {
 
   return (
     <header className="bg-gunmetal text-cultured">
-      <nav className="container mx-auto flex justify-between items-center h-20">
+      <nav className="flex justify-around items-center h-20">
         <CustomLink href="/">
           <span className="ml-3 text-2xl font-bold font-serif">X-news</span>
         </CustomLink>

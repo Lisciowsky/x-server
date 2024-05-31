@@ -9,10 +9,10 @@ import {
     SheetTitle,
     SheetDescription,
 } from '@/common/components/ui/sheet';
-import { User } from '@/models/user';
+import { User } from '@/api/models/user';
 import { useAlert } from '@/context/alert-context';
 import { updateUserRole, UpdateUserRequest } from '@/api/auth-endpoints';
-import { UpdateUserResponse } from '@/models/admin-responses';
+import { UpdateUserResponse } from '@/api/models/admin-responses';
 
 
 interface EditAccountProps {
@@ -48,10 +48,10 @@ function EditRoleComponent({ user, onCancel, onRoleUpdate }: EditAccountProps) {
     return (
         <Sheet>
             <SheetTrigger asChild>
-                <Button>Edit Role</Button>
+                <Button className='text-white'>Edit Role</Button>
             </SheetTrigger>
             <SheetContent>
-                <div className="space-y-4 p-4">
+                <div className="space-y-4 p-4 text-white">
                     <SheetHeader>
                         <SheetTitle>Edit User: {user.username}</SheetTitle>
                         <SheetDescription>Manage user role.</SheetDescription>

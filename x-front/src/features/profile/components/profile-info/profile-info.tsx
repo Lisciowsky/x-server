@@ -8,7 +8,7 @@ import {
   CollapsibleTrigger,
 } from "@/common/components/ui/collapsible"
 
-import { UserInfo } from '@/models/user';
+import { UserInfo } from '@/api/models/user';
 
 
 interface ProfileInfoProps {

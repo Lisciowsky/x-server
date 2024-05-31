@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { fetchAllUsersInfo, UserSearchRequest, searchUser } from '@/api/auth-endpoints';
 import { useAlert } from '../../../context/alert-context';
-import { User } from '@/models/user';
+import { User } from '@/api/models/user';
 
 interface AdminUsersContextType {
   allUsersInfo: User[];

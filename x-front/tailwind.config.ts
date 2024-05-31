@@ -18,9 +18,6 @@ const config = {
       },
     },
     extend: {
-      backgroundImage: theme => ({
-        'dark-gradient': 'linear-gradient(to bottom, #0f0c29, #302b63, #24243e)',
-      }),
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -75,6 +72,11 @@ const config = {
 
         // Secondary Text Color: Use for less important text, placeholders, or to provide a softer contrast against light backgrounds.
         'sonic-silver': '#757575',
+      
+        'my-layout': '#7F27FF',
+        'my-background': '#9F70FD',
+        'my-first-col': '#FDBF60',
+        'my-second-col': '#FF8911'
       },
       borderRadius: {
         lg: "var(--radius)",

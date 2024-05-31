@@ -5,10 +5,10 @@ import { Input } from "@/common/components/ui/input";
 import { Label } from "@/common/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/common/components/ui/tabs";
 
-import { UserInfo } from '@/models/user';
+import { UserInfo } from '@/api/models/user';
 import { updateUserInfo } from '@/api/users-endpoints';
 import { useAlert } from '@/context/alert-context';
-import { UpdateUserRequest } from '@/models/user-responses';
+import { UpdateUserRequest } from '@/api/models/user-responses';
 import { useAuth } from '@/context/auth-context';
 interface EditAccountProps {
   userInfo: UserInfo;
@@ -23,15 +23,12 @@ function EditAccountComponent({ userInfo }: EditAccountProps) {
 
   const handleFullNameChange = (e) => {
     setFullname(e.target.value)
-    console.log(fullname)
   }
   const handleNewPasswordChange = (e) => {
     setNewPassword(e.target.value)
-    console.log(newPassword)
   }
   const handleCurrentPasswordChange = (e) => {
     setCurrentPassword(e.target.value)
-    console.log(currentPassword)
   }
 
   const handleAccountUpdate = async () => {

@@ -49,11 +49,11 @@ export default function Auth() {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl shadow-lg">
+      <div className="max-w-lg max-h-lg w-full space-y-8 p-10 bg-gunmetal rounded-xl text-white">
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="flex flex-col">
           <TabsList aria-label="Login or Signup">
-            <TabsTrigger value="login" className='text-xl hover:hover:text-cerulean-blue'>Sign In</TabsTrigger>
-            <TabsTrigger value="signup" className='text-xl hover:hover:text-cerulean-blue'>Sign Up</TabsTrigger>
+            <TabsTrigger value="login" className={`text-xl text-white ${selectedTab == "login" ? "text-2xl": ""}`}>Sign In</TabsTrigger>
+            <TabsTrigger value="signup" className={`text-xl text-white ${selectedTab == "signup" ? "text-2xl" : ""}`}>Sign Up</TabsTrigger>
           </TabsList>
           <TabsContent value="login">
             <form onSubmit={handleSubmitLogin} className="space-y-6">

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { useRouter } from 'next/router';
-import { UserInfo } from '@/models/user';
+import { UserInfo } from '@/api/models/user';
 import { useAlert } from './alert-context';
 import { checkSession, loginUser, createUser, logoutUser, CreateUserRequest } from '@/api/users-endpoints';
 import { registerGlobalLogout } from '@/lib/auth';

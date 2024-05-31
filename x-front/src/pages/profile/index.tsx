@@ -11,23 +11,21 @@ import useFancyText from '@/common/hooks/use-fancy-text';
 import ProfileInfoComponent from '@/features/profile/components/profile-info';
 import EditAccountComponent from '@/features/profile/components/edit-account';
 import AdminAllUsers from '@/features/profile/components/admin-all-users';
-import UserStorage from '@/features/profile/components/user-storage';
-import MediaManagement from '@/features/profile/components/media-management';
+import UserMedia from '@/features/profile/components/user-media';
 
 
 const Profile = () => {
   const { userInfo } = useAuth();
+  const displayedText = useFancyText(userInfo?.username)
 
   if (!userInfo) return <div className="flex justify-center items-center h-screen">Loading...</div>;
 
-  const displayedText = useFancyText(userInfo.username)
-
   return (
     <>
-      <div className='mx-auto container text-rich-black text-2xl font-extralight mt-10 flex justify-center'>
-        Welcome {displayedText}
+      <div className='container mx-auto text-rich-black text-2xl mt-5 font-serif justify-center grid grid-flow-row'>
+        <p className='flex justify-center'>Welcome {displayedText}</p>
       </div>
-      <div className='container mt-10 lg:mt-20 mx-auto gap-4'>
+      <div className='container mt-10 mx-auto gap-4'>
         <div className='col-span-6'>
           <div className='text-black w-full bg-cultured p-5 rounded-xl'>
             <Accordion type="single" collapsible>
@@ -47,21 +45,17 @@ const Profile = () => {
                   </div>
                 </AccordionContent>
               </AccordionItem>
-              <AccordionItem value="item3">
-                <AccordionTrigger>User Storage</AccordionTrigger>
+              <AccordionItem value="item-3">
+                <AccordionTrigger>User Media</AccordionTrigger>
                 <AccordionContent>
-                  <UserStorage />
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="item4">
-                <AccordionTrigger>Media Management</AccordionTrigger>
-                <AccordionContent>
-                  <MediaManagement userInfo={userInfo} />
+                  <div className='flex'>
+                    <UserMedia userInfo={userInfo} />
+                  </div>
                 </AccordionContent>
               </AccordionItem>
               {userInfo && userInfo.role === "admin" && (
                 <AdminUsersProvider>
-                  <AccordionItem value="item-5">
+                  <AccordionItem value="item-4">
                     <AccordionTrigger>Admin - All Users</AccordionTrigger>
                     <AccordionContent>
                       <AdminAllUsers />

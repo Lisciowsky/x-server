@@ -1,7 +1,7 @@
 import axiosInstance from "../lib/axiosInstance";
 
-import { GetUserResponse, UpdateUserRequest, CreateUserResponse } from "@/models/user-responses";
-import { UserInfo } from "@/models/user";
+import { GetUserResponse, UpdateUserRequest, CreateUserResponse } from "@/api/models/user-responses";
+import { UserInfo } from "@/api/models/user";
 
 export const fetchUserInfo = async (username: string): Promise<GetUserResponse> => {
   try {
