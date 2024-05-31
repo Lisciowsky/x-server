@@ -105,7 +105,10 @@ tag-converter-lambda:
 	docker tag $(CONVERTER_LAMBDA_IMAGE_NAME):$(TAG_CONVERTER_LAMBDA) $(ECR_REPOSITORY_URI):$(TAG_CONVERTER_LAMBDA)
 push-converter-lambda:
 	docker push $(ECR_REPOSITORY_URI):$(TAG_CONVERTER_LAMBDA)
-
+# -------------------- TESTING CONVERTER ----------------------------- 
+build-converter-lambda-vps:
+	docker build -t media_converter:converter-latest-vps -f ./applications/video_converter/Dockerfile.vps ./applications/video_converter/.
+# -------------------- TESTING CONVERTER -----------------------------
 deploy-converter: build-converter-lambda tag-converter-lambda push-converter-lambda
 # --------------------------------------------------------------------
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from uuid import UUID
 
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
@@ -19,6 +21,9 @@ from src.db.media import (
     get_media,
     get_media_by_id,
     get_permission_for_user,
+    delete_media_by_id,
+    get_all_media,
+    delete_media_permissions_by_media_id,
 )
 
 from settings import DATABASE_URL, DB_URL
@@ -106,12 +111,41 @@ class DAL:
             media_id=media_id,
         )
 
+    async def get_all_media(
+        self,
+        page: int = 1,
+        page_size: int = 10,
+        username: Optional[str] = None,
+        media_owner: bool = False,
+        media_permission: bool = False,
+    ):
+        return await get_all_media(
+            async_session=self.async_session,
+            page=page,
+            page_size=page_size,
+            username=username,
+            media_owner=media_owner,
+            media_permission=media_permission,
+        )
+
+    async def delete_media_by_id(self, media_id: int):
+        return await delete_media_by_id(
+            async_session=self.async_session,
+            media_id=media_id,
+        )
+
     # MEDIA PERMISSION
     async def get_permission_for_user(self, media_id: int, username: str):
         return await get_permission_for_user(
             async_session=self.async_session,
             media_id=media_id,
             username=username,
+        )
+
+    async def delete_media_permissions_by_media_id(self, media_id: int):
+        return await delete_media_permissions_by_media_id(
+            async_session=self.async_session,
+            media_id=media_id,
         )
 
     async def run_migrations(self):

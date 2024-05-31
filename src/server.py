@@ -1,17 +1,17 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.db.dal import DAL
 from src.api.main_router import main_router
+from settings import DOMAIN_NAME
+
 
 server = FastAPI(title="x-server webserver", version="1.0.0")
 dal = DAL()
 
-origins = [
-    "http://localhost:3000",
-    "https://szumi-dev.com",
-]
+origins = ["http://localhost:3000", f"https://{DOMAIN_NAME}"]
 
 server.add_middleware(
     CORSMiddleware,

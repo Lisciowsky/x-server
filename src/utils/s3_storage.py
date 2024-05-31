@@ -1,7 +1,9 @@
 from boto3 import client
 
 
-def list_files_folders(s3_client: client, bucket_name: str, prefix=""):
+def list_files_folders(
+    s3_client: client, bucket_name: str, prefix="", sub_folders: bool = True
+):
     """
     Recursively list files and folders under a given prefix.
     """
@@ -13,6 +15,10 @@ def list_files_folders(s3_client: client, bucket_name: str, prefix=""):
         for obj in response.get("Contents", [])
         if "Key" in obj and obj["Key"] != prefix
     ]
+
+    if not sub_folders:
+        return files
+
     folders = {prefix: files}
 
     for common_prefix in response.get("CommonPrefixes", []):

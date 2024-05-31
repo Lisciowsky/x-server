@@ -1,13 +1,14 @@
 import json
-import base64
+from typing import List
 from datetime import datetime, timedelta
+from urllib.parse import quote_plus
 
 from boto3 import client, Session
 from botocore.exceptions import ClientError
 from botocore.signers import CloudFrontSigner
 
 from loguru import logger
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from fastapi import Depends, APIRouter, HTTPException, status
 
 from cryptography.hazmat.primitives import hashes
@@ -19,26 +20,25 @@ from src.token.token_maker import get_current_user, UserPayload
 from src.db.models import Media
 from src.db.dal import DAL
 from src.db.enums import PermissionTypes
-from src.utils.s3_storage import list_files_folders
-
 from settings import (
     MEDIA_CONVERT_BUCKET_NAME,
     BUCKET_REGION_NAME,
     MEDIA_CLOUDFRONT_DOMAIN,
     MEDIA_PRIVATE_KEY_CDN_SECRET_NAME,
     MEDIA_CDN_PUBLIC_KEY_SECRET_NAME,
+    LOCAL_DEVELOPMENT,
 )
 
 
 media_router = APIRouter(prefix="/media")
 
-# session = Session(profile_name="private", region_name=BUCKET_REGION_NAME)
-
-# s3_client = session.client("s3")
-# secrets_client = session.client("secretsmanager")
-
-s3_client = client("s3", region_name=BUCKET_REGION_NAME)
-secrets_client = client("secretsmanager", region_name=BUCKET_REGION_NAME)
+if LOCAL_DEVELOPMENT:
+    session = Session(profile_name="private", region_name=BUCKET_REGION_NAME)
+    s3_client = session.client("s3")
+    secrets_client = session.client("secretsmanager")
+else:
+    s3_client = client("s3", region_name=BUCKET_REGION_NAME)
+    secrets_client = client("secretsmanager", region_name=BUCKET_REGION_NAME)
 
 
 def _get_media_path(username: str, media_name: str) -> str:
@@ -85,34 +85,6 @@ def get_secret(secret_name: str):
         logger.warning(ex_msg)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
     return secret
-
-
-class GetUserMediaResponse(BaseModel):
-    folders: dict
-
-
-@media_router.get("/{username}", response_model=GetUserMediaResponse)
-async def get_user_media(
-    username: str, current_user: UserPayload = Depends(get_current_user)
-):
-    if username != current_user.username:
-        raise HTTPException(
-            status_code=403, detail="Not authorized to access this storage"
-        )
-
-    prefix = f"{username}/"
-    try:
-        user_media_structure = list_files_folders(
-            s3_client=s3_client, bucket_name=MEDIA_CONVERT_BUCKET_NAME, prefix=prefix
-        )
-    except Exception as ex:
-        ex_msg = f"failed to load the user: {username} storage"
-        logger.exception(ex_msg)
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=ex_msg,
-        )
-    return GetUserMediaResponse(folders=user_media_structure)
 
 
 def create_signed_url(
@@ -275,7 +247,7 @@ async def get_media_signed_url(
             status_code=status.HTTP_404_NOT_FOUND, detail="Media not found"
         )
 
-    url = f"https://{MEDIA_CLOUDFRONT_DOMAIN}/output/{media.media_owner}/{media.media_name}"
+    url = f"https://{MEDIA_CLOUDFRONT_DOMAIN}/output/{media.media_owner}/{quote_plus(media.media_name)}"
     expiration = datetime.utcnow() + timedelta(hours=1)
 
     private_key = get_secret(secret_name=MEDIA_PRIVATE_KEY_CDN_SECRET_NAME)
@@ -294,3 +266,87 @@ async def get_media_signed_url(
     response = GetMediaAccessResponse(signed_url=signed_url)
 
     return response
+
+
+class PaginatedMediaResponse(BaseModel):
+    page: int = Field(..., example=100)
+    page_size: int = Field(..., example=100)
+    total_media: int = Field(..., example=100)
+    media: List[Media]
+
+
+@media_router.get("/all_media/", response_model=PaginatedMediaResponse)
+async def get_all_media(
+    page: int = 1,
+    page_size: int = 10,
+    current_user: UserPayload = Depends(get_current_user),
+):
+    all_media, total_media, page, page_size = await DAL().get_all_media(
+        page=page,
+        page_size=page_size,
+        media_permission=True,
+        username=current_user.username,
+    )
+
+    return {
+        "page": page,
+        "page_size": page_size,
+        "total_media": total_media,
+        "media": [media.model_dump() for media in all_media],
+    }
+
+
+@media_router.delete("/{media_id}/{media_name}")
+async def delete_media_item(
+    media_name: str,
+    media_id: int,
+    current_user: UserPayload = Depends(get_current_user),
+):
+    """
+    Deletes a file from S3 storage for a given user. The file is specified by its name.
+    This function assumes no nested directories are used in the bucket structure.
+    """
+
+    await DAL().delete_media_permissions_by_media_id(media_id=media_id)
+
+    await DAL().delete_media_by_id(
+        media_id=media_id,
+    )
+
+    file_key = f"{current_user.username}/{media_name}"
+    try:
+        s3_client.delete_object(
+            Bucket=MEDIA_CONVERT_BUCKET_NAME, Key=f"output/{file_key}"
+        )
+        s3_client.delete_object(
+            Bucket=MEDIA_CONVERT_BUCKET_NAME, Key=f"uploads/{file_key}"
+        )
+        return {"detail": "Storage item deleted successfully"}
+    except Exception as e:
+        logger.exception(f"Failed to delete storage item: {file_key}")
+        raise HTTPException(status_code=500, detail="Failed to delete storage item")
+
+
+class PaginatedUserMediaResponse(BaseModel):
+    page: int = Field(..., example=100)
+    page_size: int = Field(..., example=100)
+    total_media: int = Field(..., example=100)
+    media: List[Media]
+
+
+@media_router.get("/user_media", response_model=PaginatedUserMediaResponse)
+async def get_user_media(
+    page: int = 1,
+    page_size: int = 10,
+    current_user: UserPayload = Depends(get_current_user),
+):
+    all_media, total_media, page, page_size = await DAL().get_all_media(
+        page=page, page_size=page_size, username=current_user.username, media_owner=True
+    )
+
+    return {
+        "page": page,
+        "page_size": page_size,
+        "total_media": total_media,
+        "media": [media.model_dump() for media in all_media],
+    }

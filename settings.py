@@ -2,6 +2,12 @@ from dotenv import load_dotenv
 import os
 from enum import Enum
 
+# NOTE Switch to local development if you re running the backend core app locally
+LOCAL_DEVELOPMENT = False
+
+if LOCAL_DEVELOPMENT:
+    load_dotenv("app.env")
+
 
 class Environment(str, Enum):
     TESTING = "TESTING"
@@ -43,6 +49,9 @@ REFRESH_TOKEN_DURATION_MINUTES = os.getenv("REFRESH_TOKEN_DURATION_MINUTES")
 
 API_VERSION = "v1"
 
+# DOMAIN NAME
+DOMAIN_NAME = os.getenv("DOMAIN_NAME")
+
 # SET DB_URL (MOCK / PROD)
 if ENVIRONMENT == Environment.TESTING:
     DB_URL = f"postgresql://{''.join(MOCK_DB_URL.split('://')[1:])}"
@@ -67,6 +76,7 @@ variables_to_print = [
     "MEDIA_CLOUDFRONT_DOMAIN",
     "MEDIA_PRIVATE_KEY_CDN_SECRET_NAME",
     "MEDIA_CDN_PUBLIC_KEY_SECRET_NAME",
+    "DOMAIN_NAME",
 ]
 
 for var in variables_to_print:

@@ -352,4 +352,6 @@ sftp-config.json
 .settings/
 .vscode/
 
+# CUSTOM
 GITHUBIGNOREDFOLDER
+gen.py
