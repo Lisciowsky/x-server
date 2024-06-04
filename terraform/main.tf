@@ -40,6 +40,7 @@ module "certificates" {
   source                        = "./certificates"
   aws_route53_zone_main_zone_id = module.route53.aws_route53_zone_main_zone_id
   domain_name                   = var.domain_name
+  appex_domain_name = var.appex_domain_name
 }
 
 module "waf" {
@@ -106,7 +107,7 @@ module "ecs" {
   refresh_token_duration_minutes    = "60"
   environment                       = "PRODUCTION"
   storage_bucket_name               = module.s3_cloudfront.user_storage_bucket_name
-  bucket_region_name                = var.aws_region
+  region_name                       = var.aws_region
   media_convert_bucket_name         = module.s3_media.aws_s3_video_bucket_name
   media_cloudfront_domain           = module.cloudfront_media.cloudfront_video_distribution_domain
   media_cdn_public_key_secret_name  = module.secret.media_cdn_public_key_secret_name

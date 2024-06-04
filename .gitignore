@@ -353,5 +353,5 @@ sftp-config.json
 .vscode/
 
 # CUSTOM
-GITHUBIGNOREDFOLDER
+githubignorefolder
 gen.py

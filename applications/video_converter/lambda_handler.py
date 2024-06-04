@@ -1,11 +1,11 @@
-from typing import Optional
 import os
-import boto3
+from typing import Optional
 from urllib.parse import unquote_plus
 
-import settings
-
+import boto3
 from loguru import logger
+
+import settings
 
 
 def _get_job_settings(bucket: str, key: str, username: str) -> dict:

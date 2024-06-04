@@ -4,6 +4,22 @@ variable "aws_region" {
   description = "aws region"
   default     = "eu-central-1"
 }
+variable "domain_name" {
+  description = "The name of the domain"
+  type        = string
+  default     = "szumi-dev.com"
+}
+variable "appex_domain_name" {
+  description = "The name of the appex domain"
+  type        = string
+  default     = "api.szumi-dev.com"
+}
+
+variable "aws_account_id" {
+  description = "your aws account id"
+  type        = string
+  default     = "654654262492"
+}
 
 # POSTGRES DB INSTANCE
 variable "database_username" {
@@ -22,19 +38,3 @@ variable "database_name" {
   default     = "twitter_db"
 }
 
-variable "domain_name" {
-  description = "The name of the domain"
-  type        = string
-  default     = "szumi-dev.com"
-}
-variable "appex_domain_name" {
-  description = "The name of the appex domain"
-  type        = string
-  default     = "api.szumi-dev.com"
-}
-
-variable "aws_account_id" {
-  description = "your aws account id"
-  type        = string
-  default     = "654654262492"
-}

@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "szumi_dev_cert" {
-  domain_name = "api.${var.domain_name}"
+  domain_name = var.appex_domain_name
 
   validation_method = "DNS"
 

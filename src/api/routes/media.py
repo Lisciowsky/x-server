@@ -22,7 +22,7 @@ from src.db.dal import DAL
 from src.db.enums import PermissionTypes
 from settings import (
     MEDIA_CONVERT_BUCKET_NAME,
-    BUCKET_REGION_NAME,
+    REGION_NAME,
     MEDIA_CLOUDFRONT_DOMAIN,
     MEDIA_PRIVATE_KEY_CDN_SECRET_NAME,
     MEDIA_CDN_PUBLIC_KEY_SECRET_NAME,
@@ -33,12 +33,12 @@ from settings import (
 media_router = APIRouter(prefix="/media")
 
 if LOCAL_DEVELOPMENT:
-    session = Session(profile_name="private", region_name=BUCKET_REGION_NAME)
+    session = Session(profile_name="private", region_name=REGION_NAME)
     s3_client = session.client("s3")
     secrets_client = session.client("secretsmanager")
 else:
-    s3_client = client("s3", region_name=BUCKET_REGION_NAME)
-    secrets_client = client("secretsmanager", region_name=BUCKET_REGION_NAME)
+    s3_client = client("s3", region_name=REGION_NAME)
+    secrets_client = client("secretsmanager", region_name=REGION_NAME)
 
 
 def _get_media_path(username: str, media_name: str) -> str:

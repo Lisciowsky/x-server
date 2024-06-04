@@ -11,7 +11,7 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    # Define environment variables specific to the test job
+
     env:
       ENVIRONMENT: "TESTING"
 
@@ -54,7 +54,7 @@ jobs:
   # deploy-lambda:
   #   name: Deploy to Amazon ECR and Update Lambda
   #   runs-on: ubuntu-latest
-  #   needs: test  # Ensure this runs only if 'test' succeeds
+  #   needs: test
   #   steps:
   #     - name: Checkout code
   #       uses: actions/checkout@v2
@@ -86,7 +86,7 @@ jobs:
   deploy-converter-lambda:
     name: Deploy to Amazon ECR and Update Lambda
     runs-on: ubuntu-latest
-    needs: test  # Ensure this runs only if 'test' succeeds
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -110,7 +110,6 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
   
-      # Update Lambda function to use the new Docker image
       - name: Update Lambda function
         run: |
           aws lambda update-function-code --function-name ${{ secrets.CONVERTER_LAMBDA_FUNCTION_NAME }} --image-uri ${{ secrets.DEV_ECR_REPOSITORY_URI }}:${{ secrets.TAG_CONVERTER_LAMBDA }}
@@ -119,7 +118,7 @@ jobs:
   deploy-ecs:
     name: Deploy to Amazon ECR and Update ECS
     runs-on: ubuntu-latest
-    needs: test  # Ensure this runs only if 'test' succeeds
+    needs: test
     steps:
       - name: Checkout code
         uses: actions/checkout@v2

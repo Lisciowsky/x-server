@@ -6,16 +6,16 @@ from loguru import logger
 
 from src.utils.s3_storage import list_files_folders
 
-from settings import STORAGE_BUCKET_NAME, BUCKET_REGION_NAME, LOCAL_DEVELOPMENT
+from settings import STORAGE_BUCKET_NAME, REGION_NAME, LOCAL_DEVELOPMENT
 
 storage_router = APIRouter(prefix="/storage")
 
 
 if LOCAL_DEVELOPMENT:
     session = Session(profile_name="private")
-    s3_client = session.client("s3", region_name=BUCKET_REGION_NAME)
+    s3_client = session.client("s3", region_name=REGION_NAME)
 else:
-    s3_client = client("s3", region_name=BUCKET_REGION_NAME)
+    s3_client = client("s3", region_name=REGION_NAME)
 
 
 class GetUserStorageResponse(BaseModel):

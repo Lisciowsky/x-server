@@ -72,7 +72,7 @@ variable "storage_bucket_name" {
   type = string
 }
 
-variable "bucket_region_name" {
+variable "region_name" {
   type = string
 }
 

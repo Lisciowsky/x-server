@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 from enum import Enum
 
-# NOTE Switch to local development if you re running the backend core app locally
+# NOTE Switch to local development if you re running the backend core locally
 LOCAL_DEVELOPMENT = False
 
 if LOCAL_DEVELOPMENT:
@@ -32,7 +32,7 @@ SERVER_PORT = os.getenv("SERVER_PORT")
 
 # Storage - AWS S3
 STORAGE_BUCKET_NAME = os.getenv("STORAGE_BUCKET_NAME")
-BUCKET_REGION_NAME = os.getenv("BUCKET_REGION_NAME")
+REGION_NAME = os.getenv("REGION_NAME")
 
 # MEDIA_CONVERT_STORAGE - AWS S3
 MEDIA_CONVERT_BUCKET_NAME = os.getenv("MEDIA_CONVERT_BUCKET_NAME")
@@ -71,7 +71,7 @@ variables_to_print = [
     "API_VERSION",
     "DB_URL",
     "STORAGE_BUCKET_NAME",
-    "BUCKET_REGION_NAME",
+    "REGION_NAME",
     "MEDIA_CONVERT_BUCKET_NAME",
     "MEDIA_CLOUDFRONT_DOMAIN",
     "MEDIA_PRIVATE_KEY_CDN_SECRET_NAME",

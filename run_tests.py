@@ -20,7 +20,7 @@ command.upgrade(alembic_cfg, "head")
 pytest_args = [
     "src/db",  # Directory with tests to run
     "src/api/routes",
-    '-p no:warnings'
+    "-p no:warnings"
     # '--verbose',  # Verbose output
     "-x",
     # Add other pytest arguments as needed

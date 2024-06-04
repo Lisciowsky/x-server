@@ -23,7 +23,6 @@ def create_random_user():
         full_name=generate_random_full_name(),
         username=generate_random_username(),
         hashed_password=hash_password(generate_random_password()),
-        
     )
 
 
