@@ -2,8 +2,8 @@ import axios from 'axios';
 import { handleGlobalLogout } from './auth';
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:8080/v1",
-  // baseURL: "https://api.szumi-dev.com/v1",
+  // baseURL: "http://localhost:8080/v1",
+  baseURL: "https://api.szumi-dev.com/v1", // appex domain name - ECS running backend container 
   withCredentials: true,
 });
 

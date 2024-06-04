@@ -25,6 +25,7 @@ This quick start guide will help you get the application up and running on your 
     ```javascript
     baseURL = 'http://localhost:8080/v1';
     ```
+    ![Run the Frontend Demo](documentation/gifs/frontend_run.gif)
 
 4. **Start the Frontend Server**:
     Run the following command to start the frontend:
@@ -204,5 +205,32 @@ This Makefile is designed to streamline various development, testing, and deploy
 - **`delete-secret`**: Deletes a specific AWS Secrets Manager secret.
 - **`gen_pub_priv_cloudfront_keys`**: Generates a new pair of RSA keys for CloudFront.
 - **`gen_dummy_signed_url`**: Generates a signed URL for CloudFront using the generated keys.
+
+</details>
+
+<br></br>
+
+# Application Showcase
+
+<details>
+<summary><strong>Singup / Profile</strong></summary>
+
+![Singup / Profile Demo](documentation/gifs/singup.gif)
+
+</details>
+
+<details>
+
+<summary><strong>Media upload</strong></summary>
+
+![Media Upload Demo](documentation/gifs/uploadmedia.gif)
+
+</details>
+
+<details>
+
+<summary><strong>Video Feed</strong></summary>
+
+![Video Feed Demo](documentation/gifs/videos.gif)
 
 </details>
