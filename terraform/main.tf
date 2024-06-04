@@ -7,6 +7,8 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
 provider "aws" {
   region  = "eu-central-1"
   profile = "private"
@@ -40,7 +42,7 @@ module "certificates" {
   source                        = "./certificates"
   aws_route53_zone_main_zone_id = module.route53.aws_route53_zone_main_zone_id
   domain_name                   = var.domain_name
-  appex_domain_name = var.appex_domain_name
+  appex_domain_name             = var.appex_domain_name
 }
 
 module "waf" {
@@ -141,6 +143,6 @@ module "cloudfront_media" {
   aws_acm_certificate_my_cert_arn          = module.certificates.aws_acm_certificate_my_cert_cloudfront_arn
   aws_s3_video_bucket_origin_id            = module.s3_media.aws_s3_video_bucket_id
   aws_s3_video_bucket_regional_domain_name = module.s3_media.aws_s3_video_bucket_regional_domain_name
-  aws_account_id                           = var.aws_account_id
+  aws_account_id                           = data.aws_caller_identity.current.id
 }
 

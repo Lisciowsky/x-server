@@ -76,7 +76,7 @@ This quick start guide will help you get the application up and running on your 
       ```
 
 2. **Configure Testing Environment**:
-    - Ensure the `LOCAL_DEVELOPMENT` is True
+    - Ensure the `ENVIRONMENT` is Environment.Testing or "Testing"
     
 3. **Execute Tests**:
     - Run the tests by executing:
@@ -125,6 +125,46 @@ The backend of this application is built using **Python with FastAPI** and **Sql
 This project also incorporates GitOps practices through the use of Terraform for infrastructure management and GitHub workflows for CI/CD, reinforcing the code-to-cloud automation philosophy.
 
 Thank you for choosing our FullStack GitOps application. Dive into our documentation to set up, use, and contribute to the project, and explore how this application can be adapted and expanded to meet your needs.
+
+
+# Terraform Deployment Steps
+
+- **`1) build infrastructure`**: Creates AWS resources based on a terraform IaC configuration files.
+  <details>
+  <summary><strong>show build infrastructure</strong></summary>
+
+  ![Apply Demo](documentation/gifs/terraform_apply.gif)
+
+  </details>
+  
+  Couple of modules won't be created:
+   - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation: Still creating... [3m20s elapsed]
+
+   - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation_us_east_1: Still creating... [3m10s elapsed]
+  
+   - module.database.aws_db_instance.postgres_instance: Still creating... [4m40s elapsed]
+
+   - creating Lambda Function (dev_media_convert_trigger): operation error Lambda: CreateFunction: Provide a valid source image.
+
+   Let's go to AWS Management console and perform this changes:
+   
+- **`2) change domain server names`**: AWS Route 53 in order to resolve aws_acm_certificate_validation we have to overwrite the domain server names. I have purchased my domain on go daddy, so I will be changing then names there.
+  <details>
+  <summary><strong>show change domain server names</strong></summary>
+
+  ![Apply Demo](documentation/gifs/dns_change.gif)
+
+  </details>
+
+- **`3) push docker images`**: Push media convert and core backend docker images. Your ECR image registry should be already created.
+  <details>
+  <summary><strong>show push docker images</strong></summary>
+
+  ![Deploy Converter Demo](documentation/gifs/deploy_converter.gif)
+  ![Deploy Backend Demo](documentation/gifs/deploy_backend.gif)
+  ![Images Deployed](documentation/gifs/images_deployed.gif)
+
+  </details>
 
 
 # Makefile Overview
@@ -199,11 +239,30 @@ This Makefile is designed to streamline various development, testing, and deploy
 ### Utility Operations
 
 - **`nuke`**: Executes the `aws-nuke` command to remove AWS resources based on a configuration file.
+  <details>
+  <summary><strong>NUKE</strong></summary>
+
+  ![NUKE Demo](documentation/gifs/nuke.gif)
+
+  </details>
+  
 - **`infracost`**: Runs cost estimation for the infrastructure using Infracost.
+  <details>
+  <summary><strong>INFRACOST</strong></summary>
+
+  ![INFRACOST Demo](documentation/gifs/infracost.gif)
+
+  </details>
 - **`alembic`**: Generates a new database migration with Alembic.
 - **`pycache`**: Clears Python cache files from the project directory.
 - **`delete-secret`**: Deletes a specific AWS Secrets Manager secret.
 - **`gen_pub_priv_cloudfront_keys`**: Generates a new pair of RSA keys for CloudFront.
+  <details>
+  <summary><strong>GEN KEYS</strong></summary>
+
+  ![GEN KEYS Demo](documentation/gifs/gen_keys.gif)
+
+  </details>
 - **`gen_dummy_signed_url`**: Generates a signed URL for CloudFront using the generated keys.
 
 </details>

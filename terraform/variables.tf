@@ -15,11 +15,6 @@ variable "appex_domain_name" {
   default     = "api.szumi-dev.com"
 }
 
-variable "aws_account_id" {
-  description = "your aws account id"
-  type        = string
-  default     = "654654262492"
-}
 
 # POSTGRES DB INSTANCE
 variable "database_username" {
