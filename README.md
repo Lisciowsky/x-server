@@ -129,46 +129,6 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
 
 # Terraform Deployment Steps
 
-- **`1) build infrastructure`**: Creates AWS resources based on a terraform IaC configuration files.
-  <details>
-  <summary><strong>show build infrastructure</strong></summary>
-
-  ![Apply Demo](documentation/gifs/terraform_apply.gif)
-
-  </details>
-  
-  Couple of modules won't be created:
-   - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation: Still creating... [3m20s elapsed]
-
-   - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation_us_east_1: Still creating... [3m10s elapsed]
-
-   - creating Lambda Function (dev_media_convert_trigger): operation error Lambda: CreateFunction: Provide a valid source image.
-
-   Let's go to AWS Management console and perform this changes:
-   
-- **`2) change domain server names`**: AWS Route 53 in order to resolve aws_acm_certificate_validation we have to overwrite the domain server names. I have purchased my domain on go daddy, so I will be changing then names there.
-  <details>
-  <summary><strong>show change domain server names</strong></summary>
-
-  ![Apply Demo](documentation/gifs/dns_change.gif)
-
-  </details>
-
-- **`3) push docker images`**: Push media convert and core backend docker images. Your ECR image registry should be already created.
-  <details>
-  <summary><strong>show push docker images</strong></summary>
-
-  ![Deploy Converter Demo](documentation/gifs/deploy_converter.gif)
-  ![Deploy Backend Demo](documentation/gifs/deploy_backend.gif)
-  ![Images Deployed](documentation/gifs/images_deployed.gif)
-
-  </details>
-- **`3) apply terraform once again`**: It might need to take some time until the server names will be updated and certificates validated, please be patient and apply terraform, if you see some errors, give it some time.
-
-
-
-# Terraform Deployment Steps
-
 - **`1) Build Infrastructure`**: This step creates AWS resources using Terraform's Infrastructure as Code (IaC) configuration files.
   <details>
   <summary><strong>Show Build Infrastructure</strong></summary>
@@ -177,12 +137,14 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
 
   </details>
   
-  **Note**: Some modules may take longer to create:
+  **Note**: Some modules may take longer to create and few will fail:
    - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation
    - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation_us_east_1`
-   - Issue when creating Lambda Function (`dev_media_convert_trigger`): "operation error Lambda: CreateFunction: Provide a valid source image." Please correct this via the AWS Management Console.
+   - Issue when creating Lambda Function (`dev_media_convert_trigger`): "operation error Lambda: CreateFunction: Provide a valid source image."
+   
+   To fix issues above:
 
-- **`2) Change Domain Server Names`**: Update the DNS settings at GoDaddy to point to AWS Route 53, facilitating the resolution of the `aws_acm_certificate_validation` challenge.
+- **`2) Change Domain Server Names`**: Update the DNS settings at Domain Provider to point to AWS Route 53, facilitating the resolution of the `aws_acm_certificate_validation` challenge.
   <details>
   <summary><strong>Show Change Domain Server Names</strong></summary>
 
