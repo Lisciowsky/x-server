@@ -141,8 +141,6 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
    - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation: Still creating... [3m20s elapsed]
 
    - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation_us_east_1: Still creating... [3m10s elapsed]
-  
-   - module.database.aws_db_instance.postgres_instance: Still creating... [4m40s elapsed]
 
    - creating Lambda Function (dev_media_convert_trigger): operation error Lambda: CreateFunction: Provide a valid source image.
 
@@ -163,6 +161,68 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
   ![Deploy Converter Demo](documentation/gifs/deploy_converter.gif)
   ![Deploy Backend Demo](documentation/gifs/deploy_backend.gif)
   ![Images Deployed](documentation/gifs/images_deployed.gif)
+
+  </details>
+- **`3) apply terraform once again`**: It might need to take some time until the server names will be updated and certificates validated, please be patient and apply terraform, if you see some errors, give it some time.
+
+
+
+# Terraform Deployment Steps
+
+- **`1) Build Infrastructure`**: This step creates AWS resources using Terraform's Infrastructure as Code (IaC) configuration files.
+  <details>
+  <summary><strong>Show Build Infrastructure</strong></summary>
+
+  ![Apply Demo](documentation/gifs/terraform_apply.gif)
+
+  </details>
+  
+  **Note**: Some modules may take longer to create:
+   - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation
+   - module.certificates.aws_acm_certificate_validation.szumi_dev_cert_validation_us_east_1`
+   - Issue when creating Lambda Function (`dev_media_convert_trigger`): "operation error Lambda: CreateFunction: Provide a valid source image." Please correct this via the AWS Management Console.
+
+- **`2) Change Domain Server Names`**: Update the DNS settings at GoDaddy to point to AWS Route 53, facilitating the resolution of the `aws_acm_certificate_validation` challenge.
+  <details>
+  <summary><strong>Show Change Domain Server Names</strong></summary>
+
+  ![Apply Demo](documentation/gifs/dns_change.gif)
+
+  </details>
+
+- **`3) Push Docker Images`**: Upload the Docker images for the media converter and core backend to your AWS ECR image registry.
+  <details>
+  <summary><strong>Show Push Docker Images</strong></summary>
+
+  ![Deploy Converter Demo](documentation/gifs/deploy_converter.gif)
+  ![Deploy Backend Demo](documentation/gifs/deploy_backend.gif)
+  ![Images Deployed](documentation/gifs/images_deployed.gif)
+
+  </details>
+
+- **`4) Apply Terraform Once Again`**: After DNS updates and certificate validations, reapply Terraform. If errors persist, allow some time for settings to propagate before retrying.
+
+# Next Steps
+- **`1) Deploy static frontend`**: The script updates an AWS S3 bucket with static files from a local directory, specifically configured for hosting a Next.js website. First we run `npm run` build then `update-front` makefile command.
+  <details>
+  <summary><strong>Show Build Frontend</strong></summary>
+
+  ![Deploy Frontend Demo](documentation/gifs/npm_run_build.gif)
+
+  </details>
+
+  <details>
+  <summary><strong>Show Update Frontend</strong></summary>
+
+  ![Deploy Frontend Demo](documentation/gifs/update_front.gif)
+
+  </details>
+
+- **`1) Verify Resource URLs`**: Lastly verify that your ecs container and cloudfront works. `Please adjust the urls to match your domain`.
+  <details>
+  <summary><strong>Show Verify Resource URLs</strong></summary>
+
+  ![Deploy Frontend Demo](documentation/gifs/verify_resources.gif)
 
   </details>
 
@@ -240,7 +300,7 @@ This Makefile is designed to streamline various development, testing, and deploy
 
 - **`nuke`**: Executes the `aws-nuke` command to remove AWS resources based on a configuration file.
   <details>
-  <summary><strong>NUKE</strong></summary>
+  <summary><strong>SHOW NUKE</strong></summary>
 
   ![NUKE Demo](documentation/gifs/nuke.gif)
 
@@ -248,7 +308,7 @@ This Makefile is designed to streamline various development, testing, and deploy
   
 - **`infracost`**: Runs cost estimation for the infrastructure using Infracost.
   <details>
-  <summary><strong>INFRACOST</strong></summary>
+  <summary><strong>SHOW INFRACOST</strong></summary>
 
   ![INFRACOST Demo](documentation/gifs/infracost.gif)
 
