@@ -133,7 +133,7 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
   <details>
   <summary><strong>Show Build Infrastructure</strong></summary>
 
-  ![Apply Demo](documentation/gifs/terraform_apply.gif)
+  ![Apply Demo](documentation/images/github_secrets.png)
 
   </details>
   
@@ -163,6 +163,44 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
   </details>
 
 - **`4) Apply Terraform Once Again`**: After DNS updates and certificate validations, reapply Terraform. If errors persist, allow some time for settings to propagate before retrying.
+
+# CI/CD GitHub Configuration
+
+To enable automatic updates of the ECS service and tasks via the CI/CD pipeline upon a Git push, you need to configure several secrets within GitHub. These secrets facilitate GitHub Actions to interact correctly with AWS ECS for continuous deployment.
+
+## Setting Up AWS User
+
+Before populating GitHub secrets, create an AWS user with the necessary permissions to provision all the required resources. This user’s credentials will be used to authenticate and authorize operations initiated by GitHub Actions.
+
+1. **Create an AWS IAM user** with programmatic access. This will generate an `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+2. **Attach policies** that grant the user sufficient permissions to manage ECS, Lambda, and other AWS services involved in your deployment.
+
+## Populating GitHub Secrets
+
+Once the AWS user is set up, you'll need to add these credentials to your GitHub repository as secrets:
+
+- `AWS_ACCESS_KEY_ID`: The access key ID from your AWS IAM user.
+- `AWS_SECRET_ACCESS_KEY`: The secret access key corresponding to the above ID.
+
+Additionally, retrieve other necessary secrets from the Terraform outputs:
+
+- Navigate to the root of your Terraform project.
+- Run `terraform output` to fetch most of the variables needed.
+- If some variables are missing, add them to `outputs.tf` to ensure they are outputted by Terraform.
+
+```bash
+terraform output
+```
+
+
+![Github CICD Secrets](documentation/images/github_secrets.png)
+
+
+![Github CICD Secrets](documentation/images/cicd.png)
+
+**Current Support in CI/CD**:
+
+**`Important`**: Currently, the CI/CD pipeline only supports the Lambda converter and the core ECS backend. The frontend and Terraform infrastructure are not integrated into the CI/CD process and must be deployed manually.
 
 # Next Steps
 - **`1) Deploy static frontend`**: The script updates an AWS S3 bucket with static files from a local directory, specifically configured for hosting a Next.js website. First we run `npm run` build then `update-front` makefile command.
