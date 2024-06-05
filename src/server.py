@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
-from starlette.middleware.base import BaseHTTPMiddleware
 
 from src.db.dal import DAL
 from src.api.main_router import main_router

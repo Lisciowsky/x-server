@@ -33,7 +33,7 @@ class MediaPermission(SQLModel, table=True):
     id: int = Field(primary_key=True, sa_column_kwargs={"autoincrement": True})
     media_id: int = Field(foreign_key="media.id")
     granted_to_username: str = Field(foreign_key="user.username")
-    permission_type: str  # This can be 'view', 'edit', etc.
+    permission_type: str
     granted_at: datetime = Field(default_factory=datetime.utcnow)
     media: Media = Relationship(back_populates="permissions")
     user: User = Relationship(back_populates="granted_permissions")

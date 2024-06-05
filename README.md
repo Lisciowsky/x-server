@@ -1,6 +1,6 @@
-# Welcome to the FullStack GitOps Application
+# Welcome to the FullStack AWS Application
 
-Welcome to our FullStack application, designed as a comprehensive example to demonstrate the integration of modern full-stack development practices and GitOps methodologies. This application harnesses the power of Python and TypeScript, coupled with the robust infrastructure of AWS, to deliver a scalable and secure user experience.
+Welcome to FullStack application, a robust example designed to showcase the integration of modern full-stack development practices on AWS. This application utilizes Python and TypeScript, coupled with the terraform managed infrastructure of AWS, to deliver a scalable and secure user experience.
 
 # Quick Start Guide
 
@@ -25,13 +25,14 @@ This quick start guide will help you get the application up and running on your 
     ```javascript
     baseURL = 'http://localhost:8080/v1';
     ```
-    ![Run the Frontend Demo](documentation/gifs/frontend_run.gif)
 
 4. **Start the Frontend Server**:
     Run the following command to start the frontend:
     ```bash
     npm run dev
     ```
+    ![Run the Frontend Demo](documentation/gifs/frontend_run.gif)
+
 
 ## Setting Up and Running the Backend
 
@@ -92,7 +93,7 @@ This quick start guide will help you get the application up and running on your 
 
 ## Overview
 
-Our application combines the efficiency of FastAPI and the flexibility of NextJS to create a dynamic full-stack solution. It is specifically designed to showcase essential features like user authentication, admin user management, and a user profile section where individuals can edit their profiles and upload media, such as videos.
+This application combines the efficiency of FastAPI and the flexibility of NextJS to create a dynamic full-stack solution. It is specifically designed to showcase essential features like user authentication, admin user management, and a user profile section where individuals can edit their profiles and upload media, such as videos.
 
 ## Key Features
 
@@ -122,9 +123,9 @@ The backend of this application is built using **Python with FastAPI** and **Sql
 - **Route 53**: Manages SSL/TLS certificates, enhancing the security and reliability of the application.
 - **WAF Integration**: Protects the application from web threats and DDoS attacks, ensuring uptime and data integrity.
 
-This project also incorporates GitOps practices through the use of Terraform for infrastructure management and GitHub workflows for CI/CD, reinforcing the code-to-cloud automation philosophy.
+This project also incorporates IaC practices through the use of Terraform for infrastructure management and GitHub workflows for CI/CD, reinforcing the code-to-cloud automation philosophy.
 
-Thank you for choosing our FullStack GitOps application. Dive into our documentation to set up, use, and contribute to the project, and explore how this application can be adapted and expanded to meet your needs.
+Thank you for your visit. Dive into the documentation to set up, and explore how this application can be adapted and expanded to meet your needs.
 
 
 # Terraform Deployment Steps
@@ -166,7 +167,7 @@ Thank you for choosing our FullStack GitOps application. Dive into our documenta
 
 # CI/CD GitHub Configuration
 
-To enable automatic updates of the ECS service and tasks via the CI/CD pipeline upon a Git push, you need to configure several secrets within GitHub. These secrets facilitate GitHub Actions to interact correctly with AWS ECS for continuous deployment.
+To enable automatic updates of the ECS service and tasks via the CI/CD pipeline upon a Git push, you need to configure several secrets within GitHub. These secrets facilitate GitHub Actions to update AWS ECS and Lambda for continuous deployment.
 
 ## Setting Up AWS User
 
@@ -181,6 +182,23 @@ Once the AWS user is set up, you'll need to add these credentials to your GitHub
 
 - `AWS_ACCESS_KEY_ID`: The access key ID from your AWS IAM user.
 - `AWS_SECRET_ACCESS_KEY`: The secret access key corresponding to the above ID.
+
+  <details>
+  <summary><strong>Show Create IAM User</strong></summary>
+
+  ![Iam User Demo](documentation/gifs/aws_create_user.gif)
+
+  </details>
+
+  <details>
+  <summary><strong>Show Create User Keys</strong></summary>
+
+  ![User Keys Demo](documentation/gifs/aws_tf_keys.gif)
+
+  </details>
+
+
+***Please note*** that I have opted to grant the 'AdministratorAccess' policy to our Terraform user as a temporary shortcut. Ideally, access should be restricted and limited to only those resources necessary for provisioning the infrastructure.
 
 Additionally, retrieve other necessary secrets from the Terraform outputs:
 
@@ -353,3 +371,19 @@ This Makefile is designed to streamline various development, testing, and deploy
 ![Video Feed Demo](documentation/gifs/videos.gif)
 
 </details>
+
+
+<br></br>
+---
+# NOTE
+
+Currently, the PostgreSQL database is exposed to the internet, configured for debugging purposes to allow direct connections without a jump host. For production environments, it is advisable to remove this exposure to mitigate security risks.
+
+```terraform
+  ingress {
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+```
