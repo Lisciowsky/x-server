@@ -136,6 +136,7 @@ module "s3_media" {
   aws_cloudfront_origin_access_identity_video_oai_id      = module.cloudfront_media.aws_cloudfront_origin_access_identity_video_oai_id
   aws_lambda_function_media_convert_trigger_function_arn  = module.lambda_convert.aws_lambda_function_media_convert_trigger_function_arn
   aws_lambda_function_media_convert_trigger_function_name = module.lambda_convert.aws_lambda_function_media_convert_trigger_function_name
+  domain_name = var.domain_name
 }
 
 module "cloudfront_media" {

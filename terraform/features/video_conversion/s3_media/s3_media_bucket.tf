@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "video_bucket" {
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["GET", "HEAD", "PUT", "DELETE"]
-    allowed_origins = ["*"]
+    allowed_origins = ["http://localhost:3000", "https://${var.domain_name}"]
     expose_headers  = ["ETag"]
     max_age_seconds = 3000
   }

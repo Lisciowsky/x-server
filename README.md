@@ -69,6 +69,14 @@ This quick start guide will help you get the application up and running on your 
       ```
       ![Run the Backend Demo](documentation/gifs/backend_startup.gif)
 
+## Load Postman Collection
+  <details>
+  <summary><strong>Show Load Collection</strong></summary>
+
+  ![Apply Demo](documentation/gifs/import_postman_collection.gif)
+
+  </details>
+
 ## Running Backend Tests Locally
 
 1. **Set Up the Test Database**:

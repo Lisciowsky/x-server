@@ -9,3 +9,7 @@ variable "aws_lambda_function_media_convert_trigger_function_arn" {
 variable "aws_lambda_function_media_convert_trigger_function_name" {
   type = string
 }
+
+variable "domain_name" {
+  type = string  
+}
