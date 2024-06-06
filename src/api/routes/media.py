@@ -3,7 +3,6 @@ from typing import List
 from datetime import datetime, timedelta
 from urllib.parse import quote_plus
 
-from boto3 import client, Session
 from botocore.exceptions import ClientError
 from botocore.signers import CloudFrontSigner
 
@@ -22,23 +21,15 @@ from src.db.dal import DAL
 from src.db.enums import PermissionTypes
 from settings import (
     MEDIA_CONVERT_BUCKET_NAME,
-    REGION_NAME,
     MEDIA_CLOUDFRONT_DOMAIN,
     MEDIA_PRIVATE_KEY_CDN_SECRET_NAME,
-    MEDIA_CDN_PUBLIC_KEY_SECRET_NAME,
-    LOCAL_DEVELOPMENT,
+    MEDIA_PUBLIC_KEY_CDN_SECRET_NAME,
+    BOTO3_SESSION,
 )
 
-
+s3_client = BOTO3_SESSION.client("s3")
+secrets_client = BOTO3_SESSION.client("secretsmanager")
 media_router = APIRouter(prefix="/media")
-
-if LOCAL_DEVELOPMENT:
-    session = Session(profile_name="private", region_name=REGION_NAME)
-    s3_client = session.client("s3")
-    secrets_client = session.client("secretsmanager")
-else:
-    s3_client = client("s3", region_name=REGION_NAME)
-    secrets_client = client("secretsmanager", region_name=REGION_NAME)
 
 
 def _get_media_path(username: str, media_name: str) -> str:
@@ -251,7 +242,7 @@ async def get_media_signed_url(
     expiration = datetime.utcnow() + timedelta(hours=1)
 
     private_key = get_secret(secret_name=MEDIA_PRIVATE_KEY_CDN_SECRET_NAME)
-    key_pair_id = get_secret(secret_name=MEDIA_CDN_PUBLIC_KEY_SECRET_NAME)
+    key_pair_id = get_secret(secret_name=MEDIA_PUBLIC_KEY_CDN_SECRET_NAME)
 
     try:
         signed_url = create_signed_url(

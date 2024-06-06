@@ -38,7 +38,7 @@ EOT
   })
 }
 resource "aws_secretsmanager_secret" "media_cdn_public_key_id" {
-  name = "${terraform.workspace}_media_cdn_public_key_id_v6p"
+  name = "${terraform.workspace}_media_cdn_public_key_id_v6"
 }
 
 resource "aws_secretsmanager_secret_version" "media_cdn_public_key_id" {

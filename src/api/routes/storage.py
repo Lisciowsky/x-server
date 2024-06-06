@@ -1,4 +1,3 @@
-from boto3 import client, Session
 from fastapi import Depends, APIRouter, HTTPException, status
 from src.token.token_maker import get_current_user, UserPayload
 from pydantic import BaseModel
@@ -6,16 +5,14 @@ from loguru import logger
 
 from src.utils.s3_storage import list_files_folders
 
-from settings import STORAGE_BUCKET_NAME, REGION_NAME, LOCAL_DEVELOPMENT
+from settings import (
+    STORAGE_BUCKET_NAME,
+    BOTO3_SESSION,
+)
 
 storage_router = APIRouter(prefix="/storage")
 
-
-if LOCAL_DEVELOPMENT:
-    session = Session(profile_name="private")
-    s3_client = session.client("s3", region_name=REGION_NAME)
-else:
-    s3_client = client("s3", region_name=REGION_NAME)
+s3_client = BOTO3_SESSION.client("s3")
 
 
 class GetUserStorageResponse(BaseModel):

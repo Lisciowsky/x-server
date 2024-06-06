@@ -39,12 +39,17 @@ This quick start guide will help you get the application up and running on your 
 1. **Configure Local Development**:
     - Open the `settings.py` file located in your root folder directory.
     - Set the `LOCAL_DEVELOPMENT` flag to `True` to configure the application to run with settings suitable for local development.
-    ```python3
-    # NOTE Switch to local development if you re running the backend core locally
+      ```python3
+      # NOTE Switch to local development if you re running the backend core locally
+      LOCAL_DEVELOPMENT = True
+      ```    
+2. **Configure AWS Credentials Profile**:
+    - initialize ~/.aws/credentials by running 
+      ```bash
+      aws configure
+      ```
+    - Make sure to update the ***app.env*** with the proper AWS `REGION_NAME` and `AWS_PROFILE`
     
-    LOCAL_DEVELOPMENT = True
-    ```    
-
 2. **Start the PostgreSQL Database**:
     - Ensure Docker is installed and running on your machine.
     - Open a terminal and run the PostgreSQL container:
@@ -82,7 +87,7 @@ This quick start guide will help you get the application up and running on your 
 3. **Execute Tests**:
     - Run the tests by executing:
       ```bash
-      make tests
+      make test
       ```
     - Run the tests and generate coverage report:
       ```bash
@@ -134,7 +139,7 @@ Thank you for your visit. Dive into the documentation to set up, and explore how
   <details>
   <summary><strong>Show Build Infrastructure</strong></summary>
 
-  ![Apply Demo](documentation/images/github_secrets.png)
+  ![Apply Demo](documentation/gifs/terraform_apply.gif)
 
   </details>
   
